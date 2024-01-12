@@ -1,7 +1,7 @@
 # DATA-PROJECT-II
 DATA PROJECT II: MASTER EDEM FS 
 
-Tecnología 60% Negocio 40%
+Tecnología 60% Negocio 40%.
 
 Se elige entre Kafka y Spark o Cloud.
 
