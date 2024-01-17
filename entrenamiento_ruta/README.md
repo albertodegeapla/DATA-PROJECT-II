@@ -76,3 +76,56 @@ folium.Marker(
     [39.949610, -75.150282], popup="Liberty Bell", tooltip="Liberty Bell"
 ).add_to(m)
 ```
+### Parte 3: Renderizar la información en el mapa.
+Al final de nuestro script, tendremos que añadir lo siguiente, para que Streamlit ejecute el código en el mapa de nuestro navegador:
+```
+st_data = st_folium(m, width=725)
+```
+# pruebas_streamlit.py
+Ahora voy a proceder a explicar lo que hay en concreto en el script _pruebas_streamlit.py_
+## Objetivo: visualizar la ruta en el mapa.
+Cuando descargamos la ruta que hemos creado con Google Maps en formato .KML, encontramos que, entre otras cosas, hay un array de coordenadas geográficas que indican **la longitud, la latitud y la altura**. El problema viene cuando vemos que en Streamlit, el formato que se requiere es **[Latitud,Longitud]**, por lo que debemos cambiar el orden de las variables, y eliminar la altura de la ecuación, ya que sino aparecerá un error.
+> Lo que he hecho yo es, ya que vivimos en tiempos de ChatGPT, le he pedido que me lo haga, pero para 20 coordenadas de la ruta, ya que no necesito más.
+El resultado es el siguiente:
+```
+coordinates = [
+    [39.46939, -0.35902],
+    [39.46949, -0.35889],
+    [39.46958, -0.35876],
+    [39.46962, -0.35871],
+    [39.46969, -0.35865],
+    [39.4698, -0.35858],
+    [39.46992, -0.35849],
+    [39.47013, -0.35842],
+    [39.47014, -0.3584],
+    [39.47015, -0.35839],
+    [39.47018, -0.35837],
+    [39.47019, -0.35836],
+    [39.47021, -0.35835],
+    [39.47024, -0.35834],
+    [39.47027, -0.35834],
+    [39.4703, -0.35834],
+    [39.47033, -0.35837],
+    [39.47035, -0.35839],
+    [39.47038, -0.35834],
+    [39.47043, -0.35827],
+    [39.47048, -0.35822],
+]
+```
+A diferencia del ejemplo anterior, lo que necesitamos aquí es crear un loop _for_ que haga el trabajo por nosotros y nos evite tener que meter cada punto a mano.
+> DISCLAIMER: Ya que queremos evitar que nos resten puntos por hard-codear, la idea es volcar las coordenadas de un .CSV o de una BBDD en SQL.
+
+Lo primero que hemos hecho es definir un Dataframe, indicando la LATITUD y la LONGITUD:
+```
+df = pd.DataFrame(coordinates, columns=["LATITUDE", "LONGITUDE"])
+```
+Después, y para comprobar que las coordenadas se cargan correctamente, hemos visualizado el Dataframe en el navegador:
+```
+st.dataframe(df)
+```
+Para posteriormente, ejecutar el script e ir creando marcadores en el mapa:
+```
+for index, row in df.iterrows():
+    folium.Marker(location=[row["LATITUDE"], row["LONGITUDE"]]).add_to(m)
+```
+Lo único que hace es, con el Dataframe definido, y usando iterrows, ir creando un marcador con **folium.Marker(location=[X,Y])** con las coordenadas del array **row["LATITUDE"], row["LONGITUDE"]** y luego añadirlas al mapa con **.add_to(m)**.
