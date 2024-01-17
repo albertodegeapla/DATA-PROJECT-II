@@ -65,26 +65,42 @@ def user_generator(param:int):
         last_name_2 = random.choices(df_last_names, weights=df_frec_2_last_names, k=1)[0]
 
         # seleccion rango de edad segun frecuencia (consultar frecuencias en el README)
-        rangos_edad = [
+        age_range_probability = [
             (18, 24, 0.27),
             (25, 29, 0.26),
             (30, 39, 0.26),
             (40, 54, 0.16),
             (55, 80, 0.05)
         ]
-        rango = random.choices(rangos_edad, weights=[probabilidad for _, _, probabilidad in rangos_edad])[0]
-        edad = random.randint(rango[0], rango[1])
-        
+        age_range = random.choices(age_range_probability, weights=[probabilidad for _, _, probabilidad in age_range_probability])[0]
+        age = random.randint(age_range[0], age_range[1])
+
+        # seleccion de si tiene coche y puede ser conductor o no
+        car = random.choices([True, False], weights=[0.35, 0.65])[0]
+
+        # seleccion del estado de animo (si es muy majo tiene mas disponibilidad para cambiar la ruta que si no lo es)
+        mood = random.choices(["Muy majo", "Majo", "Normal", "Borde", "Muy Borde"], weights=[0.1, 0.25, 0.3, 0.25, 0.1], k=1)[0]
+
+        # todos lo usuarios comienzan con 10€ de prueba
+        wallet = 10.0
+
+        # beneficio en blablacar
+        profit = 0.0
+
         user.append(dni) 
         user.append(name)
         user.append(last_name_1)
         user.append(last_name_2)
         user.append(sex)
-        user.append(edad)
+        user.append(age)
+        user.append(car)
+        user.append(mood)
+        user.append(wallet)
+        user.append(profit)
         users.append(user)
         
     
     return users
 
-for element in user_generator(10):
-    print(element)
+'''for element in user_generator(10):
+    print(element)'''
