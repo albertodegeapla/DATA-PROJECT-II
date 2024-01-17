@@ -1,21 +1,25 @@
-import streamlit as st
 import folium
+import streamlit as st
+from streamlit_folium import st_folium
 
-def main():
-    st.title("Streamlit App with Folium Map")
+# Center on Liberty Bell, add markers
+m = folium.Map(location=[39.46939,-0.35902], zoom_start=16)
 
-    # Create a Folium map centered on Liberty Bell
-    m = folium.Map(location=[39.949610, -75.150282], zoom_start=16)
+# Marker for Liberty Bell
+folium.Marker(
+    [39.46939,-0.35902], popup="01", tooltip="Localización"
+).add_to(m)
 
-    # Add a marker for Liberty Bell
-    folium.Marker(
-        location=[39.949610, -75.150282],
-        popup="Liberty Bell",
-        tooltip="Liberty Bell"
-    ).add_to(m)
+second_location = [39.46949,-0.35889]
+folium.Marker(
+    second_location, popup="02", tooltip="Localización"
+).add_to(m)
 
-    # Display the Folium map using st
-    folium_static(m)
+third_location = [39.46958,-0.35876,]
+folium.Marker(
+    third_location, popup="03", tooltip="Localización"
+).add_to(m)
 
-if __name__ == "__main__":
-    main()
+# Call to render Folium map in Streamlit
+# Don't get any data back from the map (so that it won't rerun the app when the user interacts)
+st_folium(m, width=725, returned_objects=[])
