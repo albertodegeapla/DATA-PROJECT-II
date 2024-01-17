@@ -55,7 +55,7 @@ coordinates = [
     [39.47048, -0.35822],
 ]
 
-meeting_point = [39.470286, -0.365151]
+meeting_point = [39.469950, -0.357545]
 
 range_meters = 100
 
