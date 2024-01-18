@@ -3,6 +3,8 @@ DROP TABLE IF EXISTS persona CASCADE;
 DROP TABLE IF EXISTS coche CASCADE;
 DROP TABLE IF EXISTS ruta CASCADE;
 DROP TABLE IF EXISTS cartera CASCADE;
+DROP TABLE IF EXISTS ruta_pasajero CASCADE;
+
 
 -- TABLA PERSONAS
 
@@ -19,7 +21,8 @@ CREATE TABLE IF NOT EXISTS persona (
     Fecha_nacimiento DATE NOT NULL,
     Edad INT NOT NULL,
     Provincia VARCHAR(50) NOT NULL,
-    id_conductor INT NOT NULL
+    id_conductor INT NOT NULL,
+    id_pasajero INT NOT NULL
 );
 
 -- TABLA coche
@@ -35,7 +38,7 @@ CREATE TABLE IF NOT EXISTS coche (
     kilometraje INT NOT NULL
 );
 
--- TABLA RUTA
+-- TABLA RUTA CONDUCTOR
 
 CREATE TABLE IF NOT EXISTS ruta (
     id_coche SERIAL PRIMARY KEY,
@@ -45,6 +48,18 @@ CREATE TABLE IF NOT EXISTS ruta (
     fecha_viaje DATE NOT NULL,
     precio INT NOT NULL,
     km_recorridos INT NOT NULL
+);
+
+-- TABLA RUTA PASAJERO
+
+CREATE TABLE IF NOT EXISTS ruta (
+    id_coche SERIAL PRIMARY KEY,
+    id_pasajero INT NOT NULL,
+    salida VARCHAR(1000) NOT NULL,
+    destino VARCHAR(1000) NOT NULL,
+    fecha_viaje DATE NOT NULL,
+    precio INT NOT NULL,
+    km_recorridos_a_pie INT NOT NULL
 );
 
 -- TABLA cartera
