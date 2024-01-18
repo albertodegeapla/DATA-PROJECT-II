@@ -3,9 +3,10 @@ import folium
 from streamlit_folium import st_folium
 import pandas as pd
 import re
+import time
 
 # Load the KML file
-kml_file_path = "Indicaciones de EDEM Escuela de Empresarios, Plaça de L'aigua, Valencia a Ayuntamiento de Valencia, Plaza del Ayuntamiento, Valencia.kml"  # Replace with the actual filename
+kml_file_path = "Indicaciones de Restaurante Marina Beach Club, Valencia a Plaza de España, Valencia.kml"  # Replace with the actual filename
 
 with open(kml_file_path, 'r', encoding='utf-8') as file:
     kml_content = file.read()
@@ -27,14 +28,24 @@ if coordinates_match:
 df = pd.DataFrame(formatted_coordinates, columns=["LATITUDE", "LONGITUDE"])
 
 # Display the DataFrame using st.dataframe
-st.dataframe(df)
+m = folium.Map(location=[df["LATITUDE"].iloc[0], df["LONGITUDE"].iloc[0]], zoom_start=15)
 
-# Create a Folium map to add markers
-m = folium.Map(location=[formatted_coordinates[0][0], formatted_coordinates[0][1]], zoom_start=15)
+# Create a FeatureGroup for markers
+markers_feature_group = folium.FeatureGroup(name="Markers")
 
-# Add markers to the Folium map using the DataFrame
+# Add markers to the FeatureGroup
 for index, row in df.iterrows():
-    folium.Marker(location=[row["LATITUDE"], row["LONGITUDE"]]).add_to(m)
+    marker = folium.CircleMarker(location=[row["LATITUDE"], row["LONGITUDE"]], radius=5, color='#3498db', fill=True, fill_color='#3498db', fill_opacity=1)
+    markers_feature_group.add_child(marker)
+    m.add_child(markers_feature_group)
 
-# Display the Folium map using st_folium
-st_folium(m)
+# Add the circles representing the car advancing on the route
+for index, row in df.iterrows():
+    markers_feature_group.add_child(
+        folium.CircleMarker(
+            location=[row["LATITUDE"], row["LONGITUDE"]],
+            color="red"
+        )
+    )
+
+st_folium(m, key="my_map", feature_group_to_add=markers_feature_group)
