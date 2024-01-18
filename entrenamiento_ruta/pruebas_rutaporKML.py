@@ -3,6 +3,7 @@ import folium
 from streamlit_folium import st_folium
 import pandas as pd
 import re
+import time
 
 # Load the KML file
 kml_file_path = "Indicaciones de Restaurante Marina Beach Club, Valencia a Plaza de España, Valencia.kml"  # Replace with the actual filename
@@ -36,9 +37,15 @@ markers_feature_group = folium.FeatureGroup(name="Markers")
 for index, row in df.iterrows():
     marker = folium.CircleMarker(location=[row["LATITUDE"], row["LONGITUDE"]], radius=5, color='#3498db', fill=True, fill_color='#3498db', fill_opacity=1)
     markers_feature_group.add_child(marker)
+    m.add_child(markers_feature_group)
 
-# Add the FeatureGroup to the Folium map
-m.add_child(markers_feature_group)
+# Add the circles representing the car advancing on the route
+for index, row in df.iterrows():
+    markers_feature_group.add_child(
+        folium.CircleMarker(
+            location=[row["LATITUDE"], row["LONGITUDE"]],
+            color="red"
+        )
+    )
 
-# Display the Folium map using st_folium
-st_folium(m)
+st_folium(m, key="my_map", feature_group_to_add=markers_feature_group)
