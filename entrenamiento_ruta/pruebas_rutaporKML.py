@@ -5,7 +5,7 @@ import pandas as pd
 import re
 
 # Load the KML file
-kml_file_path = "Indicaciones de EDEM Escuela de Empresarios, Plaça de L'aigua, Valencia a Ayuntamiento de Valencia, Plaza del Ayuntamiento, Valencia.kml"  # Replace with the actual filename
+kml_file_path = "Indicaciones de Restaurante Marina Beach Club, Valencia a Plaza de España, Valencia.kml"  # Replace with the actual filename
 
 with open(kml_file_path, 'r', encoding='utf-8') as file:
     kml_content = file.read()
