@@ -1,12 +1,12 @@
 -- DROP TABLE IF EXISTS
-DROP TABLE IF EXISTS personas CASCADE;
-DROP TABLE IF EXISTS plazas_disponibles CASCADE;
-DROP TABLE IF EXISTS viajes_asignados CASCADE;
-DROP TABLE IF EXISTS lista_espera CASCADE;
+DROP TABLE IF EXISTS persona CASCADE;
+DROP TABLE IF EXISTS coche CASCADE;
+DROP TABLE IF EXISTS ruta CASCADE;
+DROP TABLE IF EXISTS cartera CASCADE;
 
 -- TABLA PERSONAS
 
-CREATE TABLE IF NOT EXISTS personas (
+CREATE TABLE IF NOT EXISTS persona (
     id_persona SERIAL PRIMARY KEY,
     Nombre VARCHAR(50) NOT NULL,
     Primer_apellido VARCHAR(50) NOT NULL,
@@ -19,69 +19,38 @@ CREATE TABLE IF NOT EXISTS personas (
     Fecha_nacimiento DATE NOT NULL,
     Edad INT NOT NULL,
     Provincia VARCHAR(50) NOT NULL,
-    Estado_civil VARCHAR(50) NOT NULL,
-    Acompanamiento_pareja BOOLEAN NOT NULL,
-    Hijo_discapacidad BOOLEAN NOT NULL,
-    Discapacidad BOOLEAN NOT NULL,
-    Tipo_discapacidad VARCHAR(50),
-    Grado_discapacidad INT,
-    Numero_participaciones INT,
-    Renta INT NOT NULL,
-    Personas_dependientes INT,
-    Pension VARCHAR(50),
-    Obras_sociales VARCHAR(50) NOT NULL,
-    Vive_solo BOOLEAN NOT NULL,
-    Preferencia_1 VARCHAR(50),
-    Preferencia_2 VARCHAR(50),
-    Fecha_1 VARCHAR(50),
-    Fecha_2 VARCHAR(50),
-    Fecha_3 VARCHAR(50)
+    id_conductor INT NOT NULL
 );
 
--- TABLA PLAZAS_DISPONIBLES
+-- TABLA coche
 
-CREATE TABLE IF NOT EXISTS plazas_disponibles (
-    id_plaza SERIAL PRIMARY KEY,
-    Ciudad VARCHAR(50) NOT NULL,
-    Mes VARCHAR(50) NOT NULL,
-    Hotel VARCHAR(50) NOT NULL,
-    Estrellas_hotel INT NOT NULL,
-    Tipo_exp VARCHAR(50) NOT NULL,
-    Fecha_viaje DATE NOT NULL,
-    Num_plazas INT NOT NULL
+CREATE TABLE IF NOT EXISTS coche (
+    id_coche SERIAL PRIMARY KEY,
+    num_matricula INT NOT NULL,
+    marca VARCHAR(50) NOT NULL,
+    id_conductor INT NOT NULL,
+    plazas INT NOT NULL,
+    color VARCHAR(50) NOT NULL,
+    letras_matricula VARCHAR(50) NOT NULL,
+    kilometraje INT NOT NULL
 );
 
--- TABLA VIAJES_ASIGNADOS
+-- TABLA RUTA
 
-CREATE TABLE IF NOT EXISTS viajes_asignados (
-    id_viaje SERIAL PRIMARY KEY,
-    id_persona INT NOT NULL,
-    Nombre VARCHAR(50) NOT NULL,
-    Primer_apellido VARCHAR(50) NOT NULL,
-    Segundo_apellido VARCHAR(50) NOT NULL,
-    DNI VARCHAR(50) NOT NULL,
-    Ciudad VARCHAR(50) NOT NULL,
-    tipo_exp VARCHAR(50) NOT NULL,
-    Hotel VARCHAR(50) NOT NULL,
-    Mes VARCHAR(50) NOT NULL,
-    Fecha_viaje DATE NOT NULL,
-    Valoracion INT NOT NULL
+CREATE TABLE IF NOT EXISTS ruta (
+    id_coche SERIAL PRIMARY KEY,
+    id_conductor INT NOT NULL,
+    salida VARCHAR(1000) NOT NULL,
+    destino VARCHAR(1000) NOT NULL,
+    fecha_viaje DATE NOT NULL,
+    precio INT NOT NULL,
+    km_recorridos INT NOT NULL
 );
 
--- TABLA LISTA_ESPERA
+-- TABLA cartera
 
-CREATE TABLE IF NOT EXISTS lista_espera (
-    id_lista_espera SERIAL PRIMARY KEY,
-    id_persona INT NOT NULL,
-    Nombre VARCHAR(50) NOT NULL,
-    Primer_apellido VARCHAR(50) NOT NULL,
-    Segundo_apellido VARCHAR(50) NOT NULL,
-    DNI VARCHAR(50) NOT NULL,
-    Valoracion INT NOT NULL
+CREATE TABLE IF NOT EXISTS cartera (
+    id_persona SERIAL PRIMARY KEY,
+    id_conductor INT NOT NULL,
+    cartera INT NOT NULL
 );
-
-
-
-
-
-
