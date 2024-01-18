@@ -3,6 +3,7 @@ import folium
 from streamlit_folium import st_folium
 import pandas as pd
 import re
+import time
 
 # Load the KML file
 kml_file_path = "Indicaciones de Restaurante Marina Beach Club, Valencia a Plaza de España, Valencia.kml"  # Replace with the actual filename
@@ -36,5 +37,11 @@ m = folium.Map(location=[formatted_coordinates[0][0], formatted_coordinates[0][1
 for index, row in df.iterrows():
     folium.Marker(location=[row["LATITUDE"], row["LONGITUDE"]]).add_to(m)
 
-# Display the Folium map using st_folium
+# Add the car moving through the route each second
+for index, row in df.iterrows():
+    time.sleep(5)
+    marker = folium.Marker(location=[row["LATITUDE"], row["LONGITUDE"]], icon=folium.Icon(color='green'))
+    m._children = {}
+    m.add_child(marker)
+
 st_folium(m)
