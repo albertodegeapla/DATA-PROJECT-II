@@ -21,14 +21,14 @@ CREATE TABLE IF NOT EXISTS persona (
     Fecha_nacimiento DATE NOT NULL,
     Edad INT NOT NULL,
     Provincia VARCHAR(50) NOT NULL,
-    id_conductor INT NOT NULL,
-    id_pasajero INT NOT NULL
+    id_conductor INT NOT NULL
 );
 
 -- TABLA coche
 
 CREATE TABLE IF NOT EXISTS coche (
     id_coche SERIAL PRIMARY KEY,
+    id_persona INT NOT NULL,
     num_matricula INT NOT NULL,
     marca VARCHAR(50) NOT NULL,
     id_conductor INT NOT NULL,
@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS coche (
 
 -- TABLA RUTA CONDUCTOR
 
-CREATE TABLE IF NOT EXISTS ruta (
+CREATE TABLE IF NOT EXISTS ruta_conductor (
     id_coche SERIAL PRIMARY KEY,
     id_conductor INT NOT NULL,
     salida VARCHAR(1000) NOT NULL,
@@ -52,14 +52,15 @@ CREATE TABLE IF NOT EXISTS ruta (
 
 -- TABLA RUTA PASAJERO
 
-CREATE TABLE IF NOT EXISTS ruta (
-    id_coche SERIAL PRIMARY KEY,
-    id_pasajero INT NOT NULL,
+CREATE TABLE IF NOT EXISTS ruta_pasajero (
+    id_persona SERIAL PRIMARY KEY,
+    id_coche INT NOT NULL,
     salida VARCHAR(1000) NOT NULL,
     destino VARCHAR(1000) NOT NULL,
     fecha_viaje DATE NOT NULL,
     precio INT NOT NULL,
-    km_recorridos_a_pie INT NOT NULL
+    distancia_recorrida_coche INT NOT NULL,
+    metros_recorridos_a_pie INT NOT NULL
 );
 
 -- TABLA cartera
