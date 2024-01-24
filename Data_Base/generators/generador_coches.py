@@ -8,25 +8,27 @@ def cargar_txt(archivo):
         return [line.strip() for line in file]
 
 def generar_marca():
-    marca = cargar_txt('/Users/albertodegeapla/Desktop/DATA-PROJECT-II/Data_Base/personas y coches/marcas_coche.txt')
+    marca = cargar_txt('./marcas_coche.txt')
     return random.choice(marca)
 
 def generar_matricula():
-    numeros = random.randint(0000, 9999)
-    letra = random.choice('ABCDEFGHIJKLMNOPQRSTUVWXYZ')
-    return f"{numeros}-{letra}"
+    numeros = random.randint(1000, 9999)
+    letra1 = random.choice('ABCDEFGHIJKL')
+    letra2 = random.choice('ABCDEFGHIJKLMNOPQRSTUVWXYZ')
+    letra3 = random.choice('ABCDEFGHIJKLMNOPQRSTUVWXYZ')
+    return f"{numeros}{letra1}{letra2}{letra3}"
 
 def generar_edad_coche():
-    random.randint(0, 25)
+    return random.randint(0, 25)
 
 def generar_plazas():
-    random.randint(1, 4)
+    return random.randint(1, 4)
 
 def generar_kilometraje():
-    random.randint(1000, 200000)
+    return random.randint(1000, 200000)
 
 def generar_precio_compra():
-    random.randint(10000, 80000)
+    return random.randint(10000, 80000)
 
 def generar_precio_km(kilometraje, precio_compra):
     descuento_por_kilometraje = 0.05  # Descuento del 5% por cada 10000km
@@ -35,25 +37,23 @@ def generar_precio_km(kilometraje, precio_compra):
 
     return max(precio_final, 0)
 
-kilometraje = generar_kilometraje
-precio_compra = generar_precio_compra
-
 
 def generar_coche():
-    id_coche = generar_id_coche
-    marca = generar_marca
-    matricula = generar_matricula
-    edad_coche = generar_edad_coche
-    plazas = generar_plazas
-    kilometraje = generar_kilometraje
-    precio_compra = generar_precio_compra
-    precio_por_km = generar_precio_km
+    id_coche = generar_id_coche()
+    marca = generar_marca()
+    matricula = generar_matricula()
+    edad_coche = generar_edad_coche()
+    plazas = generar_plazas()
+    kilometraje = generar_kilometraje()
+    precio_compra = generar_precio_compra()
+    precio_por_km = generar_precio_km(kilometraje, precio_compra)
 
     coche = {
         'ID_coche':id_coche,
         'Marca':marca,
         'Matrícula':matricula,
         'Edad coche':edad_coche,
+        'Plazas':plazas,
         'Kilometraje':kilometraje,
         'Precio de compra':precio_compra,
         'Precio por kilometro':precio_por_km
