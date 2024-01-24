@@ -8,15 +8,15 @@ def cargar_txt(archivo):
         return [line.strip() for line in file]
 
 def generar_nombres():
-    nombre = cargar_txt('/Users/albertodegeapla/Desktop/DATA-PROJECT-II/Data_Base/personas y coches/nombre.txt')
+    nombre = cargar_txt('Data_Base/personas_y_coches/nombre.txt')
     return random.choice(nombre)
 
 def generar_primer_apellido():
-    primer_apellido = cargar_txt('/Users/albertodegeapla/Desktop/DATA-PROJECT-II/Data_Base/personas y coches/apellido.txt')
+    primer_apellido = cargar_txt('Data_Base/personas_y_coches/apellido.txt')
     return random.choice(primer_apellido)
 
 def generar_segundo_apellido():
-    segundo_apellido = cargar_txt('/Users/albertodegeapla/Desktop/DATA-PROJECT-II/Data_Base/personas y coches/apellido.txt')
+    segundo_apellido = cargar_txt('Data_Base/personas_y_coches/apellido.txt')
     return random.choice(segundo_apellido)
 
 def generar_dni():
@@ -25,19 +25,19 @@ def generar_dni():
     return f"{numeros}-{letra}"
 
 def generar_edad():
-    random.randint(18, 75)
+    return random.randint(18, 75)
 
 def generar_cartera():
     return round(random.uniform(100, 10000), 2)
 
 def generar_persona():
-    id_persona = generar_id_persona
-    nombre = generar_nombres
-    primer_apellido = generar_primer_apellido
-    segundo_apellido = generar_segundo_apellido
-    dni = generar_dni
-    edad = generar_edad
-    cartera = generar_cartera
+    id_persona = generar_id_persona()
+    nombre = generar_nombres()
+    primer_apellido = generar_primer_apellido()
+    segundo_apellido = generar_segundo_apellido()
+    dni = generar_dni()
+    edad = generar_edad()
+    cartera = generar_cartera()
 
     persona = {
         'ID_persona':id_persona,
