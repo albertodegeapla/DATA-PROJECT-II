@@ -61,7 +61,7 @@ def generar_coche():
 
     return coche
 
-#SOLO DEVOLVERÁ UNA PERSONA PARA ESTE VIERNES
+#SOLO DEVOLVERÁ UN COCHE PARA ESTE VIERNES
 for _ in range(1):
     coche_generado = generar_coche()
     print(coche_generado)
