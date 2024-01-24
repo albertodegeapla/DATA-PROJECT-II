@@ -55,8 +55,8 @@ def generar_coche():
         'Edad coche':edad_coche,
         'Plazas':plazas,
         'Kilometraje':kilometraje,
-        'Precio de compra':precio_compra,
-        'Precio por kilometro':precio_por_km
+        'Precio_de_compra':precio_compra,
+        'Precio_por_kilometro':precio_por_km
     }
 
     return coche
