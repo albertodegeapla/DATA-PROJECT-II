@@ -43,10 +43,10 @@ def gen_ruta_persona():
 
     ruta_persona = {
         'ID_persona': 1,
-        'Nombre': "Manuel",
+        'Nombre': "pep",
         'Cartera': 10.00,
         'hora_salida': "17:25",
-        'ruta_persona': [
+        'ruta_perosna': """[
             (-0.37927, 39.46897, 0),
             (-0.3792, 39.46905, 0),
             (-0.37913, 39.46915, 0),
@@ -105,7 +105,7 @@ def gen_ruta_persona():
             (-0.36294, 39.4723, 0),
             (-0.36301, 39.4724, 0),
             (-0.36311, 39.47254, 0)
-            ]
+            ]"""
     }
 
     return ruta_persona
