@@ -1,11 +1,72 @@
+from google.cloud import pubsub_v1
+import argparse
+import json
+import logging
 
+'''
+Para llamar a este codiog de python hay que llamarlo desde el terminal así : python --project_id ...
+'''
 
+parser = argparse.ArgumentParser(description=("Generador de Rutas y publicadas en pub/sub"))
+parser.add_argument(
+    "--project_id",
+    required=True,
+    help="Project ID de GCloud"
+)
+parser.add_argument(
+    "--person_topic_name",
+    required=True,
+    help="Topic de GCloud de la persona"
+)
+parser.add_argument(
+    "--car_topic_name",
+    required=True,
+    help="Topic de GCloud del coche"
+)
+
+args, opts = parser.parse_known_args()
+
+class PubSubPersonMessage:
+
+    def __init__(self, project_id, topic_person):
+        self.publisher = pubsub_v1.PublisherClient()
+        self.project_id = project_id
+        self.topic_name = topic_person
+    
+    def publishPersonMessage(self, message): 
+        json_str = json.dumps(message)
+        topic_path = self.publisher.topic_path(self.project_id, self.topic_name)
+        publish = self.publisher.publish(topic_path, json_str.encode("utf-8"))
+        publish.result()
+        logging.info(f"{message['Nombre']} quiere realizar un viaje a las {message['hora_salida']}")
+
+    def __exit__(self):
+        self.publisher.transport.close()
+        logging.info("Cerrando perosn Publisher")
+
+class PubSubCarMessage:
+
+    def __init__(self, project_id, topic_car):
+        self.publisher = pubsub_v1.PublisherClient()
+        self.project_id = project_id
+        self.topic_name = topic_car
+
+    def publishCarMessage(self, message):
+        json_str = json.dumps(message)
+        topic_path = self.publisher.topic_path(self.project_id, self.topic_name)
+        publish = self.publisher.publish(topic_path, json_str.encode("utf-8"))
+        publish.result()
+        logging.info(f"El coche {message['ID_coche']}, matricula {message['Matricula']} va ha realizar un viaje a las {message['hora_salida']} por {message['Precio']}€. Hay {message['Plazas']} plazas")
+
+    def __exit__(self):
+        self.publisher.transport.close()
+        logging.info("Cerrando car Publisher") 
 
 
 def gen_ruta_persona():
 
     ruta_persona = {
-        'ID_persona': 1,
+        'ID_persona': 1000,
         'Nombre': "Pedro",
         'Cartera': 10.00,
         'hora_salida': "17:25",
@@ -76,9 +137,9 @@ def gen_ruta_persona():
 def gen_ruta_coche():
 
     ruta_coche = {
-        'ID_coche':2,
+        'ID_coche':2000,
         'Marca':"Nieto",
-        'Matrícula':"0000AAA",
+        'Matricula':"0000AAA",
         'Plazas':2,
         'Precio': 1.55,
         'hora_salida': "17:28",
@@ -144,3 +205,30 @@ def gen_ruta_coche():
             ]
     }
     return ruta_coche
+
+
+
+
+def run(project_id, topic_person, topic_car):
+
+    try:
+        person_publisher = PubSubPersonMessage(project_id, topic_person)
+        message1: dict = gen_ruta_persona()
+        person_publisher.publishPersonMessage(message1)
+    except Exception as e:
+        logging.error("Error while inserting data into ruta_persona Topic: %s", e)
+    finally:
+        person_publisher.__exit__()
+
+    try:
+        car_publisher = PubSubCarMessage(project_id, topic_car)
+        message2: dict = gen_ruta_coche()
+        car_publisher.publishCarMessage(message2)
+    except Exception as e:
+        logging.error("Error while inserting data into ruta_coche Topic: %s", e)
+    finally:
+        car_publisher.__exit__()
+
+if __name__ == "__main__":
+    logging.getLogger().setLevel(logging.INFO)
+    run(args.project_id, args.person_topic_name, args.car_topic_name)
