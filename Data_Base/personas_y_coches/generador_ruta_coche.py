@@ -39,6 +39,9 @@ def leer_todas_las_rutas_en_carpeta(carpeta_kml):
 
     return todas_las_rutas
 
+def generar_velocidad():
+    return random.uniform(20,70)
+
 def generar_ruta_salida(coordenadas_ruta):
     porcentaje_ruta_salida = 0.1  
     cantidad_puntos_salida = int(len(coordenadas_ruta) * porcentaje_ruta_salida)
@@ -55,8 +58,9 @@ def generar_informacion_ruta(ruta):
     longitud_total = len(ruta)
     hora_salida = datetime(2024, 1, 1, random.randint(6, 9), random.randint(0, 59))
 
-    
-    duracion_total_minutos = random.randint(30, 120)
+#REVISAR ESTA LÓGICA NO ME CUADRAN MUCHOS LAS HORAS
+    velocidad = generar_velocidad()
+    duracion_total_minutos = int((longitud_total / velocidad) * 60)
 
     
     hora_llegada = hora_salida + timedelta(minutes=duracion_total_minutos)
@@ -77,7 +81,8 @@ def generar_informacion_ruta(ruta):
         'hora_llegada': hora_llegada,
         'fecha': fecha,
         'punto_salida': punto_salida,
-        'punto_llegada': punto_llegada
+        'punto_llegada': punto_llegada,
+        'velocidad':velocidad
     }
 
 carpeta_kml = "rutas/ruta_prueba_coche" 
