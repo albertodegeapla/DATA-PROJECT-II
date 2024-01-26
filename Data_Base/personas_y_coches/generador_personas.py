@@ -8,15 +8,15 @@ def cargar_txt(archivo):
         return [line.strip() for line in file]
 
 def generar_nombres():
-    nombre = cargar_txt('Data_Base/personas_y_coches/nombre.txt')
+    nombre = cargar_txt('./nombre.txt')
     return random.choice(nombre)
 
 def generar_primer_apellido():
-    primer_apellido = cargar_txt('Data_Base/personas_y_coches/apellido.txt')
+    primer_apellido = cargar_txt('./apellido.txt')
     return random.choice(primer_apellido)
 
 def generar_segundo_apellido():
-    segundo_apellido = cargar_txt('Data_Base/personas_y_coches/apellido.txt')
+    segundo_apellido = cargar_txt('./apellido.txt')
     return random.choice(segundo_apellido)
 
 def generar_dni():

@@ -85,7 +85,7 @@ def generar_informacion_ruta(ruta):
         'velocidad':velocidad
     }
 
-carpeta_kml = "rutas/ruta_prueba_coche" 
+carpeta_kml = "./rutas/ruta_prueba_coche" 
 todas_las_rutas = leer_todas_las_rutas_en_carpeta(carpeta_kml)
 
 una_ruta = random.choice(todas_las_rutas)
