@@ -4,7 +4,8 @@ import json
 import logging
 
 '''
-Para llamar a este codiog de python hay que llamarlo desde el terminal así : python --project_id ...
+Para llamar a este codiog de python hay que llamarlo desde el terminal así :  python .\pub_generador_ruta_hardcode.py --project_id genuine-essence-411713 --person_topic_name ruta_persona --car_topic_name ruta_coche
+
 '''
 
 parser = argparse.ArgumentParser(description=("Generador de Rutas y publicadas en pub/sub"))
@@ -67,7 +68,7 @@ def gen_ruta_persona():
 
     ruta_persona = {
         'ID_persona': 1001,
-        'Nombre': "Pedro",
+        'Nombre': "pablo",
         'Cartera': 10.00,
         'hora_salida': "17:25",
         'ruta_perosna': '''[
@@ -138,7 +139,7 @@ def gen_ruta_coche():
 
     ruta_coche = {
         'ID_coche':2024,
-        'Marca':"Nieto",
+        'Marca':"andres",
         'Matricula':"0000AAA",
         'Plazas':2,
         'Precio': 1.55,

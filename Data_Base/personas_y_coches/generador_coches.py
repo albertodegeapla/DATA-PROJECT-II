@@ -8,7 +8,7 @@ def cargar_txt(archivo):
         return [line.strip() for line in file]
 
 def generar_marca():
-    marca = cargar_txt('Data_Base/personas_y_coches/marcas_coche.txt')
+    marca = cargar_txt('./marcas_coche.txt')
     return random.choice(marca)
 
 def generar_matricula():
