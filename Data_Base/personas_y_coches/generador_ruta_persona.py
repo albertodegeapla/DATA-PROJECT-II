@@ -32,6 +32,9 @@ def leer_todas_las_rutas_en_carpeta(carpeta_kml):
 
     return todas_las_rutas
 
+def generar_velocidad():
+    return random.uniform(3, 8)
+
 def generar_ruta_salida(coordenadas_ruta):
     porcentaje_ruta_salida = 0.1  
     cantidad_puntos_salida = int(len(coordenadas_ruta) * porcentaje_ruta_salida)
@@ -48,7 +51,11 @@ def generar_informacion_ruta(ruta):
     longitud_total = len(ruta)
     hora_salida = datetime(2024, 1, 1, random.randint(6, 9), random.randint(0, 59))
 
-    
+    velocidad = generar_velocidad()
+    duracion_total_minutos = int((longitud_total / velocidad) * 60)
+
+#REVISAR ESTA LÓGICA NO ME CUADRAN MUCHOS LAS HORAS
+    hora_llegada = hora_salida + timedelta(minutes=duracion_total_minutos)
     duracion_total_minutos = random.randint(30, 120)
 
     
@@ -70,7 +77,8 @@ def generar_informacion_ruta(ruta):
         'hora_llegada': hora_llegada,
         'fecha': fecha,
         'punto_salida': punto_salida,
-        'punto_llegada': punto_llegada
+        'punto_llegada': punto_llegada,
+        'velocidad': velocidad
     }
 
 carpeta_kml = "rutas/ruta_prueba_peaton" 
@@ -80,3 +88,6 @@ todas_las_rutas = leer_todas_las_rutas_en_carpeta(carpeta_kml)
 una_ruta = random.choice(todas_las_rutas)
 
 informacion_ruta = generar_informacion_ruta(una_ruta)
+
+print(una_ruta)
+print(informacion_ruta)
