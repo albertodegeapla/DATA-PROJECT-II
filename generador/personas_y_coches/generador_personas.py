@@ -51,6 +51,9 @@ def generar_persona():
 
     return persona
 
+
+
+
 #SOLO DEVOLVERÁ UNA PERSONA PARA ESTE VIERNES
 for _ in range(1):
     persona_generada = generar_persona()
