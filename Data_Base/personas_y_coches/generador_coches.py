@@ -12,7 +12,7 @@ def cargar_txt(archivo):
         return [line.strip() for line in file]
 
 def generar_marca():
-    marca = cargar_txt('Data_Base/personas_y_coches/marcas_coche.txt')
+    marca = cargar_txt('./marcas_coche.txt')
     return random.choice(marca)
 
 def generar_matricula():
@@ -66,47 +66,66 @@ def generar_coche():
 
     return coche
 
+def convertir_a_json(id_coche, coordenadas):
+    # Construye un diccionario con la información
+    datos_coche = {
+        "id_coche": id_coche,
+        "coordenadas": coordenadas,
+    }
+    return datos_coche
 
 #SOLO DEVOLVERÁ UN COCHE PARA ESTE VIERNES
 for _ in range(1):
     coche_generado = generar_coche()
     print(coche_generado)
 
-def generar_fecha_hora():
-    fecha = datetime.now() + timedelta(days=random.randint(1, 30))
+
+#### BORRAR SI NO ES NECESARIO
+def generar_fecha_hora_random():
+    fecha = datetime.now()
     hora = datetime(fecha.year, fecha.month, fecha.day, random.randint(6, 9), random.randint(0, 59), random.randint(0, 59))
     hora_str = hora.strftime("%d/%m/%Y %H:%M:%S")  # Corrección en el formato
     return hora_str
 
+def generar_fecha_hora():
+    fecha_hora = datetime.now()
+    fecha_hora_str = fecha_hora.strftime("%d/%m/%Y %H:%M:%S")
+    return fecha_hora_str
+
+
+# introducir el id de coche que toque por parametro
 def simular_movimiento(coordenadas):
     hora_str = generar_fecha_hora()
-    for i in range(len(coordenadas) - 1):
+    for i in range(len(coordenadas)-1):
         coord_actual = coordenadas[i]
         coord_siguiente = coordenadas[i + 1]
 
         velocidad = 2
-        tiempo_inicio = time.time()
-
-        # Generar la fecha y hora aleatorias en cada iteración
-        
+        tiempo_inicio = time.time()        
 
         while time.time() - tiempo_inicio < velocidad:
             hora_actual = datetime.strptime(hora_str, "%d/%m/%Y %H:%M:%S") + timedelta(seconds=i * 2)
-            print(f'Enviando coordenada: {coord_siguiente}, Hora actual: {hora_actual.strftime("%Y-%m-%d %H:%M:%S")}')
+            punto_mapa = (hora_actual.strftime("%Y-%m-%d %H:%M:%S"), coord_siguiente)
+            json_coche = convertir_a_json('1', punto_mapa)
+            print(json_coche)
             time.sleep(2)
+      
 
-    ultima_coordenada = coordenadas[-1]
-    hora_llegada = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    print(f"Coordenada final: {ultima_coordenada}, Hora de llegada: {hora_llegada}")
-
-def leer_coordenadas_desde_kml(ruta_archivo_kml):
+def leer_coordenadas_desde_kml(file_path):
     coordenadas_ruta = []
-    tree = ET.parse(ruta_archivo_kml)
+    tree = ET.parse(file_path)
     root = tree.getroot()
+
     for coordinates_element in root.findall(".//{http://www.opengis.net/kml/2.2}coordinates"):
         coordinates_text = coordinates_element.text.strip()
-        for coord in coordinates_text.split():             
-            coordenadas_ruta.append(tuple(map(float, coord.split(','))))     
+        i = 0
+        for coord in coordinates_text.split():
+            cords = (tuple(map(float, coord.split(','))))
+            cordenada1 = cords[1]
+            cordenada2 = cords[0]
+            coordenada = (cordenada1, cordenada2)            
+            coordenadas_ruta.append(coordenada)
+
     return coordenadas_ruta
              
 def leer_todas_las_rutas_en_carpeta(carpeta_kml):
@@ -123,10 +142,11 @@ def leer_todas_las_rutas_en_carpeta(carpeta_kml):
 
 
 # Supongamos que 'ruta_kml' es la ruta completa al archivo KML que contiene tus coordenadas
-ruta_kml = 'Data_Base/rutas/ruta_prueba_coche'
+file_path = './rutas/ruta_prueba_coche/ruta_prueba.kml'
 
 # Llama a la función para obtener las coordenadas desde el archivo KML
-coordenadas_ruta = leer_coordenadas_desde_kml(ruta_kml)
+coordenadas_ruta = leer_coordenadas_desde_kml(file_path)
+
 
 # Simular movimiento entre coordenadas
 simular_movimiento(coordenadas_ruta)
