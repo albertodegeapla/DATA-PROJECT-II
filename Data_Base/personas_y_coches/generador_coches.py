@@ -12,13 +12,15 @@ def cargar_txt(archivo):
         return [line.strip() for line in file]
 
 def generar_marca():
-    marca = cargar_txt('./marcas_coche.txt')
+    marca = cargar_txt('Data_Base/personas_y_coches/marcas_coche.txt')
     return random.choice(marca)
 
 def generar_matricula():
     numeros = random.randint(0000, 9999)
-    letra = random.choice('ABCDEFGHIJKLMNOPQRSTUVWXYZ')
-    return f"{numeros}-{letra}"
+    letra1 = random.choice('ABCDEFGHIJKLM')
+    letra2 = random.choice('ABCDEFGHIJKLMNOPQRSTUVWXYZ')
+    letra3 = random.choice('ABCDEFGHIJKLMNOPQRSTUVWXYZ')
+    return f"{numeros}-{letra1+letra2+letra3}"
 
 def generar_edad_coche():
     return random.randint(0, 25)
@@ -121,7 +123,7 @@ def leer_todas_las_rutas_en_carpeta(carpeta_kml):
 
 
 # Supongamos que 'ruta_kml' es la ruta completa al archivo KML que contiene tus coordenadas
-ruta_kml = './ruta1.kml'
+ruta_kml = 'Data_Base/rutas/ruta_prueba_coche'
 
 # Llama a la función para obtener las coordenadas desde el archivo KML
 coordenadas_ruta = leer_coordenadas_desde_kml(ruta_kml)
