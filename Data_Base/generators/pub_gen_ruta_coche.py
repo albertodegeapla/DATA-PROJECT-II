@@ -123,6 +123,7 @@ def run(project_id, topic_car):
         logging.error("Error while inserting data into ruta_coche Topic: %s", e)
     finally:
         car_publisher.__exit__()
+        
 if __name__ == "__main__":
     logging.getLogger().setLevel(logging.INFO)
     run(args.project_id, args.car_topic_name)
