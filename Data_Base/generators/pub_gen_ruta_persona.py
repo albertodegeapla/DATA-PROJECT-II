@@ -43,7 +43,7 @@ def gen_ruta_persona():
 
     ruta_persona = {
         'ID_persona': 1,
-        'Nombre': "pep",
+        'Nombre': "Lucia",
         'Cartera': 10.00,
         'hora_salida': "17:25",
         'ruta_perosna': """[
