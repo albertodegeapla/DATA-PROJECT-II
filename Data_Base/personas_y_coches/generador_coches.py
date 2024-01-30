@@ -4,6 +4,53 @@ import xml. etree.ElementTree as ET
 import os
 import time
 
+### librerias para el publisher
+from google.cloud import pubsub_v1
+import argparse
+import json
+import logging
+
+# Flags para llamar al arcvhivo desde el terminal
+# Para llamar a este codiog de python hay que llamarlo desde el terminal así : 
+# python .\generador_coches.py --project_id <TU_PROYECT_ID> --car_topic_name <NOMBRE_DEL_TOPIC_COCHE>
+# RECOMENDACIÓN, llamad todos al topic con el mismo nombre ejemplo: (ruta_coche).
+
+parser = argparse.ArgumentParser(description=("Generador de Rutas de coche y publicadas en pub/sub"))
+parser.add_argument(
+    "--project_id",
+    required=True,
+    help="Project ID de GCloud"
+)
+parser.add_argument(
+    "--car_topic_name",
+    required=True,
+    help="Topic de GCloud del coche"
+)
+
+args, opts = parser.parse_known_args()
+
+
+# Clase para publicar en el topic
+class PubSubCarMessage:
+
+    def __init__(self, project_id, topic_car):
+        self.publisher = pubsub_v1.PublisherClient()
+        self.project_id = project_id
+        self.topic_name = topic_car
+
+    def publishCarMessage(self, message):
+        json_str = json.dumps(message)
+        topic_path = self.publisher.topic_path(self.project_id, self.topic_name)
+        publish_future = self.publisher.publish(topic_path, json_str.encode("utf-8"))
+        publish_future.result()
+        logging.info(f"El coche {message['id_coche']}, va a esta hora y en estas coordenadas: {message['coordenadas']}")
+
+    def __exit__(self):
+        self.publisher.transport.close()
+        logging.info("Cerrando car Publisher") 
+
+
+# Funciones
 def generar_id_coche():
     return random.randint(10000, 99999)
 
@@ -75,10 +122,10 @@ def convertir_a_json(id_coche, coordenadas):
     return datos_coche
 
 #SOLO DEVOLVERÁ UN COCHE PARA ESTE VIERNES
-for _ in range(1):
+'''for _ in range(1):
     coche_generado = generar_coche()
     print(coche_generado)
-
+'''
 
 #### BORRAR SI NO ES NECESARIO
 def generar_fecha_hora_random():
@@ -94,7 +141,7 @@ def generar_fecha_hora():
 
 
 # introducir el id de coche que toque por parametro
-def simular_movimiento(coordenadas):
+def simular_movimiento(coordenadas, id_coche, project_id, topic_car):
     hora_str = generar_fecha_hora()
     for i in range(len(coordenadas)-1):
         coord_actual = coordenadas[i]
@@ -106,8 +153,17 @@ def simular_movimiento(coordenadas):
         while time.time() - tiempo_inicio < velocidad:
             hora_actual = datetime.strptime(hora_str, "%d/%m/%Y %H:%M:%S") + timedelta(seconds=i * 2)
             punto_mapa = (hora_actual.strftime("%Y-%m-%d %H:%M:%S"), coord_siguiente)
-            json_coche = convertir_a_json('1', punto_mapa)
-            print(json_coche)
+            
+            try:
+                car_publisher = PubSubCarMessage(project_id, topic_car)
+                message: dict = convertir_a_json(id_coche, punto_mapa)
+                #print(message)
+                car_publisher.publishCarMessage(message)
+            except Exception as e:
+                logging.error("Error while inserting data into ruta_coche Topic: %s", e)
+            finally:
+                car_publisher.__exit__()
+            
             time.sleep(2)
       
 
@@ -141,12 +197,21 @@ def leer_todas_las_rutas_en_carpeta(carpeta_kml):
     return todas_las_rutas
 
 
-# Supongamos que 'ruta_kml' es la ruta completa al archivo KML que contiene tus coordenadas
-file_path = './rutas/ruta_prueba_coche/ruta_prueba.kml'
 
-# Llama a la función para obtener las coordenadas desde el archivo KML
-coordenadas_ruta = leer_coordenadas_desde_kml(file_path)
+if __name__ == "__main__":
 
+    #lector de rutas (hay que hacer una funcion para que elija al azar)
+    file_path = './rutas/ruta_prueba_coche/ruta1.kml'
+    coordenadas_ruta = leer_coordenadas_desde_kml(file_path)
 
-# Simular movimiento entre coordenadas
-simular_movimiento(coordenadas_ruta)
+    # print de lo que publicamos en el topic
+    logging.getLogger().setLevel(logging.INFO)
+
+    # Se hardcodea el id del coche, mas tarde se tendrá que generar solo
+    id_coche = '1001'
+    
+    project_id = args.project_id
+    topic_car = args.car_topic_name
+    simular_movimiento(coordenadas_ruta, id_coche, project_id, topic_car)
+    # run(args.project_id, args.car_topic_name)
+
