@@ -5,6 +5,7 @@ import apache_beam.runners.interactive.interactive_beam as ib
 import json
 
 from apache_beam.options.pipeline_options import PipelineOptions
+from apache_beam.transforms import window
 
 
 #### IMPORTANTE
@@ -45,10 +46,36 @@ def run_local():
                         | "groupByKey" >> beam.CoGroupByKey()
                         | "print" >> beam.Map(print))
         
+'''
+class PlazaState(beam.DoFn):
+    def process(self, element, state=beam.DoFn.StateParam(beam.DoFn.StateSpec("plazas", beam.BagCombineFn(sum)))):
+        coche = element['coche']
+        coche_id = coche['ID_coche']
+
+        # Recupera el estado actual de las plazas para el coche
+        current_plazas = list(state.read()[coche_id]) if state.contains_key(coche_id) else 0
+
+        # Resta una plaza al coche
+        coche['Plazas'] -= 1
+        current_plazas = coche['Plazas']
+
+        # Actualiza el estado de las plazas
+        state.write({coche_id: current_plazas})
+
+        yield coche
 
 
+def change_plazas():
+    options = PipelineOptions(streaming=True)
+    with beam.Pipeline(options=options) as p:
+        (p  | "ReadFromPubSubCoche" >> beam.io.ReadFromPubSub(subscription='projects/genuine-essence-411713/subscriptions/ruta_coche-sub')
+            | "DecodeMessageCoche" >> beam.Map(decode_message)
+            | "windowInto1sec" >> beam.WindowInto(window.FixedWindows(1)) 
+            | "plazaState" >> beam.ParDo(PlazaState())
+           
+        )
 
-
+'''
 '''                     | "WriteToBigQuery" >> beam.io.WriteToBigQuery(
                             table='genuine-essence-411713:blablacar2.ruta_coche',
                             schema='{"ID_coche":"STRING", "Marca":"STRING", "Matricula":"STRING", "Plazas":"INTEGER","Precio":"FLOAT","hora_salida":"STRING", "ruta_coche":"STRING"}',
