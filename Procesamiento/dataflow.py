@@ -7,6 +7,11 @@ import json
 from apache_beam.options.pipeline_options import PipelineOptions
 from apache_beam.transforms import window
 
+from google.cloud import pubsub_v1
+import argparse
+import json
+import logging
+
 
 #### IMPORTANTE
 # Este escript escucha un topic de GCloud y lo publica en BigQuery
@@ -46,24 +51,36 @@ def run_local():
                         | "groupByKey" >> beam.CoGroupByKey()
                         | "print" >> beam.Map(print))
         
-'''
-class PlazaState(beam.DoFn):
-    def process(self, element, state=beam.DoFn.StateParam(beam.DoFn.StateSpec("plazas", beam.BagCombineFn(sum)))):
-        coche = element['coche']
-        coche_id = coche['ID_coche']
 
-        # Recupera el estado actual de las plazas para el coche
-        current_plazas = list(state.read()[coche_id]) if state.contains_key(coche_id) else 0
 
-        # Resta una plaza al coche
-        coche['Plazas'] -= 1
-        current_plazas = coche['Plazas']
 
-        # Actualiza el estado de las plazas
-        state.write({coche_id: current_plazas})
 
-        yield coche
+class PubSubCarState:
 
+    def __init__(self, project_id, topic_car):
+        self.publisher = pubsub_v1.PublisherClient()
+        self.project_id = project_id
+        self.topic_name = topic_car
+
+    def publishCarMessage(self, message):
+        json_str = json.dumps(message)
+        topic_path = self.publisher.topic_path(self.project_id, self.topic_name)
+        publish_future = self.publisher.publish(topic_path, json_str.encode("utf-8"))
+        publish_future.result()
+        logging.info(f"El coche {message['id_coche']}, tiene {message['plazas']} plazas")
+
+    def __exit__(self):
+        self.publisher.transport.close()
+        logging.info("Cerrando car Publisher") 
+
+def reduce_plazas(coche):
+    if 'plazas' in coche and coche['plazas'] > 0:
+        coche['plazas'] -= 1
+    return coche
+
+def publish_to_pubsub(coche):
+    PubSubCarState('genuine-essence-411713', 'estado_coche').publishCarMessage(coche)
+    return coche
 
 def change_plazas():
     options = PipelineOptions(streaming=True)
@@ -71,11 +88,14 @@ def change_plazas():
         (p  | "ReadFromPubSubCoche" >> beam.io.ReadFromPubSub(subscription='projects/genuine-essence-411713/subscriptions/ruta_coche-sub')
             | "DecodeMessageCoche" >> beam.Map(decode_message)
             | "windowInto1sec" >> beam.WindowInto(window.FixedWindows(1)) 
-            | "plazaState" >> beam.ParDo(PlazaState())
-           
+            | "reducePlazas" >> beam.Map(reduce_plazas)
+            | "PublishToPubSub" >> beam.Map(publish_to_pubsub)
+            | "print" >> beam.Map(print)    
         )
+        ''' | "WriteToPubSub" >> beam.io.WriteToPubSub(
+                topic='projects/genuine-essence-411713/topics/estado_coche')'''
 
-'''
+
 '''                     | "WriteToBigQuery" >> beam.io.WriteToBigQuery(
                             table='genuine-essence-411713:blablacar2.ruta_coche',
                             schema='{"ID_coche":"STRING", "Marca":"STRING", "Matricula":"STRING", "Plazas":"INTEGER","Precio":"FLOAT","hora_salida":"STRING", "ruta_coche":"STRING"}',
@@ -120,4 +140,5 @@ if __name__ == '__main__':
 
     logging.info("The process started")
     
-    run_local()
+    #run_local()
+    change_plazas()

@@ -12,6 +12,8 @@ import logging
 
 ### librerias para el bigQuery
 from apache_beam.options.pipeline_options import PipelineOptions
+from apache_beam.runners.interactive.interactive_runner import InteractiveRunner
+import apache_beam.runners.interactive.interactive_beam as ib
 import apache_beam as beam
 from google.cloud import bigquery
 
@@ -93,7 +95,7 @@ def generar_edad_coche():
     return random.randint(0, 25)
 
 def generar_plazas():
-    return random.randint(1, 4)
+    return random.randint(2, 4)
 
 def generar_kilometraje():
     return random.randint(1000, 200000)
@@ -199,9 +201,56 @@ def generar_fecha_hora():
     return fecha_hora_str
 
 
+def decode_message(message):
+   print(message)
+   if message is not None:
+        try:
+            output = message.decode('utf-8')
+            return json.loads(output) 
+        except Exception as e:
+            print(f"Error decoding message: {e}")
+            return None
+        
+def filter_messages_by_id_and_time(element, id_coche, hora):
+    # Suponemos que el mensaje es un diccionario JSON con campos 'id_coche', 'coordenadas' y 'plazas'
+    print("hey4")
+    message_id_coche = element.get('id_coche')
+    message_coordenadas = element.get('coordenadas')
+    print(hora)
+    if message_id_coche == id_coche and message_coordenadas:
+        message_hora = message_coordenadas[0]
+        if message_hora == hora:
+            return [element]
+
+    return []
+
+def extract_first_element(pcollection):
+    return pcollection[0] if pcollection else None
+
+def readFromEstadoCoche(id_coche, hora):
+    options = PipelineOptions(streaming=True)
+    with beam.Pipeline(options=options) as p:
+        result = (p | "ReadFromPubSubCoche" >> beam.io.ReadFromPubSub(subscription='projects/genuine-essence-411713/subscriptions/ruta_coche-sub')
+                    | "print" >> beam.Map(print)
+                    | "DecodeMessageCoche" >> beam.Map(decode_message)
+                    | "FilterMessages" >> beam.ParDo(filter_messages_by_id_and_time, id_coche, hora)
+                    #| "ExtractFirstElement" >> beam.Map(extract_first_element)
+        )
+        
+        # Collect the results into a list
+        results_list = list(result)
+
+        if results_list:
+            print(results_list[0])
+            return results_list[0]
+        else:
+            print("hey2")
+            return None
+
 # introducir el id de coche que toque por parametro
 def publicar_movimiento(coordenadas, project_id, topic_car, id_coche, plazas):
     hora_str = generar_fecha_hora()
+    hora_anterior = None 
 
     longitud_ruta = len(coordenadas)
     #punto_inicial = coordenadas_ruta[0]
@@ -211,23 +260,29 @@ def publicar_movimiento(coordenadas, project_id, topic_car, id_coche, plazas):
         coord_siguiente = coordenadas[i + 1]
 
         velocidad = 2
-        tiempo_inicio = time.time()        
+        tiempo_inicio = time.time()       
 
         while time.time() - tiempo_inicio < velocidad:
             hora_actual = datetime.strptime(hora_str, "%d/%m/%Y %H:%M:%S") + timedelta(seconds=i * 2)
             punto_mapa = (hora_actual.strftime("%Y-%m-%d %H:%M:%S"), coord_siguiente)
             
             try:
+                if hora_anterior != None:
+                    plazas = readFromEstadoCoche(id_coche, hora_anterior)
+                else:
+                    plazas = plazas
+                hora_anterior = hora_actual
                 car_publisher = PubSubCarMessage(project_id, topic_car)
                 message: dict = convertir_a_json(id_coche, punto_mapa, punto_destino, plazas)
                 #print(message)
                 car_publisher.publishCarMessage(message)
+                
             except Exception as e:
                 logging.error("Error while inserting data into ruta_coche Topic: %s", e)
             finally:
                 car_publisher.__exit__()
             
-            time.sleep(2)
+            time.sleep(10)
       
 
 def leer_coordenadas_desde_kml(file_path):
@@ -287,6 +342,7 @@ if __name__ == "__main__":
         logging.getLogger().setLevel(logging.INFO)
 
         #leemos de big query el coche con sus datos
+        # ESTO NO SERIA NECESARIO 
         coche = read_car_from_bigquery(project_id, dataset_id, tabla_id, coche_elegido)
         plazas = coche.get('Plazas')
         project_id = args.project_id
