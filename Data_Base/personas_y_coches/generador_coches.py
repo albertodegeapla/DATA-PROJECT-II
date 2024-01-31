@@ -10,6 +10,10 @@ import argparse
 import json
 import logging
 
+### librerias para el bigQuery
+from apache_beam.options.pipeline_options import PipelineOptions
+import apache_beam as beam
+
 # Flags para llamar al arcvhivo desde el terminal
 # Para llamar a este codiog de python hay que llamarlo desde el terminal así : 
 # python .\generador_coches.py --project_id <TU_PROYECT_ID> --car_topic_name <NOMBRE_DEL_TOPIC_COCHE>
@@ -25,6 +29,21 @@ parser.add_argument(
     "--car_topic_name",
     required=True,
     help="Topic de GCloud del coche"
+)
+parser.add_argument(
+    "--dataset_id",
+    required=True,
+    help="Dataset de GCloud"
+)
+parser.add_argument(
+    "--table_car",
+    required=True,
+    help="Table de coches GCloud"
+)
+parser.add_argument(
+    "--n_coches",
+    required=True,
+    help="Numero de coches a generar"
 )
 
 args, opts = parser.parse_known_args()
@@ -51,8 +70,8 @@ class PubSubCarMessage:
 
 
 # Funciones
-def generar_id_coche():
-    return random.randint(10000, 99999)
+def generar_id_coche(id):
+    return id
 
 def cargar_txt(archivo):
     with open(archivo, 'r', encoding='utf-8') as file:
@@ -67,7 +86,7 @@ def generar_matricula():
     letra1 = random.choice('ABCDEFGHIJKLM')
     letra2 = random.choice('ABCDEFGHIJKLMNOPQRSTUVWXYZ')
     letra3 = random.choice('ABCDEFGHIJKLMNOPQRSTUVWXYZ')
-    return f"{numeros}-{letra1+letra2+letra3}"
+    return f"{numeros}{letra1+letra2+letra3}"
 
 def generar_edad_coche():
     return random.randint(0, 25)
@@ -88,30 +107,55 @@ def generar_cobro_km(kilometraje, precio_compra):
 
     return max(precio_final, 0)
 
-kilometraje = generar_kilometraje()
-precio_compra = generar_precio_compra()
+'''kilometraje = generar_kilometraje()
+precio_compra = generar_precio_compra()'''
 
-
-def generar_coche():
-    id_coche = generar_id_coche()
+def generar_coche(id):
+    id_coche = generar_id_coche(id)
     marca = generar_marca()
     matricula = generar_matricula()
     edad_coche = generar_edad_coche()
     plazas = generar_plazas()
     kilometraje = generar_kilometraje()
     precio_compra = generar_precio_compra()
+    precio_x_punto = generar_cobro_km(kilometraje,precio_compra)
     
 
     coche = {
         'ID_coche':id_coche,
         'Marca':marca,
-        'Matrícula':matricula,
-        'Edad coche':edad_coche,
-        'Kilometraje':kilometraje,
-        'Precio de compra':precio_compra,
+        'Matricula':matricula,
+        'Edad_coche':edad_coche,
+        'Plazas':plazas,
+        'Precio_punto':precio_x_punto,
+        'Cartera': 0.0
     }
 
     return coche
+
+# crea los coches que se van a publicar
+def static_car_generator(n_coches):
+    coches = [generar_coche(i + 1) for i in range(n_coches)]
+    return coches
+
+#def decode_message(message):
+
+# Escribe en bigQuerry los coches que se van a usar  
+def write_car_to_bigquery(project_id, dataset_id, table_id, n_coches):
+    options = PipelineOptions(streaming=True)
+    with beam.Pipeline(options=options) as p:
+        coches = [generar_coche(i+1) for i in range(n_coches)]
+
+        # Crear un PCollection con los coches
+        coches_pcollection = p | beam.Create(coches)
+ 
+        coches_pcollection | "WriteToBigQuery" >> beam.io.WriteToBigQuery(
+                table=f'{project_id}:{dataset_id}.{table_id}',
+                schema = '{"ID_coche":"INTEGER", "Marca":"STRING", "Matricula":"STRING", "Edad_coche":"INTEGER", "Plazas":"INTEGER","Precio_punto":"FLOAT", "Cartera":"FLOAT"}',
+                create_disposition=beam.io.BigQueryDisposition.CREATE_NEVER,
+                write_disposition=beam.io.BigQueryDisposition.WRITE_APPEND
+            )
+          
 
 def convertir_a_json(id_coche, coordenadas):
     # Construye un diccionario con la información
@@ -141,7 +185,7 @@ def generar_fecha_hora():
 
 
 # introducir el id de coche que toque por parametro
-def simular_movimiento(coordenadas, id_coche, project_id, topic_car):
+def publicar_movimiento(coordenadas, id_coche, project_id, topic_car):
     hora_str = generar_fecha_hora()
     for i in range(len(coordenadas)-1):
         coord_actual = coordenadas[i]
@@ -200,6 +244,15 @@ def leer_todas_las_rutas_en_carpeta(carpeta_kml):
 
 if __name__ == "__main__":
 
+    project_id = args.project_id
+    topic_car = args.car_topic_name
+    dataset_id = args.dataset_id
+    tabla_id = args.table_car
+    n_coches = int(args.n_coches)
+
+    # publicar en bigquery el num de coches a usar
+    write_car_to_bigquery(project_id, dataset_id, tabla_id, n_coches)
+
     #lector de rutas (hay que hacer una funcion para que elija al azar)
     file_path = './rutas/ruta_prueba_coche/ruta1.kml'
     coordenadas_ruta = leer_coordenadas_desde_kml(file_path)
@@ -212,6 +265,6 @@ if __name__ == "__main__":
     
     project_id = args.project_id
     topic_car = args.car_topic_name
-    simular_movimiento(coordenadas_ruta, id_coche, project_id, topic_car)
+    publicar_movimiento(coordenadas_ruta, id_coche, project_id, topic_car)
     # run(args.project_id, args.car_topic_name)
 
