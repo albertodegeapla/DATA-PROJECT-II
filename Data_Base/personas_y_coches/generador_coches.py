@@ -10,6 +10,11 @@ import argparse
 import json
 import logging
 
+### librerias para el bigQuery
+from apache_beam.options.pipeline_options import PipelineOptions
+import apache_beam as beam
+from google.cloud import bigquery
+
 # Flags para llamar al arcvhivo desde el terminal
 # Para llamar a este codiog de python hay que llamarlo desde el terminal así : 
 # python .\generador_coches.py --project_id <TU_PROYECT_ID> --car_topic_name <NOMBRE_DEL_TOPIC_COCHE>
@@ -25,6 +30,21 @@ parser.add_argument(
     "--car_topic_name",
     required=True,
     help="Topic de GCloud del coche"
+)
+parser.add_argument(
+    "--dataset_id",
+    required=True,
+    help="Dataset de GCloud"
+)
+parser.add_argument(
+    "--table_car",
+    required=True,
+    help="Table de coches GCloud"
+)
+parser.add_argument(
+    "--n_coches",
+    required=True,
+    help="Numero de coches a generar"
 )
 
 args, opts = parser.parse_known_args()
@@ -43,7 +63,7 @@ class PubSubCarMessage:
         topic_path = self.publisher.topic_path(self.project_id, self.topic_name)
         publish_future = self.publisher.publish(topic_path, json_str.encode("utf-8"))
         publish_future.result()
-        logging.info(f"El coche {message['id_coche']}, va a esta hora y en estas coordenadas: {message['coordenadas']}")
+        logging.info(f"El coche {message['id_coche']}, va a esta hora y en estas coordenadas: {message['coordenadas']}, a {message['punto_destino']} con {message['plazas']} plazas")
 
     def __exit__(self):
         self.publisher.transport.close()
@@ -51,8 +71,8 @@ class PubSubCarMessage:
 
 
 # Funciones
-def generar_id_coche():
-    return random.randint(10000, 99999)
+def generar_id_coche(id):
+    return id
 
 def cargar_txt(archivo):
     with open(archivo, 'r', encoding='utf-8') as file:
@@ -67,7 +87,7 @@ def generar_matricula():
     letra1 = random.choice('ABCDEFGHIJKLM')
     letra2 = random.choice('ABCDEFGHIJKLMNOPQRSTUVWXYZ')
     letra3 = random.choice('ABCDEFGHIJKLMNOPQRSTUVWXYZ')
-    return f"{numeros}-{letra1+letra2+letra3}"
+    return f"{numeros}{letra1+letra2+letra3}"
 
 def generar_edad_coche():
     return random.randint(0, 25)
@@ -88,44 +108,83 @@ def generar_cobro_km(kilometraje, precio_compra):
 
     return max(precio_final, 0)
 
-kilometraje = generar_kilometraje()
-precio_compra = generar_precio_compra()
+'''kilometraje = generar_kilometraje()
+precio_compra = generar_precio_compra()'''
 
-
-def generar_coche():
-    id_coche = generar_id_coche()
+def generar_coche(id):
+    id_coche = generar_id_coche(id)
     marca = generar_marca()
     matricula = generar_matricula()
     edad_coche = generar_edad_coche()
     plazas = generar_plazas()
     kilometraje = generar_kilometraje()
     precio_compra = generar_precio_compra()
+    precio_x_punto = generar_cobro_km(kilometraje,precio_compra)
     
 
     coche = {
         'ID_coche':id_coche,
         'Marca':marca,
-        'Matrícula':matricula,
-        'Edad coche':edad_coche,
-        'Kilometraje':kilometraje,
-        'Precio de compra':precio_compra,
+        'Matricula':matricula,
+        'Edad_coche':edad_coche,
+        'Plazas':plazas,
+        'Precio_punto':precio_x_punto,
+        'Cartera': 0.0
     }
 
     return coche
 
-def convertir_a_json(id_coche, coordenadas):
+# crea un array con los id de los coches
+def id_car_generator(n_coches):
+    array_id = [(i + 1) for i in range(n_coches)]
+    return array_id
+
+# Escribe en bigQuerry los coches que se van a usar  
+def write_car_to_bigquery(project_id, dataset_id, table_id, n_coches):
+    options = PipelineOptions(streaming=True)
+    with beam.Pipeline(options=options) as p:
+        #crea los coches a usar
+        coches = [generar_coche(i+1) for i in range(n_coches)]
+
+        # Crear un PCollection con los coches
+        coches_pcollection = p | beam.Create(coches)
+ 
+        coches_pcollection | "WriteToBigQuery" >> beam.io.WriteToBigQuery(
+                table=f'{project_id}:{dataset_id}.{table_id}',
+                schema = '{"ID_coche":"INTEGER", "Marca":"STRING", "Matricula":"STRING", "Edad_coche":"INTEGER", "Plazas":"INTEGER","Precio_punto":"FLOAT", "Cartera":"FLOAT"}',
+                create_disposition=beam.io.BigQueryDisposition.CREATE_NEVER,
+                write_disposition=beam.io.BigQueryDisposition.WRITE_APPEND
+            )
+          
+def read_car_from_bigquery(project_id, dataset_id, table_id, car_id):
+    client = bigquery.Client(project=project_id)
+
+    # Construye la consulta SQL para obtener el coche por ID
+    query = f"""
+        SELECT *
+        FROM `{project_id}.{dataset_id}.{table_id}`
+        WHERE ID_coche = {car_id}
+    """
+    query_job = client.query(query)
+
+    # Devuelve el resultado como un iterows
+    results = query_job.result()
+
+    for row in results:
+        coche = dict(row.items())   # Convierte el row en un diccionario
+        return coche
+
+    return None
+
+def convertir_a_json(id_coche, coordenadas, punto_destino, plazas):
     # Construye un diccionario con la información
     datos_coche = {
         "id_coche": id_coche,
         "coordenadas": coordenadas,
+        "punto_destino": punto_destino,
+        "plazas": plazas
     }
     return datos_coche
-
-#SOLO DEVOLVERÁ UN COCHE PARA ESTE VIERNES
-'''for _ in range(1):
-    coche_generado = generar_coche()
-    print(coche_generado)
-'''
 
 #### BORRAR SI NO ES NECESARIO
 def generar_fecha_hora_random():
@@ -141,8 +200,12 @@ def generar_fecha_hora():
 
 
 # introducir el id de coche que toque por parametro
-def simular_movimiento(coordenadas, id_coche, project_id, topic_car):
+def publicar_movimiento(coordenadas, project_id, topic_car, id_coche, plazas):
     hora_str = generar_fecha_hora()
+
+    longitud_ruta = len(coordenadas)
+    #punto_inicial = coordenadas_ruta[0]
+    punto_destino = coordenadas[longitud_ruta-1]
     for i in range(len(coordenadas)-1):
         coord_actual = coordenadas[i]
         coord_siguiente = coordenadas[i + 1]
@@ -156,7 +219,7 @@ def simular_movimiento(coordenadas, id_coche, project_id, topic_car):
             
             try:
                 car_publisher = PubSubCarMessage(project_id, topic_car)
-                message: dict = convertir_a_json(id_coche, punto_mapa)
+                message: dict = convertir_a_json(id_coche, punto_mapa, punto_destino, plazas)
                 #print(message)
                 car_publisher.publishCarMessage(message)
             except Exception as e:
@@ -197,21 +260,38 @@ def leer_todas_las_rutas_en_carpeta(carpeta_kml):
     return todas_las_rutas
 
 
-
 if __name__ == "__main__":
 
-    #lector de rutas (hay que hacer una funcion para que elija al azar)
-    file_path = './rutas/ruta_prueba_coche/ruta1.kml'
-    coordenadas_ruta = leer_coordenadas_desde_kml(file_path)
-
-    # print de lo que publicamos en el topic
-    logging.getLogger().setLevel(logging.INFO)
-
-    # Se hardcodea el id del coche, mas tarde se tendrá que generar solo
-    id_coche = '1001'
-    
     project_id = args.project_id
     topic_car = args.car_topic_name
-    simular_movimiento(coordenadas_ruta, id_coche, project_id, topic_car)
-    # run(args.project_id, args.car_topic_name)
+    dataset_id = args.dataset_id
+    tabla_id = args.table_car
+    n_coches = int(args.n_coches)
+
+    # publicar en bigquery el num de coches a usar
+    #write_car_to_bigquery(project_id, dataset_id, tabla_id, n_coches)
+    id_coches = id_car_generator(n_coches)
+     
+    while(True):
+
+        coche_elegido = random.choice(id_coches)
+        #print(coche_elegido)
+        
+
+        #FALTA POR HACER
+        #lector de rutas (hay que hacer una funcion para que elija al azar)
+        file_path = './rutas/ruta_prueba_coche/ruta1.kml'
+        coordenadas_ruta = leer_coordenadas_desde_kml(file_path)
+        
+        # print de lo que publicamos en el topic
+        logging.getLogger().setLevel(logging.INFO)
+
+        #leemos de big query el coche con sus datos
+        coche = read_car_from_bigquery(project_id, dataset_id, tabla_id, coche_elegido)
+        plazas = coche.get('Plazas')
+        project_id = args.project_id
+        topic_car = args.car_topic_name
+
+        publicar_movimiento(coordenadas_ruta, project_id, topic_car, coche_elegido, plazas)
+        # run(args.project_id, args.car_topic_name)
 
