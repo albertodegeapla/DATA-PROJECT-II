@@ -67,7 +67,7 @@ class PubSubCarMessage:
         topic_path = self.publisher.topic_path(self.project_id, self.topic_name)
         publish_future = self.publisher.publish(topic_path, json_str.encode("utf-8"))
         publish_future.result()
-        logging.info(f"El coche {message['id_coche']}, va a esta hora y en estas coordenadas: {message['coordenadas']}, a {message['punto_destino']} con {message['plazas']} plazas")
+        logging.info(f"El coche {message['id_coche']}, va a esta hora y en estas coordenadas: {message['coordenadas']}, a {message['punto_destino']} con {message['plazas']} plazas y cuesta {message['precio']} €")
 
     def __exit__(self):
         self.publisher.transport.close()
@@ -114,6 +114,9 @@ def generar_cobro_km(kilometraje, precio_compra):
 
     return max(precio_final, 0)
 
+def generar_cobro_prov():
+    return random.uniform(0.005, 0.05)
+
 '''kilometraje = generar_kilometraje()
 precio_compra = generar_precio_compra()'''
 
@@ -124,7 +127,8 @@ def generar_coche(id):
     plazas = generar_plazas()
     kilometraje = generar_kilometraje()
     precio_compra = generar_precio_compra()
-    precio_x_punto = generar_cobro_km(kilometraje,precio_compra)
+    #precio_x_punto = generar_cobro_km(kilometraje,precio_compra)
+    precio_x_punto = generar_cobro_prov()
     
 
     coche = {
@@ -155,7 +159,7 @@ def write_car_to_bigquery(project_id, dataset_id, table_id, n_coches):
  
         coches_pcollection | "WriteToBigQuery" >> beam.io.WriteToBigQuery(
                 table=f'{project_id}:{dataset_id}.{table_id}',
-                schema = '{"ID_coche":"INTEGER", "Marca":"STRING", "Matricula":"STRING", "Edad_coche":"INTEGER", "Plazas":"INTEGER","Precio_punto":"FLOAT", "Cartera":"FLOAT"}',
+                schema = '{"ID_coche":"INTEGER", "Marca":"STRING", "Matricula":"STRING", "Plazas":"INTEGER","Precio_punto":"FLOAT", "Cartera":"FLOAT"}',
                 create_disposition=beam.io.BigQueryDisposition.CREATE_NEVER,
                 write_disposition=beam.io.BigQueryDisposition.WRITE_APPEND
             )
@@ -180,13 +184,14 @@ def read_car_from_bigquery(project_id, dataset_id, table_id, car_id):
 
     return None
 
-def convertir_a_json(id_coche, coordenadas, punto_destino, plazas):
+def convertir_a_json(id_coche, coordenadas, punto_destino, plazas, precio):
     # Construye un diccionario con la información
     datos_coche = {
         "id_coche": id_coche,
         "coordenadas": coordenadas,
         "punto_destino": punto_destino,
-        "plazas": plazas
+        "plazas": plazas,
+        "precio": precio
     }
     return datos_coche
 
@@ -203,64 +208,21 @@ def generar_fecha_hora():
     return fecha_hora_str
 
 
-def decode_message(message):
-   if message is not None:
-        try:
-            output = message.decode('utf-8')
-            return json.loads(output) 
-        except Exception as e:
-            print(f"Error decoding message: {e}")
-            return None
-        
-def filter_messages_by_id_and_time(element, id_coche, hora):
-    # Suponemos que el mensaje es un diccionario JSON con campos 'id_coche', 'coordenadas' y 'plazas'
-    message_id_coche = element.get('id_coche')
-    message_coordenadas = element.get('coordenadas')
-    if message_id_coche == id_coche and message_coordenadas:
-        message_hora = message_coordenadas[0]
-        if f'{message_hora}' == f'{hora}':
-            return [element]
-
-    return []
-
-def extract_plazas(element):
-    return element['plazas']
-    
-
-def readFromEstadoCoche(id_coche, hora):
-    options = PipelineOptions(streaming=True)
-    #options.view_as(DirectRunner).direct_running_mode = "multi_processing"
-    with beam.Pipeline(options=options) as p:
-        result = (p | "ReadFromPubSubEstadoCoche" >> beam.io.ReadFromPubSub(subscription='projects/genuine-essence-411713/subscriptions/estado_coche-sub')
-                    | "windowInto1sec" >> beam.WindowInto(window.FixedWindows(1))
-                    | "DecodeMessageCoche" >> beam.Map(decode_message)
-                    | "FilterMessages" >> beam.ParDo(filter_messages_by_id_and_time, id_coche, hora)
-                    | "extractPlazas" >> beam.Map(extract_plazas)
-               
-        )
-        
-        # Collect the results into a list
-        result.wait_until_finish()
-        print(result)
-        return result
-        '''results_list = list(result)
-
-        if results_list:
-            print(results_list[0])
-            return results_list[0]
-        else:
-            print("hey2")
-            return None'''
-
 # introducir el id de coche que toque por parametro
-def publicar_movimiento(coordenadas, project_id, topic_car, id_coche, plazas):
+def publicar_movimiento(coordenadas, project_id, topic_car, dataset_id, table_id, id_coche):
     hora_str = generar_fecha_hora()
-    hora_anterior = None 
 
     longitud_ruta = len(coordenadas)
     #punto_inicial = coordenadas_ruta[0]
     punto_destino = coordenadas[longitud_ruta-1]
     for i in range(len(coordenadas)-1):
+
+        coche = read_car_from_bigquery(project_id, dataset_id, table_id, id_coche)
+        plazas = coche.get('Plazas')
+        precio_x_coord = coche.get('Precio_punto')
+        coord_restantes = longitud_ruta - i - 1
+        precio = round(precio_x_coord * coord_restantes,2)
+
         coord_actual = coordenadas[i]
         coord_siguiente = coordenadas[i + 1]
 
@@ -272,14 +234,8 @@ def publicar_movimiento(coordenadas, project_id, topic_car, id_coche, plazas):
             punto_mapa = (hora_actual.strftime("%Y-%m-%d %H:%M:%S"), coord_siguiente)
             
             try:
-                try:
-                    if hora_anterior != None:
-                        plazas = readFromEstadoCoche(id_coche, hora_anterior)
-                except Exception as e:
-                    logging.error("Error while reading data from estado_coche Topic: %s", e)
-                hora_anterior = hora_actual
                 car_publisher = PubSubCarMessage(project_id, topic_car)
-                message: dict = convertir_a_json(id_coche, punto_mapa, punto_destino, plazas)
+                message: dict = convertir_a_json(id_coche, punto_mapa, punto_destino, plazas, precio)
                 car_publisher.publishCarMessage(message)
                 
             except Exception as e:
@@ -287,7 +243,7 @@ def publicar_movimiento(coordenadas, project_id, topic_car, id_coche, plazas):
             finally:
                 car_publisher.__exit__()
             
-            time.sleep(2)
+            time.sleep(5)
       
 
 def leer_coordenadas_desde_kml(file_path):
@@ -325,19 +281,18 @@ if __name__ == "__main__":
     project_id = args.project_id
     topic_car = args.car_topic_name
     dataset_id = args.dataset_id
-    tabla_id = args.table_car
+    table_id = args.table_car
 
     n_coches = int(args.n_coches)
 
     # publicar en bigquery el num de coches a usar
-    #write_car_to_bigquery(project_id, dataset_id, tabla_id, n_coches)
+    #write_car_to_bigquery(project_id, dataset_id, table_id, n_coches)
     id_coches = id_car_generator(n_coches)
      
     while(True):
 
-        coche_elegido = random.choice(id_coches)
-        #print(coche_elegido)
-        
+        # HAY QUE VALIDAR QUE EL COCHE NO ESTA EN RUTA (LUEGO)
+        coche_elegido = random.choice(id_coches)        
 
         #FALTA POR HACER
         #lector de rutas (hay que hacer una funcion para que elija al azar)
@@ -349,12 +304,13 @@ if __name__ == "__main__":
 
         #leemos de big query el coche con sus datos
         # ESTO NO SERIA NECESARIO 
-        coche = read_car_from_bigquery(project_id, dataset_id, tabla_id, coche_elegido)
+        
+        '''coche = read_car_from_bigquery(project_id, dataset_id, table_id, coche_elegido)
         #print(coche)
-        plazas = coche.get('Plazas')
+        plazas = coche.get('Plazas')'''
         project_id = args.project_id
         topic_car = args.car_topic_name
 
-        publicar_movimiento(coordenadas_ruta, project_id, topic_car, coche_elegido, plazas)
+        publicar_movimiento(coordenadas_ruta, project_id, topic_car, dataset_id, table_id, coche_elegido)
         # run(args.project_id, args.car_topic_name)
 
