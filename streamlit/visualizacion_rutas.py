@@ -1,5 +1,6 @@
 import streamlit as st
 from google.cloud import bigquery
+from google.oauth2 import service_account
 
 # Configuración del proyecto de BigQuery
 project_id = 'deductive-span-411710'
@@ -11,7 +12,7 @@ table_name = 'ruta_coche'  # Reemplaza 'tu-tabla' con el nombre real
 
 # Función para obtener datos de BigQuery en tiempo real
 def get_realtime_data():
-    query = f"SELECT * FROM `{project_id}.{dataset_name}.{table_name}` ORDER BY timestamp_column DESC LIMIT 10"
+    query = f"SELECT * FROM `{project_id}.{dataset_name}.{table_name}` LIMIT 10"
     query_job = client.query(query)
     results = query_job.result()
     return results
@@ -25,6 +26,6 @@ data = get_realtime_data()
 # Mostrar datos en Streamlit
 if data:
     for row in data:
-        st.write(f"ID: {row['ID']}, Latitud: {row['Latitud']}, Longitud: {row['Longitud']}, Hora: {row['Hora']}")
+        st.write(f"Nombre: {row['Nombre']}")
 else:
     st.write("No hay datos disponibles en este momento.")
