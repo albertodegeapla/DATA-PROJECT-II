@@ -6,6 +6,7 @@ import json
 
 from apache_beam.options.pipeline_options import PipelineOptions
 from apache_beam.transforms import window
+from google.cloud import bigquery
 
 from google.cloud import pubsub_v1
 import argparse
@@ -88,13 +89,16 @@ def convertir_a_json(id_coche, coordenadas, punto_destino, plazas):
     }
     return datos_coche
 
-def publish_to_pubsub(coche): 
-    message: dict = convertir_a_json(coche['id_coche'], coche['coordenadas'], coche['punto_destino'], coche['plazas'])
-    print(message)
-    pubsub_car_state = PubSubCarState('genuine-essence-411713', 'estado_coche')
-    pubsub_car_state.publishCarMessage(message)
-    pubsub_car_state.__exit__()
-    return coche
+def update_bigquery(row):
+    client = bigquery.Client()
+
+    row['plazas'] = int(row['plazas'])
+    row['id_coche'] = int(row['id_coche'])
+    #print(type(row['id_coche']))
+   
+    query = f"UPDATE `genuine-essence-411713.blablacar2.coches` SET Plazas = {row['plazas']} WHERE ID_coche = {row['id_coche']}"
+    client.query(query).result()
+
 
 def change_plazas():
     options = PipelineOptions(streaming=True)
@@ -103,7 +107,7 @@ def change_plazas():
             | "DecodeMessageCoche" >> beam.Map(decode_message)
             | "windowInto1sec" >> beam.WindowInto(window.FixedWindows(1)) 
             | "reducePlazas" >> beam.Map(reduce_plazas)
-            | "PublishToPubSub" >> beam.Map(publish_to_pubsub)
+            | "updateToBigQuery" >> beam.Map(update_bigquery)
             #| "print" >> beam.Map(print)    
         )
         ''' | "WriteToPubSub" >> beam.io.WriteToPubSub(
