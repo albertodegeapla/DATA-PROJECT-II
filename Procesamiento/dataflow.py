@@ -5,6 +5,12 @@ import apache_beam.runners.interactive.interactive_beam as ib
 import json
 
 from apache_beam.options.pipeline_options import PipelineOptions
+from apache_beam.transforms import window
+
+from google.cloud import pubsub_v1
+import argparse
+import json
+import logging
 
 
 #### IMPORTANTE
@@ -47,6 +53,61 @@ def run_local():
         
 
 
+
+
+class PubSubCarState:
+
+    def __init__(self, project_id, topic_car):
+        self.publisher = pubsub_v1.PublisherClient()
+        self.project_id = project_id
+        self.topic_name = topic_car
+
+    def publishCarMessage(self, message):
+        json_str = json.dumps(message)
+        topic_path = self.publisher.topic_path(self.project_id, self.topic_name)
+        publish_future = self.publisher.publish(topic_path, json_str.encode("utf-8"))
+        publish_future.result()
+        logging.info(f"El coche {message['id_coche']}, tiene {message['plazas']} plazas")
+
+    def __exit__(self):
+        self.publisher.transport.close()
+        logging.info("Cerrando car Publisher") 
+
+def reduce_plazas(coche):
+    if 'plazas' in coche and coche['plazas'] > 0:
+        coche['plazas'] -= 1
+    return coche
+
+def convertir_a_json(id_coche, coordenadas, punto_destino, plazas):
+    # Construye un diccionario con la información
+    datos_coche = {
+        "id_coche": id_coche,
+        "coordenadas": coordenadas,
+        "punto_destino": punto_destino,
+        "plazas": plazas
+    }
+    return datos_coche
+
+def publish_to_pubsub(coche): 
+    message: dict = convertir_a_json(coche['id_coche'], coche['coordenadas'], coche['punto_destino'], coche['plazas'])
+    print(message)
+    pubsub_car_state = PubSubCarState('genuine-essence-411713', 'estado_coche')
+    pubsub_car_state.publishCarMessage(message)
+    pubsub_car_state.__exit__()
+    return coche
+
+def change_plazas():
+    options = PipelineOptions(streaming=True)
+    with beam.Pipeline(options=options) as p:
+        (p  | "ReadFromPubSubCoche" >> beam.io.ReadFromPubSub(subscription='projects/genuine-essence-411713/subscriptions/ruta_coche-sub')
+            | "DecodeMessageCoche" >> beam.Map(decode_message)
+            | "windowInto1sec" >> beam.WindowInto(window.FixedWindows(1)) 
+            | "reducePlazas" >> beam.Map(reduce_plazas)
+            | "PublishToPubSub" >> beam.Map(publish_to_pubsub)
+            #| "print" >> beam.Map(print)    
+        )
+        ''' | "WriteToPubSub" >> beam.io.WriteToPubSub(
+                topic='projects/genuine-essence-411713/topics/estado_coche')'''
 
 
 '''                     | "WriteToBigQuery" >> beam.io.WriteToBigQuery(
@@ -93,4 +154,5 @@ if __name__ == '__main__':
 
     logging.info("The process started")
     
-    run_local()
+    #run_local()
+    change_plazas()
