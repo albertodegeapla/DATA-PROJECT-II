@@ -78,8 +78,22 @@ def reduce_plazas(coche):
         coche['plazas'] -= 1
     return coche
 
-def publish_to_pubsub(coche):
-    PubSubCarState('genuine-essence-411713', 'estado_coche').publishCarMessage(coche)
+def convertir_a_json(id_coche, coordenadas, punto_destino, plazas):
+    # Construye un diccionario con la información
+    datos_coche = {
+        "id_coche": id_coche,
+        "coordenadas": coordenadas,
+        "punto_destino": punto_destino,
+        "plazas": plazas
+    }
+    return datos_coche
+
+def publish_to_pubsub(coche): 
+    message: dict = convertir_a_json(coche['id_coche'], coche['coordenadas'], coche['punto_destino'], coche['plazas'])
+    print(message)
+    pubsub_car_state = PubSubCarState('genuine-essence-411713', 'estado_coche')
+    pubsub_car_state.publishCarMessage(message)
+    pubsub_car_state.__exit__()
     return coche
 
 def change_plazas():
@@ -90,7 +104,7 @@ def change_plazas():
             | "windowInto1sec" >> beam.WindowInto(window.FixedWindows(1)) 
             | "reducePlazas" >> beam.Map(reduce_plazas)
             | "PublishToPubSub" >> beam.Map(publish_to_pubsub)
-            | "print" >> beam.Map(print)    
+            #| "print" >> beam.Map(print)    
         )
         ''' | "WriteToPubSub" >> beam.io.WriteToPubSub(
                 topic='projects/genuine-essence-411713/topics/estado_coche')'''
