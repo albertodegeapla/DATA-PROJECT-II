@@ -12,7 +12,6 @@ class ProcessData(beam.DoFn):
         datos_coche, datos_pasajero = element
         # El mood, que tendremos en cuenta a la hora de recoger, lo hardcodeamos
         distancia_rangos = {'mood_1': 500, 'mood_2': 750, 'mood_3': 1000}
-        precio = 5
 
         # Calcular la distancia entre el coche y el pasajero, usando la librería Haversine
         distancia = haversine((datos_coche['coordenadas']['latitud'], datos_coche['coordenadas']['longitud']),
@@ -30,7 +29,7 @@ class ProcessData(beam.DoFn):
                 # Check destinos_distancia menor a 500 metros (podemos cambiarlo)
                 if destinos_distancia <= 500:
                     # Check dinero en la wallet
-                    if datos_pasajero['cartera'] >= precio:
+                    if datos_pasajero['cartera'] >= datos_coche['precio']:
                         # Recoger al pasajero
                         datos_coche['plazas'] -= 1
                         picked_up = {'coche': datos_coche, 'pasajero': datos_pasajero}
