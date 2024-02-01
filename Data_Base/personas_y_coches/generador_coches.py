@@ -195,12 +195,6 @@ def convertir_a_json(id_coche, coordenadas, punto_destino, plazas, precio):
     }
     return datos_coche
 
-#### BORRAR SI NO ES NECESARIO
-def generar_fecha_hora_random():
-    fecha = datetime.now()
-    hora = datetime(fecha.year, fecha.month, fecha.day, random.randint(6, 9), random.randint(0, 59), random.randint(0, 59))
-    hora_str = hora.strftime("%d/%m/%Y %H:%M:%S")  # Corrección en el formato
-    return hora_str
 
 def generar_fecha_hora():
     fecha_hora = datetime.now()
