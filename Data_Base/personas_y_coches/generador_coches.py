@@ -97,7 +97,7 @@ def generar_edad_coche():
     return random.randint(0, 25)
 
 def generar_plazas():
-    return random.randint(2, 4)
+    return 4
 
 def generar_kilometraje():
     return random.randint(1000, 200000)
@@ -105,6 +105,8 @@ def generar_kilometraje():
 def generar_precio_compra():
     return random.randint(10000, 80000)
 
+
+#### en base a los km y el precio de compra y edad del coche generar un dato de 0,005 a 0,05 max y un min
 def generar_cobro_km(kilometraje, precio_compra):
     descuento_por_kilometraje = 0.05  # Descuento del 5% por cada 10000km
     descuento = (kilometraje // 10000) * descuento_por_kilometraje
@@ -119,7 +121,6 @@ def generar_coche(id):
     id_coche = generar_id_coche(id)
     marca = generar_marca()
     matricula = generar_matricula()
-    edad_coche = generar_edad_coche()
     plazas = generar_plazas()
     kilometraje = generar_kilometraje()
     precio_compra = generar_precio_compra()
@@ -130,7 +131,6 @@ def generar_coche(id):
         'ID_coche':id_coche,
         'Marca':marca,
         'Matricula':matricula,
-        'Edad_coche':edad_coche,
         'Plazas':plazas,
         'Precio_punto':precio_x_punto,
         'Cartera': 0.0
@@ -218,26 +218,29 @@ def filter_messages_by_id_and_time(element, id_coche, hora):
     message_coordenadas = element.get('coordenadas')
     if message_id_coche == id_coche and message_coordenadas:
         message_hora = message_coordenadas[0]
-        if message_hora == hora:
+        if f'{message_hora}' == f'{hora}':
             return [element]
 
     return []
 
-def extract_first_element(pcollection):
-    return pcollection[0] if pcollection else None
+def extract_plazas(element):
+    return element['plazas']
+    
 
 def readFromEstadoCoche(id_coche, hora):
     options = PipelineOptions(streaming=True)
+    #options.view_as(DirectRunner).direct_running_mode = "multi_processing"
     with beam.Pipeline(options=options) as p:
         result = (p | "ReadFromPubSubEstadoCoche" >> beam.io.ReadFromPubSub(subscription='projects/genuine-essence-411713/subscriptions/estado_coche-sub')
                     | "windowInto1sec" >> beam.WindowInto(window.FixedWindows(1))
                     | "DecodeMessageCoche" >> beam.Map(decode_message)
                     | "FilterMessages" >> beam.ParDo(filter_messages_by_id_and_time, id_coche, hora)
-                    #| "ExtractFirstElement" >> beam.Map(extract_first_element)
+                    | "extractPlazas" >> beam.Map(extract_plazas)
+               
         )
         
         # Collect the results into a list
-        
+        result.wait_until_finish()
         print(result)
         return result
         '''results_list = list(result)
@@ -255,7 +258,6 @@ def publicar_movimiento(coordenadas, project_id, topic_car, id_coche, plazas):
     hora_anterior = None 
 
     longitud_ruta = len(coordenadas)
-    print(longitud_ruta)
     #punto_inicial = coordenadas_ruta[0]
     punto_destino = coordenadas[longitud_ruta-1]
     for i in range(len(coordenadas)-1):
@@ -285,7 +287,7 @@ def publicar_movimiento(coordenadas, project_id, topic_car, id_coche, plazas):
             finally:
                 car_publisher.__exit__()
             
-            time.sleep(10)
+            time.sleep(2)
       
 
 def leer_coordenadas_desde_kml(file_path):
@@ -348,7 +350,7 @@ if __name__ == "__main__":
         #leemos de big query el coche con sus datos
         # ESTO NO SERIA NECESARIO 
         coche = read_car_from_bigquery(project_id, dataset_id, tabla_id, coche_elegido)
-        print(coche)
+        #print(coche)
         plazas = coche.get('Plazas')
         project_id = args.project_id
         topic_car = args.car_topic_name
