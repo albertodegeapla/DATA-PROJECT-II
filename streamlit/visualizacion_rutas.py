@@ -1,11 +1,7 @@
 import streamlit as st
 from google.cloud import bigquery
-<<<<<<< Updated upstream
-from google.oauth2 import service_account
-=======
 from datetime import datetime
 import time
->>>>>>> Stashed changes
 
 # Configuración del proyecto de BigQuery
 project_id = 'deductive-span-411710'
@@ -19,13 +15,8 @@ dataset_name_coche = 'dataset'
 table_name_coche = 'Coche'
 
 # Función para obtener datos de BigQuery en tiempo real
-<<<<<<< Updated upstream
-def get_realtime_data():
-    query = f"SELECT * FROM `{project_id}.{dataset_name}.{table_name}` LIMIT 10"
-=======
 def get_realtime_data(table_name):
     query = f"SELECT * FROM `{project_id}.{dataset_name_peaton}.{table_name}` ORDER BY ID_{table_name} DESC LIMIT 1"
->>>>>>> Stashed changes
     query_job = client.query(query)
     results = query_job.result()
     return results
@@ -38,14 +29,6 @@ while True:
     # Mostrar la hora actual en la parte superior izquierda
     st.text(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
-<<<<<<< Updated upstream
-# Mostrar datos en Streamlit
-if data:
-    for row in data:
-        st.write(f"Nombre: {row['Nombre']}")
-else:
-    st.write("No hay datos disponibles en este momento.")
-=======
     # Obtener datos en tiempo real para la tabla Peaton
     data_peaton = get_realtime_data('Peaton')
 
@@ -75,4 +58,3 @@ else:
 
     # Pausa de 1 segundo
     time.sleep(1)
->>>>>>> Stashed changes
