@@ -18,6 +18,7 @@ from apache_beam.transforms import window
 import apache_beam as beam
 from google.cloud import bigquery
 
+### python3 generador_personas.py --project_id vocal-airline-411714 --peaton_topic_name peaton_topic_name --dataset_id dataset_project_II --table_peaton table_peaton --n_peatones 10
 parser = argparse.ArgumentParser(description=("Generador de Rutas de peatones y publicadas en pub/sub"))
 parser.add_argument(
     "--project_id",
@@ -134,7 +135,7 @@ def write_peaton_to_bigquery(project_id, dataset_id, table_peaton, n_peatones):
  
         peaton_pcollection | "WriteToBigQuery" >> beam.io.WriteToBigQuery(
                 table=f'{project_id}:{dataset_id}.{table_peaton}',
-                schema = '{"ID_persona":"INTEGER", "Nombre":"STRING", "Primer_apellido":"STRING", "Segundo_apellido":"STRING","Edad":"INTEGER", "Cartera":"FLOAT", "CARTERA_INICIAL":"FLOAT", "Mood":"STRING"}',
+                schema = '{"ID_persona":"INTEGER", "Nombre":"STRING", "Primer_apellido":"STRING", "Segundo_apellido":"STRING","Edad":"INTEGER", "Cartera":"FLOAT", "Cartera_inicial":"FLOAT", "Mood":"STRING"}',
                 create_disposition=beam.io.BigQueryDisposition.CREATE_NEVER,
                 write_disposition=beam.io.BigQueryDisposition.WRITE_APPEND
             )
@@ -258,22 +259,15 @@ if __name__ == "__main__":
         # HAY QUE VALIDAR QUE EL peaton NO ESTA EN RUTA (LUEGO)
         peaton_elegido = random.choice(id_peaton)        
 
-        #FALTA POR HACER
-        """carpeta_kml = './ruta_peaton'
-        archivos_kml = [archivo for archivo in os.listdir(carpeta_kml) if archivo.endswith('.kml')]
-        if not archivos_kml:
-            print("No hay archivos KML en la carpeta especificada.")
-        else:
-            archivo_seleccionado = random.choice(archivos_kml)
-            ruta_completa = os.path.join(carpeta_kml, archivo_seleccionado)
+        #LECTOR RUTA PEATÓN
+        ruta_rutas = "./ruta/ruta_peaton"
+        archivos_rutas = os.listdir(ruta_rutas)
+        archivos_rutas = [archivo for archivo in archivos_rutas if archivo.endswith(".kml")]
 
-            with open(ruta_completa, 'r') as archivo:
-                contenido_kml = archivo.read()"""
-        
-        
-        """coordenadas_ruta = leer_coordenadas_desde_kml(carpeta_kml)"""
-        file_path = './rutas/ruta_prueba_coche/ruta1.kml'
-        coordenadas_ruta = leer_coordenadas_desde_kml(file_path)
+        ruta_aleatoria = random.choice(archivos_rutas)
+        ruta_completa = os.path.join(ruta_rutas, ruta_aleatoria)
+
+        coordenadas_ruta = leer_coordenadas_desde_kml(ruta_completa)
         # print de lo que publicamos en el topic
         logging.getLogger().setLevel(logging.INFO)
 
