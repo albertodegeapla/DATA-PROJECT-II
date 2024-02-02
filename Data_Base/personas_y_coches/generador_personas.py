@@ -59,7 +59,7 @@ class PubSubPeatonMessage:
         topic_path = self.publisher.topic_path(self.project_id, self.topic_name)
         publish_future = self.publisher.publish(topic_path, json_str.encode("utf-8"))
         publish_future.result()
-        logging.info(f"El peaton {message['id_persona']}, va a esta hora {message['fecha_hora_str']} y en estas coordenadas: {message['coordenadas']}, a {message['punto_destino']} y tiene en la cartera {message['cartera']}.")
+        logging.info(f"El peaton {message['id_persona']}, va a esta hora y en estas coordenadas: {message['coordenadas']}, a {message['punto_destino']} y tiene en la cartera {message['cartera']}.")
 
     def __exit__(self):
         self.publisher.transport.close()
@@ -140,7 +140,7 @@ def read_peaton_from_bigquery(project_id, dataset_id, table_peaton, peaton_id):
     query = f"""
         SELECT *
         FROM `{project_id}.{dataset_id}.{table_peaton}`
-        WHERE ID_peaton = {peaton_id}
+        WHERE ID_persona = {peaton_id}
     """
     query_job = client.query(query)
 
@@ -157,7 +157,7 @@ def read_peaton_from_bigquery(project_id, dataset_id, table_peaton, peaton_id):
 
 def convertir_a_json(id_persona, coordenadas, punto_destino, cartera):
     datos_peaton = {
-        "id_peaton": id_persona,
+        "id_persona": id_persona,
         "coordenadas": coordenadas,
         "punto_destino": punto_destino,
         "cartera": cartera
@@ -171,15 +171,12 @@ def generar_fecha_hora():
     return fecha_hora_str
 
 
-def publicar_movimiento(coordenadas, project_id, topic_peaton, dataset_id, table_peaton, id_persona):
+def publicar_movimiento(coordenadas, project_id, topic_peaton, id_persona, cartera):
     hora_str = generar_fecha_hora()
 
     longitud_ruta = len(coordenadas)
     punto_destino = coordenadas[longitud_ruta-1]
     for i in range(len(coordenadas)-1):
-
-        peaton = read_peaton_from_bigquery(project_id, dataset_id, table_peaton, id_persona)
-        cartera = peaton.get('Cartera')
 
         coord_actual = coordenadas[i]
         coord_siguiente = coordenadas[i + 1]
@@ -244,9 +241,9 @@ if __name__ == "__main__":
     n_peatones = int(args.n_peatones)
 
     # publicar en bigquery el num de peatones a usar
-    write_peaton_to_bigquery(project_id, dataset_id, table_id, n_peatones)
+    #write_peaton_to_bigquery(project_id, dataset_id, table_id, n_peatones)
     id_peaton = id_peaton_generator(n_peatones)
-#### a partir del while = True
+
     while(True):
 
         # HAY QUE VALIDAR QUE EL peaton NO ESTA EN RUTA (LUEGO)
@@ -266,10 +263,14 @@ if __name__ == "__main__":
         
         
         """coordenadas_ruta = leer_coordenadas_desde_kml(carpeta_kml)"""
+
         file_path = './rutas/ruta_prueba_coche/ruta1.kml'
         coordenadas_ruta = leer_coordenadas_desde_kml(file_path)
         # print de lo que publicamos en el topic
         logging.getLogger().setLevel(logging.INFO)
 
+        peaton = read_peaton_from_bigquery(project_id, dataset_id, table_id, peaton_elegido)
+        cartera = peaton.get('Cartera')
+
         #leemos de big query el peatones con sus datos
-        publicar_movimiento(coordenadas_ruta, project_id, topic_peaton, dataset_id, table_id, peaton_elegido)
+        publicar_movimiento(coordenadas_ruta, project_id, topic_peaton, peaton_elegido, cartera)
