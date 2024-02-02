@@ -24,21 +24,20 @@ parser.add_argument(
     required=True,
     help="Project ID de GCloud"
 )
-##PREGUNTAR
 parser.add_argument(
     "--peaton_topic_name",
     required=True,
     help="Topic de GCloud del peatón"
 )
 parser.add_argument(
-    "--dataset_project_II",
+    "--dataset_id",
     required=True,
     help="Dataset de GCloud"
 )
 parser.add_argument(
-    "--peaton_table",
+    "--table_peaton",
     required=True,
-    help="Table de coches GCloud"
+    help="Table de peatones GCloud"
 )
 parser.add_argument(
     "--n_peatones",
@@ -60,13 +59,13 @@ class PubSubPeatonMessage:
         topic_path = self.publisher.topic_path(self.project_id, self.topic_name)
         publish_future = self.publisher.publish(topic_path, json_str.encode("utf-8"))
         publish_future.result()
-        ###REVISAR ESTE MENSAJE###
-        logging.info(f"El peaton {message['id_persona']}, va a esta hora {message['fecha_hora_str']} y en estas coordenadas: {message['coordenadas']}, a {message['punto_destino']}.")
+        logging.info(f"El peaton {message['id_persona']}, va a esta hora {message['fecha_hora_str']} y en estas coordenadas: {message['coordenadas']}, a {message['punto_destino']} y tiene en la cartera {message['cartera']}.")
 
     def __exit__(self):
         self.publisher.transport.close()
-        logging.info("Cerrando car Publisher") 
+        logging.info("Cerrando peaton Publisher") 
 
+# Funciones
 def generar_id_persona(id):
     return id
 
@@ -86,13 +85,14 @@ def generar_segundo_apellido():
     segundo_apellido = cargar_txt('./apellido.txt')
     return random.choice(segundo_apellido)
 
+###AÑADIR DNI 
 def generar_edad():
     return random.randint(18, 75)
 
 def generar_cartera():
-    return round(random.uniform(2, 1000), 2)
+    return round(random.uniform(2, 100), 2)
 
-def generar_persona():
+def generar_persona(id):
     id_persona = generar_id_persona(id)
     nombre = generar_nombres()
     primer_apellido = generar_primer_apellido()
@@ -111,38 +111,36 @@ def generar_persona():
 
     return peaton
 
+# crea un array con los id de los peatones
 def id_peaton_generator(n_peatones):
     array_id = [(i + 1) for i in range(n_peatones)]
     return array_id
 
-###HASTA AQUÍ OK FALTA COMPROBAR SOLO PARTE FLAGS
-
 # WRITE TO BIG QUERRY
-def write_peaton_to_bigquery(project_id, dataset_project_II, peaton_table, n_peatones):
+def write_peaton_to_bigquery(project_id, dataset_id, table_peaton, n_peatones):
     options = PipelineOptions(streaming=True)
     with beam.Pipeline(options=options) as p:
         #crea los peatones a usar
         peaton = [generar_persona(i+1) for i in range(n_peatones)]
 
-        # Crear un PCollection con los coches
+        # Crear un PCollection con los peatones
         peaton_pcollection = p | beam.Create(peaton)
  
         peaton_pcollection | "WriteToBigQuery" >> beam.io.WriteToBigQuery(
-                table=f'{project_id}:{dataset_project_II}.{peaton_table}',
+                table=f'{project_id}:{dataset_id}.{table_peaton}',
                 schema = '{"ID_persona":"INTEGER", "Nombre":"STRING", "Primer_apellido":"STRING", "Segundo_apellido":"STRING","Edad":"INTEGER", "Cartera":"FLOAT"}',
                 create_disposition=beam.io.BigQueryDisposition.CREATE_NEVER,
                 write_disposition=beam.io.BigQueryDisposition.WRITE_APPEND
             )
 # READ FROM BIG QUERRY
-###REVISAR peaton_id
-def read_peaton_from_bigquery(project_id, dataset_project_II, peaton_table, peaton_id):
+def read_peaton_from_bigquery(project_id, dataset_id, table_peaton, peaton_id):
     client = bigquery.Client(project=project_id)
 
-    # Construye la consulta SQL para obtener el coche por ID
+    # Construye la consulta SQL para obtener el peaton por ID
     query = f"""
         SELECT *
-        FROM `{project_id}.{dataset_project_II}.{peaton_table}`
-        WHERE ID_coche = {peaton_id}
+        FROM `{project_id}.{dataset_id}.{table_peaton}`
+        WHERE ID_peaton = {peaton_id}
     """
     query_job = client.query(query)
 
@@ -157,12 +155,12 @@ def read_peaton_from_bigquery(project_id, dataset_project_II, peaton_table, peat
 
 # CONVERTIR A JSON -> id, coordenadas, punto destino, cartera, mood
 
-def convertir_a_json(id_persona, coordenadas, punto_destino):
-    # Construye un diccionario con la información (((FALTA VER COORDENADAS)))
+def convertir_a_json(id_persona, coordenadas, punto_destino, cartera):
     datos_peaton = {
-        "id_coche": id_persona,
+        "id_peaton": id_persona,
         "coordenadas": coordenadas,
-        "punto_destino": punto_destino
+        "punto_destino": punto_destino,
+        "cartera": cartera
     }
     return datos_peaton
 
@@ -173,17 +171,15 @@ def generar_fecha_hora():
     return fecha_hora_str
 
 
-# DECODE MESSAGE DE COCHES CTRL C (((REVISAR NO VEO DECODE)))
-
-def publicar_movimiento(coordenadas, project_id, dataset_project_II, peaton_table, id_persona):
-    fecha_hora = generar_fecha_hora()
+def publicar_movimiento(coordenadas, project_id, topic_peaton, dataset_id, table_peaton, id_persona):
+    hora_str = generar_fecha_hora()
 
     longitud_ruta = len(coordenadas)
     punto_destino = coordenadas[longitud_ruta-1]
     for i in range(len(coordenadas)-1):
 
-        peaton = read_peaton_from_bigquery(project_id, dataset_project_II, peaton_table, id_persona)
-        coord_restantes = longitud_ruta - i - 1
+        peaton = read_peaton_from_bigquery(project_id, dataset_id, table_peaton, id_persona)
+        cartera = peaton.get('Cartera')
 
         coord_actual = coordenadas[i]
         coord_siguiente = coordenadas[i + 1]
@@ -192,18 +188,16 @@ def publicar_movimiento(coordenadas, project_id, dataset_project_II, peaton_tabl
         tiempo_inicio = time.time()
 
         while time.time() - tiempo_inicio < velocidad:
-            hora_actual = datetime.strptime(fecha_hora, "%d/%m/%Y %H:%M:%S") + timedelta(seconds=i * 2)
-            # AÑADIR PUNTO MAPA
+            hora_actual = datetime.strptime(hora_str, "%d/%m/%Y %H:%M:%S") + timedelta(seconds=i * 2)
             punto_mapa = (hora_actual.strftime("%Y-%m-%d %H:%M:%S"), coord_siguiente)
 
-            # AÑADIR EL PRIMER TRY 274-279 hasta linea 289
             try:
-                peaton_publisher = PubSubPeatonMessage(project_id, dataset_project_II)
-                message: dict = convertir_a_json(id_persona, coordenadas, punto_destino)
-                peaton_publisher.publishCarMessage(message)
+                peaton_publisher = PubSubPeatonMessage(project_id, topic_peaton)
+                message: dict = convertir_a_json(id_persona, punto_mapa, punto_destino, cartera)
+                peaton_publisher.publishPeatonMessage(message)
                 
             except Exception as e:
-                logging.error("Error while inserting data into ruta_coche Topic: %s", e)
+                logging.error("Error while inserting data into ruta_peaton Topic: %s", e)
             finally:
                 peaton_publisher.__exit__()
 
@@ -214,9 +208,9 @@ def leer_coordenadas_desde_kml(ruta_archivo_kml):
     coordenadas_ruta = []
     tree = ET.parse(ruta_archivo_kml)
     root = tree.getroot()
+
     for coordinates_element in root.findall(".//{http://www.opengis.net/kml/2.2}coordinates"):
         coordinates_text = coordinates_element.text.strip()
-        ### MIRAR CODE DE GEN COCHE
         i = 0
         for coord in coordinates_text.split():
             cords = (tuple(map(float, coord.split(','))))
@@ -227,9 +221,7 @@ def leer_coordenadas_desde_kml(ruta_archivo_kml):
 
     return coordenadas_ruta
 
-# AÑADIR FUNCION QUE COJA UNA RUTS RANDOM
 
-# FUNCION RANDOM DEL 1 AL X, TE DEVUELEVE UN NUEMRO Y AL RUTA f(./carpeta_peaton/ruta{numero_random}.kml)           
 def leer_todas_las_rutas_en_carpeta(carpeta_kml):
     todas_las_rutas = []
 
@@ -242,17 +234,17 @@ def leer_todas_las_rutas_en_carpeta(carpeta_kml):
     return todas_las_rutas
 
 
-#### if __name__ == "__main__":
 if __name__ == "__main__":
 
     project_id = args.project_id
     topic_peaton = args.peaton_topic_name
-    dataset_id = args.dataset_project_II
-    table_id = args.peaton_table
+    dataset_id = args.dataset_id
+    table_id = args.table_peaton
 
     n_peatones = int(args.n_peatones)
 
     # publicar en bigquery el num de peatones a usar
+    write_peaton_to_bigquery(project_id, dataset_id, table_id, n_peatones)
     id_peaton = id_peaton_generator(n_peatones)
 #### a partir del while = True
     while(True):
@@ -261,7 +253,7 @@ if __name__ == "__main__":
         peaton_elegido = random.choice(id_peaton)        
 
         #FALTA POR HACER
-        carpeta_kml = './ruta_peaton'
+        """carpeta_kml = './ruta_peaton'
         archivos_kml = [archivo for archivo in os.listdir(carpeta_kml) if archivo.endswith('.kml')]
         if not archivos_kml:
             print("No hay archivos KML en la carpeta especificada.")
@@ -270,12 +262,14 @@ if __name__ == "__main__":
             ruta_completa = os.path.join(carpeta_kml, archivo_seleccionado)
 
             with open(ruta_completa, 'r') as archivo:
-                contenido_kml = archivo.read()
-
-        coordenadas_ruta = leer_coordenadas_desde_kml(carpeta_kml)
+                contenido_kml = archivo.read()"""
         
+        
+        """coordenadas_ruta = leer_coordenadas_desde_kml(carpeta_kml)"""
+        file_path = './rutas/ruta_prueba_coche/ruta1.kml'
+        coordenadas_ruta = leer_coordenadas_desde_kml(file_path)
         # print de lo que publicamos en el topic
         logging.getLogger().setLevel(logging.INFO)
 
-        #leemos de big query el coche con sus datos
+        #leemos de big query el peatones con sus datos
         publicar_movimiento(coordenadas_ruta, project_id, topic_peaton, dataset_id, table_id, peaton_elegido)
