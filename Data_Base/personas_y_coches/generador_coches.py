@@ -288,10 +288,16 @@ if __name__ == "__main__":
         # HAY QUE VALIDAR QUE EL COCHE NO ESTA EN RUTA (LUEGO)
         coche_elegido = random.choice(id_coches)        
 
-        #FALTA POR HACER
-        #lector de rutas (hay que hacer una funcion para que elija al azar)
-        file_path = './rutas/ruta_prueba_coche/ruta1.kml'
-        coordenadas_ruta = leer_coordenadas_desde_kml(file_path)
+
+        ruta_rutas = "./ruta/ruta_coche"
+        archivos_rutas = os.listdir(ruta_rutas)
+        archivos_rutas = [archivo for archivo in archivos_rutas if archivo.endswith(".kml")]
+
+
+        ruta_aleatoria = random.choice(archivos_rutas)
+        ruta_completa = os.path.join(ruta_rutas, ruta_aleatoria)
+
+        coordenadas_ruta = leer_coordenadas_desde_kml(ruta_completa)
         
         # print de lo que publicamos en el topic
         logging.getLogger().setLevel(logging.INFO)
