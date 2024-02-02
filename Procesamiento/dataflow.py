@@ -103,7 +103,7 @@ def update_bigquery(row):
 def change_plazas():
     options = PipelineOptions(streaming=True)
     with beam.Pipeline(options=options) as p:
-        (p  | "ReadFromPubSubCoche" >> beam.io.ReadFromPubSub(subscription='projects/genuine-essence-411713/subscriptions/ruta_coche-sub')
+        (p  | "ReadFromPubSubCoche" >> beam.io.ReadFromPubSub(subscription='projects/genuine-essence-411713/subscriptions/ruta_peaton-sub')
             | "DecodeMessageCoche" >> beam.Map(decode_message)
             | "windowInto1sec" >> beam.WindowInto(window.FixedWindows(1)) 
             | "reducePlazas" >> beam.Map(reduce_plazas)
