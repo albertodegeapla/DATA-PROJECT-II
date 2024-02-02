@@ -288,7 +288,7 @@ if __name__ == "__main__":
         # HAY QUE VALIDAR QUE EL COCHE NO ESTA EN RUTA (LUEGO)
         coche_elegido = random.choice(id_coches)        
 
-        #LECTOR RUTA COCHE
+        #LECTOR RUTA COCHEs
         ruta_rutas = "./ruta/ruta_coche"
         archivos_rutas = os.listdir(ruta_rutas)
         archivos_rutas = [archivo for archivo in archivos_rutas if archivo.endswith(".kml")]
