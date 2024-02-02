@@ -3,9 +3,58 @@ from apache_beam.options.pipeline_options import PipelineOptions
 from apache_beam.transforms import Map
 from haversine import haversine, Unit
 
+import argparse
+import json
+
 # Este script escucha de dos topics a la vez, coches y pasajeros, y dependiendo de ciertas reglas
 # ...como son la distancia entre coordenadas, entre destinos, rango de alcance y precio, decidimos
 # ...si el coche recoge o no al pasajero. Una vez hecho, actualiza en la base de datos.
+
+
+# añadimos flags para que funcione
+# añadirimaos el porject ID, los subscribers y el bucket
+
+
+# ejemplo de correrlo python .\recogida_pasajero.py --project_id genuine-essence-411713 --person_topic_sub ruta_persona-sub --car_topic_sub ruta_coche-sub --dataset_id blablacar2 --car_table coches --person_table perosnas
+
+parser = argparse.ArgumentParser(description=("Procesamiento de los topics de GCloud SUBSCRIBER"))
+parser.add_argument(
+    "--project_id",
+    required=True,
+    help="Project ID de GCloud"
+)
+parser.add_argument(
+    "--person_topic_sub",
+    required=True,
+    help="Topic del subscriber GCloud de la persona"
+)
+parser.add_argument(
+    "--car_topic_sub",
+    required=True,
+    help="Topic del subscriber GCloud del coche"
+)
+parser.add_argument(
+    "--dataset_id",
+    required=True,
+    help="Dataset de GCloud"
+)
+parser.add_argument(
+    "--car_table",
+    required=True,
+    help="Tabla de coches en GCloud"
+)
+parser.add_argument(
+    "--person_table",
+    required=True,
+    help="Tabla de pasajeros en GCloud"
+)
+'''parser.add_argument(
+    "--bucket_name",
+    required=True,
+    help="Bucket de GCloud"
+)'''
+
+args, opts = parser.parse_known_args()
 
 class ProcessData(beam.DoFn):
     def process(self, element):
@@ -38,14 +87,30 @@ class ProcessData(beam.DoFn):
                         # Write en BigQuery (cambiar con código de BigQuery)
                         yield picked_up
 
-def run():
-    # Set up PipelineOptions / To be defined por Pepe
-    pipeline_options = PipelineOptions() # To be defined por Pepe
+def run_local():
+    # Este es el Set up para correrlo en local, abajo esta el set up para la nube
+    # que primero funcione aqui y depsues lo lanzamos a la nube 
+    pipeline_options = PipelineOptions(streaming=True) 
 
-    # Leemos de las pipelines de coche y pasajero (to be defined por Pepe)
+    project_id = args.project_id
+    dataset_id = args.dataset_id
+
+    topic_person = args.person_topic_sub
+    table_person = args.person_table
+    topic_car = args.car_topic_sub
+    table_car = args.car_table
+
+    # Leemos de las pipelines de coche y pasajero 
+    # ya esta la config
     with beam.Pipeline(options=pipeline_options) as p:
-        datos_coche = p | "Read Car Data" >> beam.io.ReadFromPubSub(subscription="coche_sub") | beam.Map(lambda x: json.loads(x))
-        datos_pasajero = p | "Read Passenger Data" >> beam.io.ReadFromPubSub(subscription="pasajero_sub") | beam.Map(lambda x: json.loads(x))
+        datos_coche = (p | "Read Car Data" >> beam.io.ReadFromPubSub(subscription=f'projects/{project_id}/subscriptions/{topic_car}') 
+                         | "decode message" >> beam.Map(lambda x: json.loads(x)) 
+                         | "print" >> beam.Map(print)
+                )
+        datos_pasajero = (p | "Read Passenger Data" >> beam.io.ReadFromPubSub(subscription=f'projects/{project_id}/subscriptions/{topic_person}') 
+                            | "decode message" >> beam.Map(lambda x: json.loads(x)) 
+                            | "print" >> beam.Map(print)
+        )
 
         # Join datos de coche y pasajero por key comun, en este caso tiempo
         joined_data = ({'coche': datos_coche, 'pasajero': datos_pasajero}
@@ -54,12 +119,27 @@ def run():
                        | "Process Data" >> beam.ParDo(ProcessData()))
         
         for data in joined_data:
-            # Reemplazar por los datos de BigQuery de Pepe
-            data | "Write to BigQuery" >> beam.io.WriteToBigQuery(
-                table="your_project_id.your_dataset_id.your_table_id",
+            # Aqui no se que quieres hacer, te hago la conexion a la tabla coches, la conexion a la tabla peatones es la misma
+            data | "Write car to BigQuery" >> beam.io.WriteToBigQuery(
+                table=f"{project_id}:{dataset_id}.{table_car}",
                 write_disposition=beam.io.BigQueryDisposition.WRITE_APPEND,
                 create_disposition=beam.io.BigQueryDisposition.CREATE_IF_NEEDED
             )
 
 if __name__ == "__main__":
-    run()
+    run_local()
+
+
+
+
+
+'''def run_GCP():
+    with beam.Pipeline(options=PipelineOptions(
+        streaming=True,
+        # save_main_session=True
+        project=project_id,
+        runner="DataflowRunner",
+        temp_location=f"gs://{bucket_name}/tmp",
+        staging_location=f"gs://{bucket_name}/staging",
+        region="europe-west1"
+    )) '''
