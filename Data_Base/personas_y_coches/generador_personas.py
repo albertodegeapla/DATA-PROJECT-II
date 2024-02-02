@@ -92,12 +92,16 @@ def generar_edad():
 def generar_cartera():
     return round(random.uniform(2, 100), 2)
 
+def generar_mood():
+    return random.choice(['majo', 'normal', 'antipático'])
+
 def generar_persona(id):
     id_persona = generar_id_persona(id)
     nombre = generar_nombres()
     primer_apellido = generar_primer_apellido()
     segundo_apellido = generar_segundo_apellido()
     edad = generar_edad()
+    mood = generar_mood()
     cartera = generar_cartera()
     
     peaton = {
@@ -106,7 +110,9 @@ def generar_persona(id):
         'Primer_apellido':primer_apellido,
         'Segundo_apellido':segundo_apellido,
         'Edad':edad,
-        'Cartera':cartera
+        'Mood':mood,
+        'Cartera':cartera,
+        'Cartera_inicial': cartera
     }
 
     return peaton
@@ -128,7 +134,7 @@ def write_peaton_to_bigquery(project_id, dataset_id, table_peaton, n_peatones):
  
         peaton_pcollection | "WriteToBigQuery" >> beam.io.WriteToBigQuery(
                 table=f'{project_id}:{dataset_id}.{table_peaton}',
-                schema = '{"ID_persona":"INTEGER", "Nombre":"STRING", "Primer_apellido":"STRING", "Segundo_apellido":"STRING","Edad":"INTEGER", "Cartera":"FLOAT"}',
+                schema = '{"ID_persona":"INTEGER", "Nombre":"STRING", "Primer_apellido":"STRING", "Segundo_apellido":"STRING","Edad":"INTEGER", "Cartera":"FLOAT", "CARTERA_INICIAL":"FLOAT", "Mood":"STRING"}',
                 create_disposition=beam.io.BigQueryDisposition.CREATE_NEVER,
                 write_disposition=beam.io.BigQueryDisposition.WRITE_APPEND
             )
