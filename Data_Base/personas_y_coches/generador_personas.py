@@ -85,7 +85,6 @@ def generar_segundo_apellido():
     segundo_apellido = cargar_txt('./apellido.txt')
     return random.choice(segundo_apellido)
 
-###AÑADIR DNI 
 def generar_edad():
     return random.randint(18, 75)
 
@@ -134,7 +133,7 @@ def write_peaton_to_bigquery(project_id, dataset_id, table_peaton, n_peatones):
  
         peaton_pcollection | "WriteToBigQuery" >> beam.io.WriteToBigQuery(
                 table=f'{project_id}:{dataset_id}.{table_peaton}',
-                schema = '{"ID_persona":"INTEGER", "Nombre":"STRING", "Primer_apellido":"STRING", "Segundo_apellido":"STRING","Edad":"INTEGER", "Cartera":"FLOAT", "CARTERA_INICIAL":"FLOAT", "Mood":"STRING"}',
+                schema = '{"ID_persona":"INTEGER", "Nombre":"STRING", "Primer_apellido":"STRING", "Segundo_apellido":"STRING","Edad":"INTEGER", "Cartera":"FLOAT", "Cartera_inicial":"FLOAT", "Mood":"STRING"}',
                 create_disposition=beam.io.BigQueryDisposition.CREATE_NEVER,
                 write_disposition=beam.io.BigQueryDisposition.WRITE_APPEND
             )
@@ -161,12 +160,13 @@ def read_peaton_from_bigquery(project_id, dataset_id, table_peaton, peaton_id):
 
 # CONVERTIR A JSON -> id, coordenadas, punto destino, cartera, mood
 
-def convertir_a_json(id_persona, coordenadas, punto_destino, cartera):
+def convertir_a_json(id_persona, coordenadas, punto_destino, cartera, mood):
     datos_peaton = {
         "id_persona": id_persona,
         "coordenadas": coordenadas,
         "punto_destino": punto_destino,
-        "cartera": cartera
+        "cartera": cartera,
+        "mood": mood
     }
     return datos_peaton
 
