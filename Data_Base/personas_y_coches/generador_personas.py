@@ -181,30 +181,48 @@ def publicar_movimiento(coordenadas, project_id, topic_peaton, id_persona, carte
     hora_str = generar_fecha_hora()
 
     longitud_ruta = len(coordenadas)
-    punto_destino = coordenadas[longitud_ruta-1]
-    for i in range(len(coordenadas)-1):
-
+    punto_destino = coordenadas[longitud_ruta - 1]
+    
+    for i in range(len(coordenadas) - 1):
         coord_actual = coordenadas[i]
         coord_siguiente = coordenadas[i + 1]
 
         velocidad = 2
         tiempo_inicio = time.time()
 
-        while time.time() - tiempo_inicio < velocidad:
-            hora_actual = datetime.strptime(hora_str, "%d/%m/%Y %H:%M:%S") + timedelta(seconds=i * 2)
-            punto_mapa = (hora_actual.strftime("%Y-%m-%d %H:%M:%S"), coord_siguiente)
+        punto_mapa_actual = {
+            'hora': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            'coordenada_actual': coord_actual,
+        }
 
-            try:
-                peaton_publisher = PubSubPeatonMessage(project_id, topic_peaton)
-                message: dict = convertir_a_json(id_persona, punto_mapa, punto_destino, cartera)
-                peaton_publisher.publishPeatonMessage(message)
-                
-            except Exception as e:
-                logging.error("Error while inserting data into ruta_peaton Topic: %s", e)
-            finally:
-                peaton_publisher.__exit__()
+        try:
+            peaton_publisher = PubSubPeatonMessage(project_id, topic_peaton)
+            message_actual: dict = convertir_a_json(id_persona, punto_mapa_actual, punto_destino, cartera)
+            peaton_publisher.publishPeatonMessage(message_actual)
+        except Exception as e:
+            logging.error("Error while inserting data into ruta_peaton Topic: %s", e)
+        finally:
+            peaton_publisher.__exit__()
 
-            time.sleep(2)
+        tiempo_inicio_duplicado = time.time() + velocidad
+
+        punto_mapa_duplicado = {
+            'hora': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            'coordenada_duplicada': coord_actual,
+        }
+
+        while time.time() < tiempo_inicio_duplicado:
+            time.sleep(2)  # Pequeño retardo entre la coordenada actual y duplicada
+
+        try:
+            peaton_publisher = PubSubPeatonMessage(project_id, topic_peaton)
+            message_duplicado: dict = convertir_a_json(id_persona, punto_mapa_duplicado, punto_destino, cartera)
+            peaton_publisher.publishPeatonMessage(message_duplicado)
+        except Exception as e:
+            logging.error("Error while inserting data into ruta_peaton Topic: %s", e)
+        finally:
+            peaton_publisher.__exit__()
+
 
 
 def leer_coordenadas_desde_kml(ruta_archivo_kml):
