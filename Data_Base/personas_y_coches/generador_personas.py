@@ -179,30 +179,35 @@ def generar_fecha_hora():
     return fecha_hora_str
 
 
-def publicar_movimiento(coordenadas, project_id, topic_peaton, id_persona, cartera):
-    hora_str = generar_fecha_hora()
+def publicar_movimiento(coordenadas, project_id, topic_peaton, id_persona, cartera, mood):
+    
     longitud_ruta = len(coordenadas)
-    punto_destino = coordenadas[longitud_ruta - 1]
+    punto_destino = coordenadas[longitud_ruta-1]
 
-    for i in range(len(coordenadas)):
+    for i in range(len(coordenadas)-1):
+
         coord_actual = coordenadas[i]
+        coord_siguiente = coordenadas[i + 1]
 
-        # Enviar la coordenada actual
-        hora_actual = datetime.strptime(hora_str, "%d/%m/%Y %H:%M:%S") + timedelta(seconds=i * 2)
-        punto_mapa = (hora_actual.strftime("%Y-%m-%d %H:%M:%S"), coord_actual)
+        velocidad = 2
+        tiempo_inicio = time.time()       
 
-        try:
-            car_publisher = PubSubPeatonMessage(project_id, topic_peaton)
-            message: dict = convertir_a_json(id_persona, punto_mapa, punto_destino, cartera)
-            car_publisher.publishPeatonMessage(message)
-
-        except Exception as e:
-            logging.error("Error while inserting data into ruta_coche Topic: %s", e)
-        finally:
-            car_publisher.__exit__()
-
-        # Esperar 2 segundos después de enviar la coordenada actual
-        time.sleep(2)
+        while time.time() - tiempo_inicio < velocidad:
+            hora_str = generar_fecha_hora()
+            hora_actual = datetime.strptime(hora_str, "%d/%m/%Y %H:%M:%S")
+            punto_mapa = (hora_actual.strftime("%Y-%m-%d %H:%M:%S"), coord_siguiente)
+            
+            try:
+                car_publisher = PubSubPeatonMessage(project_id, topic_peaton)
+                message: dict = convertir_a_json(id_persona, punto_mapa, punto_destino, cartera, mood)
+                car_publisher.publishPeatonMessage(message)
+                
+            except Exception as e:
+                logging.error("Error while inserting data into ruta_persona Topic: %s", e)
+            finally:
+                car_publisher.__exit__()
+            
+            time.sleep(1)
 
 
 
@@ -269,6 +274,7 @@ if __name__ == "__main__":
 
         peaton = read_peaton_from_bigquery(project_id, dataset_id, table_id, peaton_elegido)
         cartera = peaton.get('Cartera')
+        mood = peaton.get('Mood')
 
         #leemos de big query el peatones con sus datos
-        publicar_movimiento(coordenadas_ruta, project_id, topic_peaton, peaton_elegido, cartera)
+        publicar_movimiento(coordenadas_ruta, project_id, topic_peaton, peaton_elegido, cartera, mood)

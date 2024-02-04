@@ -198,7 +198,6 @@ def generar_fecha_hora():
 
 # introducir el id de coche que toque por parametro
 def publicar_movimiento(coordenadas, project_id, topic_car, dataset_id, table_id, id_coche):
-    hora_str = generar_fecha_hora()
 
     longitud_ruta = len(coordenadas)
     print(longitud_ruta)
@@ -222,7 +221,8 @@ def publicar_movimiento(coordenadas, project_id, topic_car, dataset_id, table_id
         tiempo_inicio = time.time()       
 
         while time.time() - tiempo_inicio < velocidad:
-            hora_actual = datetime.strptime(hora_str, "%d/%m/%Y %H:%M:%S") + timedelta(seconds=i * 2)
+            hora_str = generar_fecha_hora()
+            hora_actual = datetime.strptime(hora_str, "%d/%m/%Y %H:%M:%S")
             punto_mapa = (hora_actual.strftime("%Y-%m-%d %H:%M:%S"), coord_siguiente)
             
             try:
@@ -235,7 +235,7 @@ def publicar_movimiento(coordenadas, project_id, topic_car, dataset_id, table_id
             finally:
                 car_publisher.__exit__()
             
-            time.sleep(2)
+            #time.sleep(2)
       
 
 def leer_coordenadas_desde_kml(file_path):

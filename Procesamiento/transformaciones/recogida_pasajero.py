@@ -104,27 +104,34 @@ def run_local():
     # ya esta la config
     with beam.Pipeline(options=pipeline_options) as p:
         datos_coche = (p | "Read Car Data" >> beam.io.ReadFromPubSub(subscription=f'projects/{project_id}/subscriptions/{topic_car}') 
-                         | "decode message" >> beam.Map(lambda x: json.loads(x)) 
-                         | "print" >> beam.Map(print)
-                )
+                         | "decode car message" >> beam.Map(lambda x: json.loads(x)) 
+                         | "WindowIntoCar" >> beam.WindowInto(beam.window.FixedWindows(2)) 
+                         | "print car" >> beam.Map(print)
+        )
         datos_pasajero = (p | "Read Passenger Data" >> beam.io.ReadFromPubSub(subscription=f'projects/{project_id}/subscriptions/{topic_person}') 
-                            | "decode message" >> beam.Map(lambda x: json.loads(x)) 
-                            | "print" >> beam.Map(print)
+                            | "decode person message" >> beam.Map(lambda x: json.loads(x)) 
+                            | "WindowIntoPeaton" >> beam.WindowInto(beam.window.FixedWindows(2)) 
+                            | "print person" >> beam.Map(print)
         )
 
         # Join datos de coche y pasajero por key comun, en este caso tiempo
         joined_data = ({'coche': datos_coche, 'pasajero': datos_pasajero}
                        | "Join Data" >> beam.CoGroupByKey()
-                       | Map(lambda x: x[1])
-                       | "Process Data" >> beam.ParDo(ProcessData()))
+                       | "pabl0" >> beam.Map(lambda x: x[1])
+                       | "Process Data" >> beam.ParDo(ProcessData())
+                       | "Write to BigQuery" >> beam.io.WriteToBigQuery(
+                           table=f"{project_id}:{dataset_id}.{table_car}",
+                           write_disposition=beam.io.BigQueryDisposition.WRITE_APPEND,
+                           create_disposition=beam.io.BigQueryDisposition.CREATE_IF_NEEDED
+                       ))
         
-        for data in joined_data:
+        '''for data in joined_data:
             # Aqui no se que quieres hacer, te hago la conexion a la tabla coches, la conexion a la tabla peatones es la misma
             data | "Write car to BigQuery" >> beam.io.WriteToBigQuery(
                 table=f"{project_id}:{dataset_id}.{table_car}",
                 write_disposition=beam.io.BigQueryDisposition.WRITE_APPEND,
-                create_disposition=beam.io.BigQueryDisposition.CREATE_IF_NEEDED
-            )
+                create_disposition=beam.io.BigQueryDisposition.CREATE_NEVER
+            )'''
 
 if __name__ == "__main__":
     run_local()
