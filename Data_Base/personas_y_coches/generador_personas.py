@@ -18,6 +18,8 @@ from apache_beam.transforms import window
 import apache_beam as beam
 from google.cloud import bigquery
 
+#  python .\generador_personas.py --project_id genuine-essence-411713 --peaton_topic_name ruta_persona --dataset_id blablacar2 --table_peaton peatones --n_peatones 10   
+
 parser = argparse.ArgumentParser(description=("Generador de Rutas de peatones y publicadas en pub/sub"))
 parser.add_argument(
     "--project_id",
@@ -179,49 +181,28 @@ def generar_fecha_hora():
 
 def publicar_movimiento(coordenadas, project_id, topic_peaton, id_persona, cartera):
     hora_str = generar_fecha_hora()
-
     longitud_ruta = len(coordenadas)
     punto_destino = coordenadas[longitud_ruta - 1]
-    
-    for i in range(len(coordenadas) - 1):
+
+    for i in range(len(coordenadas)):
         coord_actual = coordenadas[i]
-        coord_siguiente = coordenadas[i + 1]
 
-        velocidad = 2
-        tiempo_inicio = time.time()
-
-        punto_mapa_actual = {
-            'hora': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            'coordenada_actual': coord_actual,
-        }
+        # Enviar la coordenada actual
+        hora_actual = datetime.strptime(hora_str, "%d/%m/%Y %H:%M:%S") + timedelta(seconds=i * 2)
+        punto_mapa = (hora_actual.strftime("%Y-%m-%d %H:%M:%S"), coord_actual)
 
         try:
-            peaton_publisher = PubSubPeatonMessage(project_id, topic_peaton)
-            message_actual: dict = convertir_a_json(id_persona, punto_mapa_actual, punto_destino, cartera)
-            peaton_publisher.publishPeatonMessage(message_actual)
+            car_publisher = PubSubPeatonMessage(project_id, topic_peaton)
+            message: dict = convertir_a_json(id_persona, punto_mapa, punto_destino, cartera)
+            car_publisher.publishPeatonMessage(message)
+
         except Exception as e:
-            logging.error("Error while inserting data into ruta_peaton Topic: %s", e)
+            logging.error("Error while inserting data into ruta_coche Topic: %s", e)
         finally:
-            peaton_publisher.__exit__()
+            car_publisher.__exit__()
 
-        tiempo_inicio_duplicado = time.time() + velocidad
-
-        punto_mapa_duplicado = {
-            'hora': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            'coordenada_duplicada': coord_actual,
-        }
-
-        while time.time() < tiempo_inicio_duplicado:
-            time.sleep(2)  # Pequeño retardo entre la coordenada actual y duplicada
-
-        try:
-            peaton_publisher = PubSubPeatonMessage(project_id, topic_peaton)
-            message_duplicado: dict = convertir_a_json(id_persona, punto_mapa_duplicado, punto_destino, cartera)
-            peaton_publisher.publishPeatonMessage(message_duplicado)
-        except Exception as e:
-            logging.error("Error while inserting data into ruta_peaton Topic: %s", e)
-        finally:
-            peaton_publisher.__exit__()
+        # Esperar 2 segundos después de enviar la coordenada actual
+        time.sleep(2)
 
 
 
@@ -238,6 +219,7 @@ def leer_coordenadas_desde_kml(ruta_archivo_kml):
             cordenada1 = cords[1]
             cordenada2 = cords[0]
             coordenada = (cordenada1, cordenada2)            
+            coordenadas_ruta.append(coordenada)
             coordenadas_ruta.append(coordenada)
 
     return coordenadas_ruta
@@ -265,7 +247,7 @@ if __name__ == "__main__":
     n_peatones = int(args.n_peatones)
 
     # publicar en bigquery el num de peatones a usar
-    #write_peaton_to_bigquery(project_id, dataset_id, table_id, n_peatones)
+    write_peaton_to_bigquery(project_id, dataset_id, table_id, n_peatones)
     id_peaton = id_peaton_generator(n_peatones)
 
     while(True):

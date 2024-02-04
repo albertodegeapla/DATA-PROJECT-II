@@ -115,15 +115,13 @@ def generar_precio_compra():
     #return max(precio_final, 0)
 
 def generar_precio_inicial():
-    return random.uniform(0.5, 1.5)
+    return round(random.uniform(0.005, 0.02), 2)
 
 def generar_coche(id):
     id_coche = generar_id_coche(id)
     marca = generar_marca()
     matricula = generar_matricula()
     plazas = generar_plazas()
-    kilometraje = generar_kilometraje()
-    precio_compra = generar_precio_compra()
     precio_x_punto = generar_precio_inicial()
     
 
@@ -203,9 +201,10 @@ def publicar_movimiento(coordenadas, project_id, topic_car, dataset_id, table_id
     hora_str = generar_fecha_hora()
 
     longitud_ruta = len(coordenadas)
+    print(longitud_ruta)
     #punto_inicial = coordenadas_ruta[0]
     punto_destino = coordenadas[longitud_ruta-1]
-    precio =  generar_precio_inicial()
+    precio_inicial =  round(random.uniform(0.5, 1.5), 2)
 
     for i in range(len(coordenadas)-1):
         
@@ -213,7 +212,8 @@ def publicar_movimiento(coordenadas, project_id, topic_car, dataset_id, table_id
         plazas = coche.get('Plazas')
         precio_x_coord = coche.get('Precio_punto')
         coord_restantes = longitud_ruta - i - 1
-        precio = round(precio_x_coord * coord_restantes,2)
+        precio_bruto = round(precio_x_coord * coord_restantes,2)
+        precio = round(precio_inicial + precio_bruto, 2)
 
         coord_actual = coordenadas[i]
         coord_siguiente = coordenadas[i + 1]
@@ -223,9 +223,7 @@ def publicar_movimiento(coordenadas, project_id, topic_car, dataset_id, table_id
 
         while time.time() - tiempo_inicio < velocidad:
             hora_actual = datetime.strptime(hora_str, "%d/%m/%Y %H:%M:%S") + timedelta(seconds=i * 2)
-            punto_mapa = (hora_actual.strftime("%Y-%m-%d %H:%M:%S"), coord_siguiente, precio)
-            precio_subida = round(random.uniform(0.01, 0.1), 2)
-            precio += precio_subida
+            punto_mapa = (hora_actual.strftime("%Y-%m-%d %H:%M:%S"), coord_siguiente)
             
             try:
                 car_publisher = PubSubCarMessage(project_id, topic_car)
@@ -237,7 +235,7 @@ def publicar_movimiento(coordenadas, project_id, topic_car, dataset_id, table_id
             finally:
                 car_publisher.__exit__()
             
-            time.sleep(5)
+            time.sleep(2)
       
 
 def leer_coordenadas_desde_kml(file_path):
@@ -280,7 +278,7 @@ if __name__ == "__main__":
     n_coches = int(args.n_coches)
 
     # publicar en bigquery el num de coches a usar
-    #write_car_to_bigquery(project_id, dataset_id, table_id, n_coches)
+    write_car_to_bigquery(project_id, dataset_id, table_id, n_coches)
     id_coches = id_car_generator(n_coches)
      
     while(True):
@@ -296,6 +294,7 @@ if __name__ == "__main__":
 
         ruta_aleatoria = random.choice(archivos_rutas)
         ruta_completa = os.path.join(ruta_rutas, ruta_aleatoria)
+        print(ruta_aleatoria)
 
         coordenadas_ruta = leer_coordenadas_desde_kml(ruta_completa)
         
