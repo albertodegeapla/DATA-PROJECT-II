@@ -107,18 +107,15 @@ def generar_precio_compra():
 
 
 #### en base a los km y el precio de compra y edad del coche generar un dato de 0,005 a 0,05 max y un min
-def generar_cobro_km(kilometraje, precio_compra):
-    descuento_por_kilometraje = 0.05  # Descuento del 5% por cada 10000km
-    descuento = (kilometraje // 10000) * descuento_por_kilometraje
-    precio_final = precio_compra - descuento
+#def generar_cobro_km(kilometraje, precio_compra):
+    #descuento_por_kilometraje = 0.05  # Descuento del 5% por cada 10000km
+    #descuento = (kilometraje // 10000) * descuento_por_kilometraje
+    #precio_final = precio_compra - descuento
 
-    return max(precio_final, 0)
+    #return max(precio_final, 0)
 
-def generar_cobro_prov():
-    return random.uniform(0.005, 0.05)
-
-'''kilometraje = generar_kilometraje()
-precio_compra = generar_precio_compra()'''
+def generar_precio_inicial():
+    return random.uniform(0.5, 1.5)
 
 def generar_coche(id):
     id_coche = generar_id_coche(id)
@@ -127,8 +124,7 @@ def generar_coche(id):
     plazas = generar_plazas()
     kilometraje = generar_kilometraje()
     precio_compra = generar_precio_compra()
-    #precio_x_punto = generar_cobro_km(kilometraje,precio_compra)
-    precio_x_punto = generar_cobro_prov()
+    precio_x_punto = generar_precio_inicial()
     
 
     coche = {
@@ -209,8 +205,10 @@ def publicar_movimiento(coordenadas, project_id, topic_car, dataset_id, table_id
     longitud_ruta = len(coordenadas)
     #punto_inicial = coordenadas_ruta[0]
     punto_destino = coordenadas[longitud_ruta-1]
-    for i in range(len(coordenadas)-1):
+    precio =  generar_precio_inicial()
 
+    for i in range(len(coordenadas)-1):
+        
         coche = read_car_from_bigquery(project_id, dataset_id, table_id, id_coche)
         plazas = coche.get('Plazas')
         precio_x_coord = coche.get('Precio_punto')
@@ -225,7 +223,9 @@ def publicar_movimiento(coordenadas, project_id, topic_car, dataset_id, table_id
 
         while time.time() - tiempo_inicio < velocidad:
             hora_actual = datetime.strptime(hora_str, "%d/%m/%Y %H:%M:%S") + timedelta(seconds=i * 2)
-            punto_mapa = (hora_actual.strftime("%Y-%m-%d %H:%M:%S"), coord_siguiente)
+            punto_mapa = (hora_actual.strftime("%Y-%m-%d %H:%M:%S"), coord_siguiente, precio)
+            precio_subida = round(random.uniform(0.01, 0.1), 2)
+            precio += precio_subida
             
             try:
                 car_publisher = PubSubCarMessage(project_id, topic_car)
