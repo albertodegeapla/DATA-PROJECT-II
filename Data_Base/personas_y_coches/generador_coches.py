@@ -237,7 +237,7 @@ def publicar_movimiento(coordenadas, project_id, topic_car, dataset_id, table_id
             finally:
                 car_publisher.__exit__()
             
-            time.sleep(5)
+            time.sleep(2)
       
 
 def leer_coordenadas_desde_kml(file_path):
@@ -280,7 +280,7 @@ if __name__ == "__main__":
     n_coches = int(args.n_coches)
 
     # publicar en bigquery el num de coches a usar
-    #write_car_to_bigquery(project_id, dataset_id, table_id, n_coches)
+    write_car_to_bigquery(project_id, dataset_id, table_id, n_coches)
     id_coches = id_car_generator(n_coches)
      
     while(True):
