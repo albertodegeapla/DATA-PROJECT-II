@@ -36,13 +36,13 @@ def run_local():
     options = PipelineOptions(streaming=True)
     with beam.Pipeline(options=options) as p:
         p_peaton = (p
-                        | "ReadFromPubSubPeaton" >> beam.io.ReadFromPubSub(subscription='projects/genuine-essence-411713/subscriptions/ruta_persona-sub')
+                        | "ReadFromPubSubPeaton" >> beam.io.ReadFromPubSub(subscription='projects/skilled-seeker-411714/subscriptions/data_projectII_person-sub')
                         | "DecodeMessagePeaton" >> beam.Map(decode_message)
                         | "addTuplePeaton" >> beam.Map(lambda x: ("peaton", x))
                         | "WindowIntoPeaton" >> beam.WindowInto(beam.window.FixedWindows(10)) 
                     )
         p_coche =   (p 
-                        | "ReadFromPubSubCoche" >> beam.io.ReadFromPubSub(subscription='projects/genuine-essence-411713/subscriptions/ruta_coche-sub')
+                        | "ReadFromPubSubCoche" >> beam.io.ReadFromPubSub(subscription='projects/skilled-seeker-411714/subscriptions/data_projectII_car-sub')
                         | "DecodeMessageCoche" >> beam.Map(decode_message)
                         | "addTupleCoche" >> beam.Map(lambda x: ("coche", x))
                         | "WindowIntoCoche" >> beam.WindowInto(beam.window.FixedWindows(10)) 

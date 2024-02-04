@@ -18,7 +18,7 @@ from apache_beam.transforms import window
 import apache_beam as beam
 from google.cloud import bigquery
 
-#  python .\generador_personas.py --project_id genuine-essence-411713 --peaton_topic_name ruta_persona --dataset_id blablacar2 --table_peaton peatones --n_peatones 10   
+#  python .\generador_personas.py --project_id skilled-seeker-411714 --peaton_topic_name data_projectII_person --dataset_id edem_tabla --table_peaton persona --n_peatones 10   
 
 parser = argparse.ArgumentParser(description=("Generador de Rutas de peatones y publicadas en pub/sub"))
 parser.add_argument(
@@ -102,8 +102,8 @@ def generar_persona(id):
     primer_apellido = generar_primer_apellido()
     segundo_apellido = generar_segundo_apellido()
     edad = generar_edad()
-    mood = generar_mood()
     cartera = generar_cartera()
+    mood = generar_mood()   
     
     peaton = {
         'ID_persona':id_persona,
@@ -111,9 +111,9 @@ def generar_persona(id):
         'Primer_apellido':primer_apellido,
         'Segundo_apellido':segundo_apellido,
         'Edad':edad,
-        'Mood':mood,
         'Cartera':cartera,
-        'Cartera_inicial': cartera
+        'Cartera_inicial': cartera,
+        'Mood':mood
     }
 
     return peaton
@@ -193,7 +193,7 @@ def publicar_movimiento(coordenadas, project_id, topic_peaton, id_persona, carte
 
         try:
             car_publisher = PubSubPeatonMessage(project_id, topic_peaton)
-            message: dict = convertir_a_json(id_persona, punto_mapa, punto_destino, cartera)
+            message: dict = convertir_a_json(id_persona, punto_mapa, punto_destino, cartera, generar_mood())
             car_publisher.publishPeatonMessage(message)
 
         except Exception as e:
