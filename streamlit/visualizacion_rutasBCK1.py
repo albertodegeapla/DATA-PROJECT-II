@@ -8,7 +8,7 @@ project_id = 'deductive-span-411710'
 client = bigquery.Client(project=project_id)
 
 # Configuración del nombre de tu conjunto de datos y tabla en BigQuery
-dataset_name_peaton = 'dtaset'
+dataset_name_peaton = 'dataset'
 table_name_peaton = 'Peaton'
 
 dataset_name_coche = 'dataset'
