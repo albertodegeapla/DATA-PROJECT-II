@@ -94,7 +94,7 @@ def generar_cartera():
     return round(random.uniform(2, 100), 2)
 
 def generar_mood():
-    return random.choice(['majo', 'normal', 'antipático'])
+    return random.choice(['majo', 'normal', 'antipatico'])
 
 def generar_persona(id):
     id_persona = generar_id_persona(id)
