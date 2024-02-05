@@ -88,7 +88,12 @@ def person_select_cartera(persona):
     client = bigquery.Client()
 
     query = f"SELECT Cartera FROM `{args.project_id}.{args.dataset_id}.{args.person_table}` WHERE ID_persona = {persona['id_persona']}"
-    return client.query(query).result()
+    result = client.query(query).result()
+
+    for row in result:
+        cartera_value = row['Cartera']
+        return cartera_value
+    return 0
 
 def person_update_bigquery(persona, coche):
     client = bigquery.Client()
@@ -119,7 +124,6 @@ class ProcessData(beam.DoFn):
                             pasajeros_en_coche.remove(ids)
                             print(f'pasajero eliminado {pasajeros_en_coche}')
 
-            
         try:
             for coche in coches:
                 for pasajero in personas:
