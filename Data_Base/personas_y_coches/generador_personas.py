@@ -253,7 +253,7 @@ if __name__ == "__main__":
     n_peatones = int(args.n_peatones)
 
     # publicar en bigquery el num de peatones a usar
-    write_peaton_to_bigquery(project_id, dataset_id, table_id, n_peatones)
+    #write_peaton_to_bigquery(project_id, dataset_id, table_id, n_peatones)
     id_peaton = id_peaton_generator(n_peatones)
 
     while(True):

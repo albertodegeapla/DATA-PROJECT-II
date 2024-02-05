@@ -6,6 +6,7 @@ from haversine import haversine, Unit
 import argparse
 import json
 import logging
+from google.cloud import bigquery
 
 # Este script escucha de dos topics a la vez, coches y pasajeros, y dependiendo de ciertas reglas
 # ...como son la distancia entre coordenadas, entre destinos, rango de alcance y precio, decidimos
@@ -57,56 +58,84 @@ parser.add_argument(
 
 args, opts = parser.parse_known_args()
 
+def car_update_bigquery(coche):
+    client = bigquery.Client()
+
+    coche['plazas'] = int(coche['plazas']) - 1
+    coche['id_coche'] = int(coche['id_coche'])
+    ganancia_pasajero = coche['cartera'] + coche['precio'] / 1.25
+    #print(type(row['id_coche']))
+   
+    query = f"UPDATE `{args.project_id}.{args.dataset_id}.{args.car_table}` SET Plazas = {coche['plazas']}, Cartera = {ganancia_pasajero} WHERE ID_coche = {coche['id_coche']}"
+    client.query(query).result()
+
+def person_update_bigquery(persona, coche):
+    client = bigquery.Client()
+
+    persona['cartera'] = int(persona['cartera']) - int(coche['precio'])
+    persona['id_persona'] = int(persona['id_persona'])
+
+    query = f"UPDATE `{args.project_id}.{args.dataset_id}.{args.car_table}` SET Cartera = {persona['cartera']} WHERE ID_persona = {persona['id_persona']}"
+    client.query(query).result()
+    #print(type(row['id_coche']))
+
 class ProcessData(beam.DoFn):
     def process(self, element):
-        logging.info(f'element = {element}')
 
         hora, datos = element
         coches = [dato for dato in datos if 'id_coche' in dato]
         personas = [dato for dato in datos if 'id_persona' in dato]
-        print(len(coches))
-        print(len(personas))
-        # El mood, que tendremos en cuenta a la hora de recoger, lo hardcodeamos
-        distancia_rangos = {'antipatico': 50000, 'normal': 75000, 'majo': 100000}
 
-        
-
-        '''try:
-            # Calcular la distancia entre el coche y el pasajero, usando la librería Haversine
-            distancia = haversine((datos_coche['coordenadas'][1][0], datos_coche['coordenadas'][1][1]),
-                                 (datos_pasajero['coordenadas'][1][0], datos_pasajero['coordenadas'][1][1]),
-                                 unit=Unit.METERS)
-
-            # Check si la distancia en metros está dentro del rango del mood
-            for mood, rango in distancia_rangos.items():
-                if distancia <= rango:
-                    # Check distancia entre destinos
-                    destinos_distancia = haversine((datos_coche['punto_destino'][0], datos_coche['punto_destino'][1]),
-                                              (datos_pasajero['punto_destino'][0], datos_pasajero['punto_destino'][1]),
+        # si no hay coches o personas, no hacemos nada
+        if len(coches) == 0 or len(personas) == 0:
+            return None
+            
+        try:
+            for coche in coches:
+                for pasajero in personas:
+                    # Calcula la distancia entre los puntos
+                    distancia_recogida = haversine((coche['coordenadas'][1][0], coche['coordenadas'][1][1]),
+                                    (pasajero['coordenadas'][1][0], pasajero['coordenadas'][1][1]),
+                                    unit=Unit.METERS)
+                    
+                    # selecciona la distancia a la que el pasajero está dispuesto a desplazarse segun su mood
+                    distancia_maxima = 0
+                    if pasajero['mood'] == 'antipatico':
+                        distancia_maxima = 250
+                    elif pasajero['mood'] == 'normal':
+                        distancia_maxima = 600
+                    elif pasajero['mood'] == 'majo':
+                        distancia_maxima = 1000
+                    # si la posicion actual esta a x distancia entraga a recoger
+                    if distancia_recogida <= distancia_maxima:
+                        # calcula la distancia entre los destinos
+                        destinos_distancia = haversine((coche['punto_destino'][0], coche['punto_destino'][1]),
+                                              (pasajero['punto_destino'][0], pasajero['punto_destino'][1]),
                                               unit=Unit.METERS)
+                        # si la distancia del putno de destino a x distancia entraga a recoger
+                        if destinos_distancia <= distancia_maxima:
+                            # si no hay plazas en el coche no hacemos nada
+                            if coche['plazas'] == 0:
+                                logging.info(f'El coche {coche["id_coche"]} ya no tiene plazas!!')
+                                return None
+                            # Check dinero en la wallet
+                            if pasajero['cartera'] < coche['precio']:
+                                logging.info(f'El pasajero {pasajero["id_persona"]} no tiene suficiente cartera!!')
+                                return None
+                            # Si hay plazas y dinero hay match!!
+                            logging.info(f'¡MATCH! El coche {coche["id_coche"]} ha recogido al pasajero {pasajero["id_persona"]}')
+                            #car_update_bigquery(coche, pasajero)
+                            coche['plazas'] -= 1
+                            pasajero['cartera'] -= coche['precio']
 
-                    # Check destinos_distancia menor a 500 metros (podemos cambiarlo)
-                    if destinos_distancia <= 500:
-                        # Check dinero en la wallet
-                        if datos_pasajero['cartera'] >= datos_coche['precio']:
-                            # Recoger al pasajero y pasajero paga
-                            datos_pasajero['cartera'] -= datos_coche['precio']
-                            datos_coche['plazas'] -= 1
-                            # El dinero del pasajero se suma a la cartera del conductor
-                            datos_coche['cartera'] += datos_coche['precio'] / 1.25
 
-                            picked_up = {'coche': datos_coche, 'pasajero': datos_pasajero}
-                            logging.info(picked_up)
-                            yield picked_up
         except Exception as e:
-            logging.error(f"Error procesando datos: {e}")'''
+            logging.error(f"Error procesando datos: {e}")
+
                         
 def add_key(element):
     key = element['coordenadas'][0]
     return key, element
-
-def print1(x):
-    print(f"Processed Data: {x}")
 
 def run_local():
     # Este es el Set up para correrlo en local, abajo esta el set up para la nube
