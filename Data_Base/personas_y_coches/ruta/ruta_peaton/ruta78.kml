@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <name><![CDATA[Indicaciones de Carrer de Calamocha, 1, Patraix, 46007 València, Valencia, España a Carrer de Vicent Branchat, 17, L'Olivereta, 46018 València, Valencia, España]]></name>
+    <Style id="icon-1899-DB4436-nodesc-normal">
+      <IconStyle>
+        <color>ff3644db</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+        <hotSpot x="32" xunits="pixels" y="64" yunits="insetPixels"/>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0</scale>
+      </LabelStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <Style id="icon-1899-DB4436-nodesc-highlight">
+      <IconStyle>
+        <color>ff3644db</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+        <hotSpot x="32" xunits="pixels" y="64" yunits="insetPixels"/>
+      </IconStyle>
+      <LabelStyle>
+        <scale>1</scale>
+      </LabelStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <StyleMap id="icon-1899-DB4436-nodesc">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#icon-1899-DB4436-nodesc-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#icon-1899-DB4436-nodesc-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="line-1267FF-5000-nodesc-normal">
+      <LineStyle>
+        <color>ffff6712</color>
+        <width>5</width>
+      </LineStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <Style id="line-1267FF-5000-nodesc-highlight">
+      <LineStyle>
+        <color>ffff6712</color>
+        <width>7.5</width>
+      </LineStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <StyleMap id="line-1267FF-5000-nodesc">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#line-1267FF-5000-nodesc-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#line-1267FF-5000-nodesc-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Placemark>
+      <name><![CDATA[Indicaciones de Carrer de Calamocha, 1, Patraix, 46007 València, Valencia, España a Carrer de Vicent Branchat, 17, L'Olivereta, 46018 València, Valencia, España]]></name>
+      <styleUrl>#line-1267FF-5000-nodesc</styleUrl>
+      <LineString>
+        <tessellate>1</tessellate>
+        <coordinates>
+          -0.38846,39.46231,0
+          -0.38847,39.46232,0
+          -0.38852,39.46236,0
+          -0.3888,39.46255,0
+          -0.38936,39.46294,0
+          -0.389,39.46335,0
+          -0.38892,39.46345,0
+          -0.38858,39.46387,0
+          -0.38849,39.46392,0
+          -0.38843,39.46395,0
+          -0.38836,39.46397,0
+          -0.38828,39.46398,0
+          -0.38827,39.46397,0
+          -0.38826,39.46396,0
+          -0.38825,39.46395,0
+          -0.38823,39.46394,0
+          -0.38822,39.46392,0
+          -0.38821,39.46391,0
+          -0.38819,39.4639,0
+          -0.38818,39.4639,0
+          -0.38815,39.46388,0
+          -0.38811,39.46386,0
+          -0.38808,39.46385,0
+          -0.38804,39.46384,0
+          -0.388,39.46383,0
+          -0.38796,39.46383,0
+          -0.38792,39.46383,0
+          -0.38789,39.46383,0
+          -0.38787,39.46383,0
+          -0.38785,39.46383,0
+          -0.38784,39.46383,0
+          -0.38782,39.46384,0
+          -0.38781,39.46384,0
+          -0.38779,39.46385,0
+          -0.38778,39.46385,0
+          -0.38777,39.46386,0
+          -0.38784,39.46395,0
+          -0.38797,39.46414,0
+          -0.38818,39.46444,0
+          -0.38873,39.46516,0
+          -0.38876,39.46526,0
+          -0.38884,39.46538,0
+          -0.38909,39.46573,0
+          -0.38936,39.46612,0
+          -0.3894,39.46617,0
+          -0.38944,39.46625,0
+          -0.38979,39.46671,0
+          -0.38986,39.46682,0
+          -0.38999,39.46699,0
+          -0.3901,39.46713,0
+          -0.39016,39.46722,0
+          -0.39034,39.46747,0
+          -0.39059,39.46783,0
+          -0.39083,39.46818,0
+          -0.39098,39.46813,0
+          -0.391,39.46816,0
+          -0.39131,39.46861,0
+          -0.39135,39.46866,0
+          -0.39138,39.46869,0
+          -0.39141,39.46874,0
+          -0.39149,39.46882,0
+          -0.39164,39.46901,0
+          -0.39172,39.46899,0
+ 
+        </coordinates>
+      </LineString>
+    </Placemark>
+    <Placemark>
+      <name>Carrer de Calamocha, 1, Patraix, 46007 València, Valencia, España</name>
+      <styleUrl>#icon-1899-DB4436-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          -0.38846,39.46231,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name><![CDATA[Carrer de Vicent Branchat, 17, L'Olivereta, 46018 València, Valencia, España]]></name>
+      <styleUrl>#icon-1899-DB4436-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          -0.3969107,39.4706924,0
+        </coordinates>
+      </Point>
+    </Placemark>
+  </Document>
+</kml>

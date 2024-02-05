@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <name>Indicaciones de General Avilés (illeta) - Pius XII, Benicalap, 46015 Valencia, España a C/ de les Tres Forques, Nº 49, Patraix, 46018 València, Valencia, España</name>
+    <Style id="icon-1899-DB4436-nodesc-normal">
+      <IconStyle>
+        <color>ff3644db</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+        <hotSpot x="32" xunits="pixels" y="64" yunits="insetPixels"/>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0</scale>
+      </LabelStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <Style id="icon-1899-DB4436-nodesc-highlight">
+      <IconStyle>
+        <color>ff3644db</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+        <hotSpot x="32" xunits="pixels" y="64" yunits="insetPixels"/>
+      </IconStyle>
+      <LabelStyle>
+        <scale>1</scale>
+      </LabelStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <StyleMap id="icon-1899-DB4436-nodesc">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#icon-1899-DB4436-nodesc-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#icon-1899-DB4436-nodesc-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="line-1267FF-5000-nodesc-normal">
+      <LineStyle>
+        <color>ffff6712</color>
+        <width>5</width>
+      </LineStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <Style id="line-1267FF-5000-nodesc-highlight">
+      <LineStyle>
+        <color>ffff6712</color>
+        <width>7.5</width>
+      </LineStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <StyleMap id="line-1267FF-5000-nodesc">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#line-1267FF-5000-nodesc-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#line-1267FF-5000-nodesc-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Placemark>
+      <name>Indicaciones de General Avilés (illeta) - Pius XII, Benicalap, 46015 Valencia, España a C/ de les Tres Forques, Nº 49, Patraix, 46018 València, Valencia, España</name>
+      <styleUrl>#line-1267FF-5000-nodesc</styleUrl>
+      <LineString>
+        <tessellate>1</tessellate>
+        <coordinates>
+          -0.39631,39.48582,0
+          -0.39643,39.48577,0
+          -0.39702,39.48549,0
+          -0.39741,39.48532,0
+          -0.398,39.48508,0
+          -0.39806,39.48505,0
+          -0.39816,39.48501,0
+          -0.39877,39.48474,0
+          -0.39882,39.48471,0
+          -0.39935,39.48449,0
+          -0.39947,39.48443,0
+          -0.40007,39.48418,0
+          -0.40068,39.48389,0
+          -0.40083,39.48382,0
+          -0.40128,39.4836,0
+          -0.40146,39.4835,0
+          -0.4015,39.48348,0
+          -0.40153,39.48345,0
+          -0.40157,39.48341,0
+          -0.4016,39.48336,0
+          -0.40163,39.48336,0
+          -0.40164,39.48336,0
+          -0.40168,39.48335,0
+          -0.40172,39.48334,0
+          -0.40176,39.48332,0
+          -0.4018,39.4833,0
+          -0.40183,39.48328,0
+          -0.40186,39.48326,0
+          -0.40189,39.48322,0
+    
+        </coordinates>
+      </LineString>
+    </Placemark>
+    <Placemark>
+      <name>General Avilés (illeta) - Pius XII, Benicalap, 46015 Valencia, España</name>
+      <styleUrl>#icon-1899-DB4436-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          -0.3963127,39.4858201,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>C/ de les Tres Forques, Nº 49, Patraix, 46018 València, Valencia, España</name>
+      <styleUrl>#icon-1899-DB4436-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          -0.393862,39.4637439,0
+        </coordinates>
+      </Point>
+    </Placemark>
+  </Document>
+</kml>

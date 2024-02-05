@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <name>Indicaciones de Plaça Num 26 Res Urb, 84, Benimaclet, 46020 València, Valencia, España a Av. Pío Baroja, 82, Campanar, 46035 València, Valencia, España</name>
+    <Style id="icon-1899-DB4436-nodesc-normal">
+      <IconStyle>
+        <color>ff3644db</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+        <hotSpot x="32" xunits="pixels" y="64" yunits="insetPixels"/>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0</scale>
+      </LabelStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <Style id="icon-1899-DB4436-nodesc-highlight">
+      <IconStyle>
+        <color>ff3644db</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+        <hotSpot x="32" xunits="pixels" y="64" yunits="insetPixels"/>
+      </IconStyle>
+      <LabelStyle>
+        <scale>1</scale>
+      </LabelStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <StyleMap id="icon-1899-DB4436-nodesc">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#icon-1899-DB4436-nodesc-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#icon-1899-DB4436-nodesc-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="line-1267FF-5000-nodesc-normal">
+      <LineStyle>
+        <color>ffff6712</color>
+        <width>5</width>
+      </LineStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <Style id="line-1267FF-5000-nodesc-highlight">
+      <LineStyle>
+        <color>ffff6712</color>
+        <width>7.5</width>
+      </LineStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <StyleMap id="line-1267FF-5000-nodesc">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#line-1267FF-5000-nodesc-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#line-1267FF-5000-nodesc-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Placemark>
+      <name>Indicaciones de Plaça Num 26 Res Urb, 84, Benimaclet, 46020 València, Valencia, España a Av. Pío Baroja, 82, Campanar, 46035 València, Valencia, España</name>
+      <styleUrl>#line-1267FF-5000-nodesc</styleUrl>
+      <LineString>
+        <tessellate>1</tessellate>
+        <coordinates>
+          -0.35277,39.48754,0
+          -0.35247,39.48631,0
+          -0.35226,39.48544,0
+          -0.35193,39.4842,0
+          -0.35183,39.48385,0
+          -0.35172,39.48341,0
+          -0.35161,39.48294,0
+          -0.35158,39.48277,0
+          -0.35151,39.48241,0
+          -0.35152,39.48233,0
+          -0.35154,39.48225,0
+          -0.35157,39.48219,0
+          -0.35162,39.4821,0
+          -0.35169,39.48207,0
+          -0.35175,39.48205,0
+          -0.3518,39.48201,0
+          -0.35185,39.48198,0
+          -0.3519,39.48194,0
+          -0.35194,39.48189,0
+          -0.35197,39.48185,0
+          -0.352,39.4818,0
+          -0.35201,39.48177,0
+          -0.35202,39.48175,0
+          -0.35203,39.48173,0
+          -0.35203,39.4817,0
+          -0.35204,39.48167,0
+          -0.35204,39.48165,0
+          -0.35204,39.48162,0
+          -0.35204,39.4816,0
+          -0.35202,39.48147,0
+          -0.35218,39.48135,0
+          -0.35238,39.48123,0
+          -0.3528,39.48095,0
+          -0.35284,39.48093,0
+          -0.35289,39.48091,0
+          -0.35293,39.48087,0
+          -0.35297,39.48084,0
+          -0.35318,39.48068,0
+          -0.35344,39.48048,0
+          -0.35416,39.47979,0
+          -0.35434,39.47956,0
+          -0.35462,39.47922,0
+          -0.35473,39.47897,0
+          -0.35479,39.47892,0
+          -0.35488,39.47874,0
+          -0.35498,39.47862,0
+
+        </coordinates>
+      </LineString>
+    </Placemark>
+    <Placemark>
+      <name>Plaça Num 26 Res Urb, 84, Benimaclet, 46020 València, Valencia, España</name>
+      <styleUrl>#icon-1899-DB4436-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          -0.3527656,39.487543,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>Av. Pío Baroja, 82, Campanar, 46035 València, Valencia, España</name>
+      <styleUrl>#icon-1899-DB4436-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          -0.4071936,39.4804561,0
+        </coordinates>
+      </Point>
+    </Placemark>
+  </Document>
+</kml>
