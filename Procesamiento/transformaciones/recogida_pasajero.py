@@ -58,30 +58,51 @@ parser.add_argument(
 
 args, opts = parser.parse_known_args()
 
+pasajeros_en_coche = []
+
+def car_select_cartera(coche):
+    client = bigquery.Client()
+
+    query = f"SELECT Cartera FROM `{args.project_id}.{args.dataset_id}.{args.car_table}` WHERE ID_coche = {coche['id_coche']}"
+    result = client.query(query).result()
+    
+    # Assuming there is only one row in the result
+    for row in result:
+        return row.Cartera if hasattr(row, 'Cartera') else 0
+
+    return 0 
+
 def car_update_bigquery(coche):
     client = bigquery.Client()
 
     coche['plazas'] = int(coche['plazas']) - 1
     coche['id_coche'] = int(coche['id_coche'])
-    ganancia_pasajero = coche['cartera'] + coche['precio'] / 1.25
-    #print(type(row['id_coche']))
+
+    cartera_value = car_select_cartera(coche)
+    ganancia_pasajero = cartera_value + coche['precio'] / 1.25
    
     query = f"UPDATE `{args.project_id}.{args.dataset_id}.{args.car_table}` SET Plazas = {coche['plazas']}, Cartera = {ganancia_pasajero} WHERE ID_coche = {coche['id_coche']}"
     client.query(query).result()
 
+def person_select_cartera(persona):
+    client = bigquery.Client()
+
+    query = f"SELECT Cartera FROM `{args.project_id}.{args.dataset_id}.{args.person_table}` WHERE ID_persona = {persona['id_persona']}"
+    return client.query(query).result()
+
 def person_update_bigquery(persona, coche):
     client = bigquery.Client()
 
-    persona['cartera'] = int(persona['cartera']) - int(coche['precio'])
+    persona['cartera'] = person_select_cartera(persona) - int(coche['precio'])
     persona['id_persona'] = int(persona['id_persona'])
 
-    query = f"UPDATE `{args.project_id}.{args.dataset_id}.{args.car_table}` SET Cartera = {persona['cartera']} WHERE ID_persona = {persona['id_persona']}"
+    query = f"UPDATE `{args.project_id}.{args.dataset_id}.{args.person_table}` SET Cartera = {persona['cartera']} WHERE ID_persona = {persona['id_persona']}"
     client.query(query).result()
     #print(type(row['id_coche']))
 
 class ProcessData(beam.DoFn):
     def process(self, element):
-
+        #logging.info(element)
         hora, datos = element
         coches = [dato for dato in datos if 'id_coche' in dato]
         personas = [dato for dato in datos if 'id_persona' in dato]
@@ -89,10 +110,26 @@ class ProcessData(beam.DoFn):
         # si no hay coches o personas, no hacemos nada
         if len(coches) == 0 or len(personas) == 0:
             return None
+        else:
+            for persona in personas:
+                if persona['coordenadas'][1] == persona['punto_destino']:
+                    for ids in pasajeros_en_coche:
+                        if persona['id_persona'] == ids:
+                            print(f'pasajeros en el coche {pasajeros_en_coche}')
+                            pasajeros_en_coche.remove(ids)
+                            print(f'pasajero eliminado {pasajeros_en_coche}')
+
             
         try:
             for coche in coches:
                 for pasajero in personas:
+                    id_pasajero = pasajero['id_persona']
+
+                    #Comprueba que el pasajero no este en un coche
+                    if id_pasajero in pasajeros_en_coche:
+                        print("Pasajero ya en un coche")
+                        return None
+
                     # Calcula la distancia entre los puntos
                     distancia_recogida = haversine((coche['coordenadas'][1][0], coche['coordenadas'][1][1]),
                                     (pasajero['coordenadas'][1][0], pasajero['coordenadas'][1][1]),
@@ -101,11 +138,11 @@ class ProcessData(beam.DoFn):
                     # selecciona la distancia a la que el pasajero está dispuesto a desplazarse segun su mood
                     distancia_maxima = 0
                     if pasajero['mood'] == 'antipatico':
-                        distancia_maxima = 250
+                        distancia_maxima = 25000
                     elif pasajero['mood'] == 'normal':
-                        distancia_maxima = 600
+                        distancia_maxima = 60000
                     elif pasajero['mood'] == 'majo':
-                        distancia_maxima = 1000
+                        distancia_maxima = 10000
                     # si la posicion actual esta a x distancia entraga a recoger
                     if distancia_recogida <= distancia_maxima:
                         # calcula la distancia entre los destinos
@@ -124,10 +161,10 @@ class ProcessData(beam.DoFn):
                                 return None
                             # Si hay plazas y dinero hay match!!
                             logging.info(f'¡MATCH! El coche {coche["id_coche"]} ha recogido al pasajero {pasajero["id_persona"]}')
-                            #car_update_bigquery(coche, pasajero)
-                            coche['plazas'] -= 1
-                            pasajero['cartera'] -= coche['precio']
-
+                            pasajeros_en_coche.append(id_pasajero)
+                            car_update_bigquery(coche)
+                            person_update_bigquery(pasajero, coche)
+                            
 
         except Exception as e:
             logging.error(f"Error procesando datos: {e}")

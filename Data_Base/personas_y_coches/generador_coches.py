@@ -115,7 +115,7 @@ def generar_precio_compra():
     #return max(precio_final, 0)
 
 def generar_precio_inicial():
-    return round(random.uniform(0.005, 0.02), 2)
+    return round(random.uniform(0.005, 0.02), 3)
 
 def generar_coche(id):
     id_coche = generar_id_coche(id)
@@ -228,7 +228,7 @@ def publicar_movimiento(coordenadas, project_id, topic_car, dataset_id, table_id
             
             try:
                 car_publisher = PubSubCarMessage(project_id, topic_car)
-                message: dict = convertir_a_json(id_coche, punto_mapa, punto_destino, plazas, 1000)
+                message: dict = convertir_a_json(id_coche, punto_mapa, punto_destino, plazas, precio)
                 car_publisher.publishCarMessage(message)
                 
             except Exception as e:
@@ -295,7 +295,6 @@ if __name__ == "__main__":
 
         ruta_aleatoria = random.choice(archivos_rutas)
         ruta_completa = os.path.join(ruta_rutas, ruta_aleatoria)
-        print(ruta_aleatoria)
 
         coordenadas_ruta = leer_coordenadas_desde_kml(ruta_completa)
         
