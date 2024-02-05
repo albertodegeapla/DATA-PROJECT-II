@@ -5,6 +5,7 @@ from haversine import haversine, Unit
 
 import argparse
 import json
+import logging
 
 # Este script escucha de dos topics a la vez, coches y pasajeros, y dependiendo de ciertas reglas
 # ...como son la distancia entre coordenadas, entre destinos, rango de alcance y precio, decidimos
@@ -60,32 +61,35 @@ class ProcessData(beam.DoFn):
     def process(self, element):
         datos_coche, datos_pasajero = element
         # El mood, que tendremos en cuenta a la hora de recoger, lo hardcodeamos
-        distancia_rangos = {'mood_1': 500, 'mood_2': 750, 'mood_3': 1000}
+        distancia_rangos = {'antipatico': 50000, 'normal': 75000, 'majo': 100000}
 
         # Calcular la distancia entre el coche y el pasajero, usando la librería Haversine
-        distancia = haversine((datos_coche['coordenadas']['latitud'], datos_coche['coordenadas']['longitud']),
-                             (datos_pasajero['coordenadas']['latitud'], datos_pasajero['coordenadas']['longitud']),
+        distancia = haversine((datos_coche['coordenadas'][1][0], datos_coche['coordenadas'][1][1]),
+                             (datos_pasajero['coordenadas'][1][0], datos_pasajero['coordenadas'][1][1]),
                              unit=Unit.METERS)
 
         # Check si la distancia en metros esta dentro del rango del mood
         for mood, rango in distancia_rangos.items():
             if distancia <= rango:
                 # Check distancia entre destinos
-                destinos_distancia = haversine((datos_coche['punto_destino']['latitud'], datos_coche['punto_destino']['longitud']),
-                                          (datos_pasajero['punto_destino']['latitud'], datos_pasajero['punto_destino']['longitud']),
+                destinos_distancia = haversine((datos_coche['punto_destino'][0], datos_coche['punto_destino'][1]),
+                                          (datos_pasajero['punto_destino'][0], datos_pasajero['punto_destino'][1]),
                                           unit=Unit.METERS)
 
                 # Check destinos_distancia menor a 500 metros (podemos cambiarlo)
                 if destinos_distancia <= 500:
                     # Check dinero en la wallet
                     if datos_pasajero['cartera'] >= datos_coche['precio']:
-                        # Recoger al pasajero
+                        # Recoger al pasajero y pasajero paga
+                        datos_pasajero['cartera'] -= datos_coche['precio']
                         datos_coche['plazas'] -= 1
-                        picked_up = {'coche': datos_coche, 'pasajero': datos_pasajero}
-                        yield picked_up
+                        # El dinero del pasajero se suma a la cartera del conductor
+                        datos_coche['cartera'] += datos_coche['precio'] / 1.25
 
-                        # Write en BigQuery (cambiar con código de BigQuery)
+                        picked_up = {'coche': datos_coche, 'pasajero': datos_pasajero}
+                        print(picked_up)
                         yield picked_up
+                        
 
 def run_local():
     # Este es el Set up para correrlo en local, abajo esta el set up para la nube
@@ -114,8 +118,42 @@ def run_local():
                             | "print person" >> beam.Map(print)
         )
 
+        #   Part 02: Get the aggregated data of the vehicle within the section.
+
+        datos_coche_procesados = (
+
+            datos_coche 
+                | "Process car Data" >> beam.ParDo(ProcessData())
+                #| "Encode cars to Bytes" >> beam.Map(lambda x: json.dumps(x).encode("utf-8"))
+                | "Write to BigQuery Car" >> beam.io.WriteToBigQuery(
+                        write_disposition=beam.io.BigQueryDisposition.WRITE_APPEND,
+                        create_disposition=beam.io.BigQueryDisposition.CREATE_NEVER,
+                        table=f"{project_id}:{dataset_id}.{table_car}",
+                        schema="id_coche:INTEGER,coordenadas:RECORD,punto_destino:RECORD,plazas:INTEGER,precio:FLOAT,cartera:FLOAT",
+                        rows=lambda x: x['coche']
+                    )
+        )
+
+        datos_pasajero_procesados = (
+
+            datos_pasajero 
+                | "Process passenger Data" >> beam.ParDo(ProcessData())
+                #| "Encode pasajeros to Bytes" >> beam.Map(lambda x: json.dumps(x).encode("utf-8"))
+                | "Write to BigQuery Passenger" >> beam.io.WriteToBigQuery(
+                        write_disposition=beam.io.BigQueryDisposition.WRITE_APPEND,
+                        create_disposition=beam.io.BigQueryDisposition.CREATE_NEVER,
+                        table=f"{project_id}:{dataset_id}.{table_person}",
+                        schema="id_persona:INTEGER,coordenadas:RECORD,punto_destino:RECORD,cartera:FLOAT,mood:STRING",
+                        rows=lambda x: x['pasajero']
+                    )
+        )
+
+
+
+
+
         # Join datos de coche y pasajero por key comun, en este caso tiempo
-        joined_data = ({'coche': datos_coche, 'pasajero': datos_pasajero}
+        '''joined_data = ({'coche': datos_coche, 'pasajero': datos_pasajero}
                        | "Join Data" >> beam.CoGroupByKey()
                        | "pabl0" >> beam.Map(lambda x: x[1])
                        | "Process Data" >> beam.ParDo(ProcessData())
@@ -123,7 +161,7 @@ def run_local():
                            table=f"{project_id}:{dataset_id}.{table_car}",
                            write_disposition=beam.io.BigQueryDisposition.WRITE_APPEND,
                            create_disposition=beam.io.BigQueryDisposition.CREATE_IF_NEEDED
-                       ))
+                       ))'''
         
         '''for data in joined_data:
             # Aqui no se que quieres hacer, te hago la conexion a la tabla coches, la conexion a la tabla peatones es la misma
@@ -134,6 +172,10 @@ def run_local():
             )'''
 
 if __name__ == "__main__":
+
+    logging.getLogger().setLevel(logging.INFO)
+    logging.info("The process started")
+
     run_local()
 
 
