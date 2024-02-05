@@ -192,6 +192,7 @@ def convertir_a_json(id_coche, coordenadas, punto_destino, plazas, precio):
 
 def generar_fecha_hora():
     fecha_hora = datetime.now()
+    fecha_hora = fecha_hora.replace(second=(fecha_hora.second // 2) * 2)
     fecha_hora_str = fecha_hora.strftime("%d/%m/%Y %H:%M:%S")
     return fecha_hora_str
 
