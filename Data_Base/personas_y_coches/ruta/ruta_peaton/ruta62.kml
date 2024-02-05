@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <name><![CDATA[Indicaciones de Av. de Pérez Galdós, 82, Extramurs, 46008 València, Valencia, España a Gran Via del Marqués del Túria, 62, L'Eixample, 46005 València, Valencia, España]]></name>
+    <Style id="icon-1899-DB4436-nodesc-normal">
+      <IconStyle>
+        <color>ff3644db</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+        <hotSpot x="32" xunits="pixels" y="64" yunits="insetPixels"/>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0</scale>
+      </LabelStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <Style id="icon-1899-DB4436-nodesc-highlight">
+      <IconStyle>
+        <color>ff3644db</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+        <hotSpot x="32" xunits="pixels" y="64" yunits="insetPixels"/>
+      </IconStyle>
+      <LabelStyle>
+        <scale>1</scale>
+      </LabelStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <StyleMap id="icon-1899-DB4436-nodesc">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#icon-1899-DB4436-nodesc-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#icon-1899-DB4436-nodesc-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="line-1267FF-5000-nodesc-normal">
+      <LineStyle>
+        <color>ffff6712</color>
+        <width>5</width>
+      </LineStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <Style id="line-1267FF-5000-nodesc-highlight">
+      <LineStyle>
+        <color>ffff6712</color>
+        <width>7.5</width>
+      </LineStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <StyleMap id="line-1267FF-5000-nodesc">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#line-1267FF-5000-nodesc-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#line-1267FF-5000-nodesc-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Placemark>
+      <name><![CDATA[Indicaciones de Av. de Pérez Galdós, 82, Extramurs, 46008 València, Valencia, España a Gran Via del Marqués del Túria, 62, L'Eixample, 46005 València, Valencia, España]]></name>
+      <styleUrl>#line-1267FF-5000-nodesc</styleUrl>
+      <LineString>
+        <tessellate>1</tessellate>
+        <coordinates>
+          -0.39141,39.469,0
+          -0.39146,39.46907,0
+          -0.39157,39.46924,0
+          -0.39159,39.46926,0
+          -0.39188,39.46971,0
+          -0.39206,39.46996,0
+          -0.39141,39.47023,0
+          -0.39084,39.47047,0
+          -0.39004,39.46938,0
+          -0.39146,39.46907,0
+          -0.39159,39.46903,0
+          -0.39164,39.46901,0
+          -0.39172,39.46899,0
+          -0.39177,39.4688,0
+          -0.39183,39.46866,0
+          -0.39235,39.46783,0
+          -0.39258,39.46747,0
+          -0.39203,39.46739,0
+          -0.39152,39.46729,0
+          -0.39101,39.46719,0
+          -0.39057,39.46709,0
+          -0.39047,39.46706,0
+          -0.39028,39.46703,0
+          -0.38999,39.46699,0
+          -0.3884,39.46671,0
+          -0.3883,39.46669,0
+          -0.38818,39.46667,0
+          -0.38811,39.46666,0
+          -0.388,39.46664,0
+          -0.38681,39.46639,0
+          -0.38658,39.46636,0
+          -0.38617,39.4663,0
+          -0.386,39.46627,0
+          -0.38587,39.46625,0
+          -0.38576,39.46623,0
+          -0.38453,39.46601,0
+          -0.38449,39.466,0
+          -0.38404,39.46593,0
+          -0.38371,39.46586,0
+          -0.38256,39.46566,0
+          -0.38242,39.46564,0
+        </coordinates>
+      </LineString>
+    </Placemark>
+    <Placemark>
+      <name>Av. de Pérez Galdós, 82, Extramurs, 46008 València, Valencia, España</name>
+      <styleUrl>#icon-1899-DB4436-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          -0.3914094,39.4689992,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name><![CDATA[Gran Via del Marqués del Túria, 62, L'Eixample, 46005 València, Valencia, España]]></name>
+      <styleUrl>#icon-1899-DB4436-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          -0.367225,39.4675305,0
+        </coordinates>
+      </Point>
+    </Placemark>
+  </Document>
+</kml>
