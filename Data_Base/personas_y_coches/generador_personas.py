@@ -94,7 +94,7 @@ def generar_cartera():
     return round(random.uniform(2, 100), 2)
 
 def generar_mood():
-    return random.choice(['Maj@', 'Normal', 'Antipatic@'])
+    return random.choice(['Majo', 'Normal', 'Antipatico'])
 
 def generar_persona(id):
     id_persona = generar_id_persona(id)
@@ -114,7 +114,8 @@ def generar_persona(id):
         'Mood':mood,
         'N_viajes':0,
         'Cartera':cartera,
-        'Cartera_inicial': cartera
+        'Cartera_inicial': cartera,
+        'Coordenadas_persona': None
     }
 
     return peaton
@@ -136,7 +137,7 @@ def write_peaton_to_bigquery(project_id, dataset_id, table_peaton, n_peatones):
  
         peaton_pcollection | "WriteToBigQuery" >> beam.io.WriteToBigQuery(
                 table=f'{project_id}:{dataset_id}.{table_peaton}',
-                schema = '{"ID_persona":"INTEGER", "Nombre":"STRING", "Primer_apellido":"STRING", "Segundo_apellido":"STRING","Edad":"INTEGER","N_viajes":"INTEGER", "Cartera":"FLOAT", "Cartera_inicial":"FLOAT", "Mood":"STRING"}',
+                schema = '{"ID_persona":"INTEGER", "Nombre":"STRING", "Primer_apellido":"STRING", "Segundo_apellido":"STRING","Edad":"INTEGER","N_viajes":"INTEGER", "Cartera":"FLOAT", "Cartera_inicial":"FLOAT", "Mood":"STRING", "Coordenadas_persona":"STRING"}',
                 create_disposition=beam.io.BigQueryDisposition.CREATE_NEVER,
                 write_disposition=beam.io.BigQueryDisposition.WRITE_APPEND
             )
@@ -200,6 +201,7 @@ def publicar_movimiento(coordenadas, project_id, topic_peaton, id_persona, carte
             punto_mapa = (hora_actual.strftime("%Y-%m-%d %H:%M:%S"), coord_siguiente)
             
             try:
+                #CREAR FUNCIÓN QUE ACTUALICE LA COORDENADA DE LA TABLA DE BQ
                 car_publisher = PubSubPeatonMessage(project_id, topic_peaton)
                 message: dict = convertir_a_json(id_persona, punto_mapa, punto_destino, cartera, mood)
                 car_publisher.publishPeatonMessage(message)

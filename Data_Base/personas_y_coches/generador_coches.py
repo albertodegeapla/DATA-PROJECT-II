@@ -131,7 +131,8 @@ def generar_coche(id):
         'Plazas':plazas,
         'Precio_punto':precio_x_punto,
         'N_viajes':0,
-        'Cartera': 0.0
+        'Cartera': 0.0,
+        'Coordenadas_coche': None
     }
     
     return coche
@@ -153,7 +154,7 @@ def write_car_to_bigquery(project_id, dataset_id, table_id, n_coches):
  
         coches_pcollection | "WriteToBigQuery" >> beam.io.WriteToBigQuery(
                 table=f'{project_id}:{dataset_id}.{table_id}',
-                schema = '{"ID_coche":"INTEGER", "Marca":"STRING", "Matricula":"STRING", "Plazas":"INTEGER","Precio_punto":"FLOAT", "N_viajes":"INTEGER", "Cartera":"FLOAT"}',
+                schema = '{"ID_coche":"INTEGER", "Marca":"STRING", "Matricula":"STRING", "Plazas":"INTEGER","Precio_punto":"FLOAT", "N_viajes":"INTEGER", "Cartera":"FLOAT", "Coordenadas_coche":"STRING"}',
                 create_disposition=beam.io.BigQueryDisposition.CREATE_NEVER,
                 write_disposition=beam.io.BigQueryDisposition.WRITE_APPEND
             )
@@ -226,6 +227,7 @@ def publicar_movimiento(coordenadas, project_id, topic_car, dataset_id, table_id
             punto_mapa = (hora_actual.strftime("%Y-%m-%d %H:%M:%S"), coord_siguiente)
             
             try:
+                #CREAR FUNCIÓN QUE ACTUALICE LA COORDENADA DE LA TABLA DE BQ
                 car_publisher = PubSubCarMessage(project_id, topic_car)
                 message: dict = convertir_a_json(id_coche, punto_mapa, punto_destino, plazas, precio)
                 car_publisher.publishCarMessage(message)
