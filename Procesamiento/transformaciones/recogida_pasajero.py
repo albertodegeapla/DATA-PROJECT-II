@@ -165,6 +165,9 @@ class ProcessData(beam.DoFn):
                                 return None
                             # Si hay plazas y dinero hay match!!
                             logging.info(f'¡MATCH! El coche {coche["id_coche"]} ha recogido al pasajero {pasajero["id_persona"]}')
+
+                            ####### MIRAR CHECKEO DE PASAJEROS EN COCHE ################
+
                             pasajeros_en_coche.append(id_pasajero)
                             car_update_bigquery(coche)
                             person_update_bigquery(pasajero, coche)
@@ -211,63 +214,6 @@ def run_local():
             | "processData" >> beam.ParDo(ProcessData())
         )
         
-        
-
-        #   Part 02: Get the aggregated data of the vehicle within the section.
-
-        '''datos_coche_procesados = (
-
-            data 
-                | "Process car Data" >> beam.ParDo(ProcessData())
-                #| "Encode cars to Bytes" >> beam.Map(lambda x: json.dumps(x).encode("utf-8"))
-                
-                )'''
-        '''| "Write to BigQuery Car" >> beam.io.WriteToBigQuery(
-                        write_disposition=beam.io.BigQueryDisposition.WRITE_APPEND,
-                        create_disposition=beam.io.BigQueryDisposition.CREATE_NEVER,
-                        table=f"{project_id}:{dataset_id}.{table_car}",
-                        schema="id_coche:INTEGER,coordenadas:RECORD,punto_destino:RECORD,plazas:INTEGER,precio:FLOAT,cartera:FLOAT",
-                        rows=lambda x: x['coche']
-                    )'''
-
-        '''datos_pasajero_procesados = (
-
-            datos_pasajero 
-                | "Process passenger Data" >> beam.ParDo(ProcessData())
-                #| "Encode pasajeros to Bytes" >> beam.Map(lambda x: json.dumps(x).encode("utf-8"))
-                
-        )'''
-        '''| "Write to BigQuery Passenger" >> beam.io.WriteToBigQuery(
-                        write_disposition=beam.io.BigQueryDisposition.WRITE_APPEND,
-                        create_disposition=beam.io.BigQueryDisposition.CREATE_NEVER,
-                        table=f"{project_id}:{dataset_id}.{table_person}",
-                        schema="id_persona:INTEGER,coordenadas:RECORD,punto_destino:RECORD,cartera:FLOAT,mood:STRING",
-                        rows=lambda x: x['pasajero']
-                    )'''
-
-
-
-
-
-        # Join datos de coche y pasajero por key comun, en este caso tiempo
-        '''joined_data = ({'coche': datos_coche, 'pasajero': datos_pasajero}
-                       | "Join Data" >> beam.CoGroupByKey()
-                       | "pabl0" >> beam.Map(lambda x: x[1])
-                       | "Process Data" >> beam.ParDo(ProcessData())
-                       | "Write to BigQuery" >> beam.io.WriteToBigQuery(
-                           table=f"{project_id}:{dataset_id}.{table_car}",
-                           write_disposition=beam.io.BigQueryDisposition.WRITE_APPEND,
-                           create_disposition=beam.io.BigQueryDisposition.CREATE_IF_NEEDED
-                       ))'''
-        
-        '''for data in joined_data:
-            # Aqui no se que quieres hacer, te hago la conexion a la tabla coches, la conexion a la tabla peatones es la misma
-            data | "Write car to BigQuery" >> beam.io.WriteToBigQuery(
-                table=f"{project_id}:{dataset_id}.{table_car}",
-                write_disposition=beam.io.BigQueryDisposition.WRITE_APPEND,
-                create_disposition=beam.io.BigQueryDisposition.CREATE_NEVER
-            )'''
-
 if __name__ == "__main__":
 
     logging.getLogger().setLevel(logging.INFO)

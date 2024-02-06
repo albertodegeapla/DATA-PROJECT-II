@@ -141,7 +141,7 @@ def write_car_to_bigquery(project_id, dataset_id, table_id, n_coches):
         coches_pcollection | "WriteToBigQuery" >> beam.io.WriteToBigQuery(
                 table=f'{project_id}:{dataset_id}.{table_id}',
                 schema = '{"ID_coche":"INTEGER", "Marca":"STRING", "Matricula":"STRING", "Plazas":"INTEGER", "Precio_punto":"FLOAT", "N_viajes":"INTEGER", "N_pasajeros":"INTEGER", "Cartera":"FLOAT", "Coordenadas_coche":"STRING"}',
-                create_disposition=beam.io.BigQueryDisposition.CREATE_NEVER,
+   create_disposition=beam.io.BigQueryDisposition.CREATE_NEVER,
                 write_disposition=beam.io.BigQueryDisposition.WRITE_APPEND
             )
           
