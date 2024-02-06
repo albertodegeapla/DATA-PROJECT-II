@@ -99,21 +99,6 @@ def generar_edad_coche():
 def generar_plazas():
     return 4
 
-def generar_kilometraje():
-    return random.randint(1000, 200000)
-
-def generar_precio_compra():
-    return random.randint(10000, 80000)
-
-
-#### en base a los km y el precio de compra y edad del coche generar un dato de 0,005 a 0,05 max y un min
-#def generar_cobro_km(kilometraje, precio_compra):
-    #descuento_por_kilometraje = 0.05  # Descuento del 5% por cada 10000km
-    #descuento = (kilometraje // 10000) * descuento_por_kilometraje
-    #precio_final = precio_compra - descuento
-
-    #return max(precio_final, 0)
-
 def generar_precio_inicial():
     return round(random.uniform(0.005, 0.02), 3)
 
@@ -131,6 +116,7 @@ def generar_coche(id):
         'Plazas':plazas,
         'Precio_punto':precio_x_punto,
         'N_viajes':0,
+        'N_pasajeros':0,
         'Cartera': 0.0,
         'Coordenadas_coche': None
     }
@@ -154,9 +140,8 @@ def write_car_to_bigquery(project_id, dataset_id, table_id, n_coches):
  
         coches_pcollection | "WriteToBigQuery" >> beam.io.WriteToBigQuery(
                 table=f'{project_id}:{dataset_id}.{table_id}',
-
-                schema = '{"ID_coche":"INTEGER", "Marca":"STRING", "Matricula":"STRING", "Plazas":"INTEGER","Precio_punto":"FLOAT", "N_viajes":"INTEGER", "Cartera":"FLOAT", "Coordenadas_coche":"STRING"}',
-                create_disposition=beam.io.BigQueryDisposition.CREATE_NEVER,
+                schema = '{"ID_coche":"INTEGER", "Marca":"STRING", "Matricula":"STRING", "Plazas":"INTEGER", "Precio_punto":"FLOAT", "N_viajes":"INTEGER", "N_pasajeros":"INTEGER", "Cartera":"FLOAT", "Coordenadas_coche":"STRING"}',
+   create_disposition=beam.io.BigQueryDisposition.CREATE_NEVER,
                 write_disposition=beam.io.BigQueryDisposition.WRITE_APPEND
             )
           
@@ -281,7 +266,10 @@ if __name__ == "__main__":
     n_coches = int(args.n_coches)
 
     # publicar en bigquery el num de coches a usar
-    write_car_to_bigquery(project_id, dataset_id, table_id, n_coches)
+    # pide al usuario que escriba 'peatones' para escribirlos en big querry
+    check = input("Escriba 'coches' para publicar en bigquery o 'n' para no publicar: ")
+    if check == 'coches':
+        write_car_to_bigquery(project_id, dataset_id, table_id, n_coches)
     id_coches = id_car_generator(n_coches)
      
     while(True):
