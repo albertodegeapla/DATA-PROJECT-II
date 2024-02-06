@@ -10,3 +10,5 @@ argparse
 logging
 pandas
 haversine
+streamlit
+folium

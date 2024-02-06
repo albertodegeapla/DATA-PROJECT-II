@@ -123,7 +123,6 @@ def generar_coche(id):
     matricula = generar_matricula()
     plazas = generar_plazas()
     precio_x_punto = generar_precio_inicial()
-    
 
     coche = {
         'ID_coche':id_coche,
@@ -131,7 +130,9 @@ def generar_coche(id):
         'Matricula':matricula,
         'Plazas':plazas,
         'Precio_punto':precio_x_punto,
-        'Cartera': 0.0
+        'N_viajes':0,
+        'Cartera': 0.0,
+        'Coordenadas_coche': None
     }
     
     return coche
@@ -153,7 +154,8 @@ def write_car_to_bigquery(project_id, dataset_id, table_id, n_coches):
  
         coches_pcollection | "WriteToBigQuery" >> beam.io.WriteToBigQuery(
                 table=f'{project_id}:{dataset_id}.{table_id}',
-                schema = '{"ID_coche":"INTEGER", "Marca":"STRING", "Matricula":"STRING", "Plazas":"INTEGER", "Precio_punto":"FLOAT", "Cartera":"FLOAT"}',
+
+                schema = '{"ID_coche":"INTEGER", "Marca":"STRING", "Matricula":"STRING", "Plazas":"INTEGER","Precio_punto":"FLOAT", "N_viajes":"INTEGER", "Cartera":"FLOAT", "Coordenadas_coche":"STRING"}',
                 create_disposition=beam.io.BigQueryDisposition.CREATE_NEVER,
                 write_disposition=beam.io.BigQueryDisposition.WRITE_APPEND
             )
@@ -201,7 +203,6 @@ def generar_fecha_hora():
 def publicar_movimiento(coordenadas, project_id, topic_car, dataset_id, table_id, id_coche):
 
     longitud_ruta = len(coordenadas)
-    print(longitud_ruta)
     #punto_inicial = coordenadas_ruta[0]
     punto_destino = coordenadas[longitud_ruta-1]
     precio_inicial =  round(random.uniform(0.5, 1.5), 2)
@@ -227,6 +228,7 @@ def publicar_movimiento(coordenadas, project_id, topic_car, dataset_id, table_id
             punto_mapa = (hora_actual.strftime("%Y-%m-%d %H:%M:%S"), coord_siguiente)
             
             try:
+                #CREAR FUNCIÓN QUE ACTUALICE LA COORDENADA DE LA TABLA DE BQ
                 car_publisher = PubSubCarMessage(project_id, topic_car)
                 message: dict = convertir_a_json(id_coche, punto_mapa, punto_destino, plazas, precio)
                 car_publisher.publishCarMessage(message)
@@ -279,7 +281,7 @@ if __name__ == "__main__":
     n_coches = int(args.n_coches)
 
     # publicar en bigquery el num de coches a usar
-    #write_car_to_bigquery(project_id, dataset_id, table_id, n_coches)
+    write_car_to_bigquery(project_id, dataset_id, table_id, n_coches)
     id_coches = id_car_generator(n_coches)
      
     while(True):

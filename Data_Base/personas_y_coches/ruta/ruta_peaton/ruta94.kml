@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <name><![CDATA[Indicaciones de Carrer de Jorge Juan, 19D, L'Eixample, 46004 València, Valencia, España a Av. de Suècia, 14, El Pla del Real, 46010 València, Valencia, España]]></name>
+    <Style id="icon-1899-DB4436-nodesc-normal">
+      <IconStyle>
+        <color>ff3644db</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+        <hotSpot x="32" xunits="pixels" y="64" yunits="insetPixels"/>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0</scale>
+      </LabelStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <Style id="icon-1899-DB4436-nodesc-highlight">
+      <IconStyle>
+        <color>ff3644db</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+        <hotSpot x="32" xunits="pixels" y="64" yunits="insetPixels"/>
+      </IconStyle>
+      <LabelStyle>
+        <scale>1</scale>
+      </LabelStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <StyleMap id="icon-1899-DB4436-nodesc">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#icon-1899-DB4436-nodesc-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#icon-1899-DB4436-nodesc-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="line-1267FF-5000-nodesc-normal">
+      <LineStyle>
+        <color>ffff6712</color>
+        <width>5</width>
+      </LineStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <Style id="line-1267FF-5000-nodesc-highlight">
+      <LineStyle>
+        <color>ffff6712</color>
+        <width>7.5</width>
+      </LineStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <StyleMap id="line-1267FF-5000-nodesc">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#line-1267FF-5000-nodesc-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#line-1267FF-5000-nodesc-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Placemark>
+      <name><![CDATA[Indicaciones de Carrer de Jorge Juan, 19D, L'Eixample, 46004 València, Valencia, España a Av. de Suècia, 14, El Pla del Real, 46010 València, Valencia, España]]></name>
+      <styleUrl>#line-1267FF-5000-nodesc</styleUrl>
+      <LineString>
+        <tessellate>1</tessellate>
+        <coordinates>
+          -0.36896,39.46867,0
+          -0.3688,39.46845,0
+          -0.36828,39.46867,0
+          -0.36767,39.46894,0
+          -0.36649,39.46943,0
+          -0.36523,39.46996,0
+          -0.36512,39.47002,0
+          -0.36512,39.47001,0
+          -0.36511,39.47001,0
+          -0.36511,39.47,0
+          -0.3651,39.46999,0
+          -0.36509,39.46998,0
+          -0.36508,39.46998,0
+          -0.36507,39.46997,0
+          -0.36506,39.46997,0
+          -0.36505,39.46996,0
+          -0.36504,39.46996,0
+          -0.36503,39.46996,0
+          -0.36502,39.46995,0
+          -0.36501,39.46995,0
+          -0.365,39.46995,0
+          -0.36499,39.46995,0
+          -0.36497,39.46995,0
+          -0.36496,39.46995,0
+          -0.36495,39.46995,0
+          -0.36494,39.46995,0
+          -0.36493,39.46995,0
+          -0.36492,39.46996,0
+          -0.36491,39.46996,0
+          -0.3649,39.46996,0
+          -0.36489,39.46997,0
+        </coordinates>
+      </LineString>
+    </Placemark>
+    <Placemark>
+      <name><![CDATA[Carrer de Jorge Juan, 19D, L'Eixample, 46004 València, Valencia, España]]></name>
+      <styleUrl>#icon-1899-DB4436-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          -0.368956,39.4686702,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>Av. de Suècia, 14, El Pla del Real, 46010 València, Valencia, España</name>
+      <styleUrl>#icon-1899-DB4436-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          -0.3589667,39.4737442,0
+        </coordinates>
+      </Point>
+    </Placemark>
+  </Document>
+</kml>

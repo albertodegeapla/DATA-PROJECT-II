@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <name>Indicaciones de C/ dels Carters, 64, Jesús, 46017 València, Valencia, España a C/ del Músic Gomis, 26, Patraix, 46014 València, Valencia, España</name>
+    <Style id="icon-1899-DB4436-nodesc-normal">
+      <IconStyle>
+        <color>ff3644db</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+        <hotSpot x="32" xunits="pixels" y="64" yunits="insetPixels"/>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0</scale>
+      </LabelStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <Style id="icon-1899-DB4436-nodesc-highlight">
+      <IconStyle>
+        <color>ff3644db</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+        <hotSpot x="32" xunits="pixels" y="64" yunits="insetPixels"/>
+      </IconStyle>
+      <LabelStyle>
+        <scale>1</scale>
+      </LabelStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <StyleMap id="icon-1899-DB4436-nodesc">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#icon-1899-DB4436-nodesc-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#icon-1899-DB4436-nodesc-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="line-1267FF-5000-nodesc-normal">
+      <LineStyle>
+        <color>ffff6712</color>
+        <width>5</width>
+      </LineStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <Style id="line-1267FF-5000-nodesc-highlight">
+      <LineStyle>
+        <color>ffff6712</color>
+        <width>7.5</width>
+      </LineStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <StyleMap id="line-1267FF-5000-nodesc">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#line-1267FF-5000-nodesc-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#line-1267FF-5000-nodesc-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Placemark>
+      <name>Indicaciones de C/ dels Carters, 64, Jesús, 46017 València, Valencia, España a C/ del Músic Gomis, 26, Patraix, 46014 València, Valencia, España</name>
+      <styleUrl>#line-1267FF-5000-nodesc</styleUrl>
+      <LineString>
+        <tessellate>1</tessellate>
+        <coordinates>
+          -0.39946,39.4537,0
+          -0.39948,39.45371,0
+          -0.3995,39.45372,0
+          -0.3995,39.45386,0
+          -0.39952,39.45392,0
+          -0.39954,39.45396,0
+          -0.39962,39.4541,0
+          -0.3997,39.45424,0
+          -0.40015,39.45497,0
+          -0.40026,39.45514,0
+          -0.40031,39.45521,0
+          -0.40078,39.45601,0
+          -0.40084,39.45611,0
+          -0.4009,39.45619,0
+          -0.40118,39.45666,0
+          -0.40125,39.45677,0
+          -0.40131,39.45687,0
+          -0.40162,39.45738,0
+          -0.40178,39.45761,0
+          -0.402,39.45795,0
+          -0.40197,39.45799,0
+          -0.40194,39.45803,0
+          -0.40192,39.45807,0
+          -0.4019,39.45811,0
+          -0.40189,39.45816,0
+          -0.40188,39.4582,0
+          -0.40187,39.45824,0
+          -0.40187,39.45829,0
+          -0.40181,39.4584,0
+          -0.40178,39.45845,0
+          -0.40176,39.45851,0
+          -0.4017,39.45865,0
+          -0.40165,39.4587,0
+          -0.40117,39.45914,0
+          -0.40084,39.45947,0
+          -0.40076,39.45954,0
+          -0.40043,39.45933,0
+          -0.40031,39.45925,0
+          -0.39988,39.45895,0
+          -0.39961,39.45918,0
+        </coordinates>
+      </LineString>
+    </Placemark>
+    <Placemark>
+      <name>C/ dels Carters, 64, Jesús, 46017 València, Valencia, España</name>
+      <styleUrl>#icon-1899-DB4436-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          -0.39946,39.4537,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>C/ del Músic Gomis, 26, Patraix, 46014 València, Valencia, España</name>
+      <styleUrl>#icon-1899-DB4436-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          -0.3996065,39.4591782,0
+        </coordinates>
+      </Point>
+    </Placemark>
+  </Document>
+</kml>

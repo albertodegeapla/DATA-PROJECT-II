@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <name><![CDATA[Indicaciones de Carrer d'Hernández Lázaro, 7, Campanar, 46015 València, Valencia, España a Av. de les Corts Valencianes, 35, 46015 València, Valencia, España]]></name>
+    <Style id="icon-1899-DB4436-nodesc-normal">
+      <IconStyle>
+        <color>ff3644db</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+        <hotSpot x="32" xunits="pixels" y="64" yunits="insetPixels"/>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0</scale>
+      </LabelStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <Style id="icon-1899-DB4436-nodesc-highlight">
+      <IconStyle>
+        <color>ff3644db</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+        <hotSpot x="32" xunits="pixels" y="64" yunits="insetPixels"/>
+      </IconStyle>
+      <LabelStyle>
+        <scale>1</scale>
+      </LabelStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <StyleMap id="icon-1899-DB4436-nodesc">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#icon-1899-DB4436-nodesc-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#icon-1899-DB4436-nodesc-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="line-1267FF-5000-nodesc-normal">
+      <LineStyle>
+        <color>ffff6712</color>
+        <width>5</width>
+      </LineStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <Style id="line-1267FF-5000-nodesc-highlight">
+      <LineStyle>
+        <color>ffff6712</color>
+        <width>7.5</width>
+      </LineStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <StyleMap id="line-1267FF-5000-nodesc">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#line-1267FF-5000-nodesc-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#line-1267FF-5000-nodesc-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Placemark>
+      <name><![CDATA[Indicaciones de Carrer d'Hernández Lázaro, 7, Campanar, 46015 València, Valencia, España a Av. de les Corts Valencianes, 35, 46015 València, Valencia, España]]></name>
+      <styleUrl>#line-1267FF-5000-nodesc</styleUrl>
+      <LineString>
+        <tessellate>1</tessellate>
+        <coordinates>
+          -0.40345,39.47725,0
+          -0.4034,39.47803,0
+          -0.40338,39.47849,0
+          -0.40332,39.47857,0
+          -0.40332,39.47919,0
+          -0.40333,39.47929,0
+          -0.4033,39.47933,0
+          -0.40328,39.47936,0
+          -0.40327,39.47939,0
+          -0.40327,39.47957,0
+          -0.40325,39.47996,0
+          -0.40324,39.48014,0
+          -0.40324,39.48021,0
+          -0.40321,39.48022,0
+          -0.40319,39.48022,0
+          -0.40317,39.48023,0
+          -0.40315,39.48024,0
+          -0.40313,39.48025,0
+          -0.40311,39.48026,0
+          -0.4031,39.48027,0
+        </coordinates>
+      </LineString>
+    </Placemark>
+    <Placemark>
+      <name><![CDATA[Carrer d'Hernández Lázaro, 7, Campanar, 46015 València, Valencia, España]]></name>
+      <styleUrl>#icon-1899-DB4436-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          -0.403453,39.4772472,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>Av. de les Corts Valencianes, 35, 46015 València, Valencia, España</name>
+      <styleUrl>#icon-1899-DB4436-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          -0.3993575,39.4898394,0
+        </coordinates>
+      </Point>
+    </Placemark>
+  </Document>
+</kml>
