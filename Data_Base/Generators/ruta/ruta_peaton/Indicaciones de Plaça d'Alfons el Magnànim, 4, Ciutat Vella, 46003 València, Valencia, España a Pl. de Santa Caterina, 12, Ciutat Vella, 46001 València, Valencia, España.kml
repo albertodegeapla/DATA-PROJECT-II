@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <name><![CDATA[Indicaciones de Plaça d'Alfons el Magnànim, 4, Ciutat Vella, 46003 València, Valencia, España a Pl. de Santa Caterina, 12, Ciutat Vella, 46001 València, Valencia, España]]></name>
+    <Style id="icon-1899-DB4436-nodesc-normal">
+      <IconStyle>
+        <color>ff3644db</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+        <hotSpot x="32" xunits="pixels" y="64" yunits="insetPixels"/>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0</scale>
+      </LabelStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <Style id="icon-1899-DB4436-nodesc-highlight">
+      <IconStyle>
+        <color>ff3644db</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+        <hotSpot x="32" xunits="pixels" y="64" yunits="insetPixels"/>
+      </IconStyle>
+      <LabelStyle>
+        <scale>1</scale>
+      </LabelStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <StyleMap id="icon-1899-DB4436-nodesc">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#icon-1899-DB4436-nodesc-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#icon-1899-DB4436-nodesc-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="line-1267FF-5000-nodesc-normal">
+      <LineStyle>
+        <color>ffff6712</color>
+        <width>5</width>
+      </LineStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <Style id="line-1267FF-5000-nodesc-highlight">
+      <LineStyle>
+        <color>ffff6712</color>
+        <width>7.5</width>
+      </LineStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <StyleMap id="line-1267FF-5000-nodesc">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#line-1267FF-5000-nodesc-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#line-1267FF-5000-nodesc-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Placemark>
+      <name><![CDATA[Indicaciones de Plaça d'Alfons el Magnànim, 4, Ciutat Vella, 46003 València, Valencia, España a Pl. de Santa Caterina, 12, Ciutat Vella, 46001 València, Valencia, España]]></name>
+      <styleUrl>#line-1267FF-5000-nodesc</styleUrl>
+      <LineString>
+        <tessellate>1</tessellate>
+        <coordinates>
+          -0.37025,39.47174,0
+          -0.37021,39.47179,0
+          -0.37002,39.47222,0
+          -0.37004,39.47235,0
+          -0.37005,39.47245,0
+          -0.37005,39.4727,0
+          -0.37029,39.47273,0
+          -0.37072,39.4728,0
+          -0.3713,39.47292,0
+          -0.37133,39.47292,0
+          -0.37137,39.47293,0
+          -0.37181,39.47303,0
+          -0.37237,39.47317,0
+          -0.37271,39.47323,0
+          -0.37298,39.47328,0
+          -0.373,39.47328,0
+          -0.3732,39.47332,0
+          -0.37357,39.47339,0
+          -0.37382,39.47344,0
+          -0.37389,39.47346,0
+          -0.3739,39.47346,0
+          -0.37423,39.47354,0
+          -0.37431,39.47355,0
+          -0.37481,39.47365,0
+          -0.37483,39.47366,0
+          -0.37525,39.47375,0
+          -0.37548,39.4738,0
+          -0.37564,39.47377,0
+          -0.37571,39.47384,0
+          -0.37571,39.4739,0
+          -0.37572,39.47396,0
+          -0.37572,39.47404,0
+        </coordinates>
+      </LineString>
+    </Placemark>
+    <Placemark>
+      <name><![CDATA[Plaça d'Alfons el Magnànim, 4, Ciutat Vella, 46003 València, Valencia, España]]></name>
+      <styleUrl>#icon-1899-DB4436-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          -0.3702468,39.4717354,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>Pl. de Santa Caterina, 12, Ciutat Vella, 46001 València, Valencia, España</name>
+      <styleUrl>#icon-1899-DB4436-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          -0.3757228,39.4740403,0
+        </coordinates>
+      </Point>
+    </Placemark>
+  </Document>
+</kml>

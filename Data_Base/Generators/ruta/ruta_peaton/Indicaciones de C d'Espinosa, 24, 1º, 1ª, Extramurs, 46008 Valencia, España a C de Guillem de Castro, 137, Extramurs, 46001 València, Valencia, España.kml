@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <name><![CDATA[Indicaciones de C/ d'Espinosa, 24, 1º, 1ª, Extramurs, 46008 Valencia, España a C/ de Guillem de Castro, 137, Extramurs, 46001 València, Valencia, España]]></name>
+    <Style id="icon-1899-DB4436-nodesc-normal">
+      <IconStyle>
+        <color>ff3644db</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+        <hotSpot x="32" xunits="pixels" y="64" yunits="insetPixels"/>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0</scale>
+      </LabelStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <Style id="icon-1899-DB4436-nodesc-highlight">
+      <IconStyle>
+        <color>ff3644db</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+        <hotSpot x="32" xunits="pixels" y="64" yunits="insetPixels"/>
+      </IconStyle>
+      <LabelStyle>
+        <scale>1</scale>
+      </LabelStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <StyleMap id="icon-1899-DB4436-nodesc">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#icon-1899-DB4436-nodesc-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#icon-1899-DB4436-nodesc-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="line-1267FF-5000-nodesc-normal">
+      <LineStyle>
+        <color>ffff6712</color>
+        <width>5</width>
+      </LineStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <Style id="line-1267FF-5000-nodesc-highlight">
+      <LineStyle>
+        <color>ffff6712</color>
+        <width>7.5</width>
+      </LineStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <StyleMap id="line-1267FF-5000-nodesc">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#line-1267FF-5000-nodesc-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#line-1267FF-5000-nodesc-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Placemark>
+      <name><![CDATA[Indicaciones de C/ d'Espinosa, 24, 1º, 1ª, Extramurs, 46008 Valencia, España a C/ de Guillem de Castro, 137, Extramurs, 46001 València, Valencia, España]]></name>
+      <styleUrl>#line-1267FF-5000-nodesc</styleUrl>
+      <LineString>
+        <tessellate>1</tessellate>
+        <coordinates>
+          -0.38595,39.47202,0
+          -0.38571,39.47213,0
+          -0.38508,39.47215,0
+          -0.38402,39.47219,0
+          -0.38393,39.4722,0
+          -0.38329,39.47224,0
+          -0.38314,39.47168,0
+          -0.38384,39.47158,0
+          -0.38395,39.47156,0
+          -0.38402,39.47186,0
+          -0.38402,39.47188,0
+          -0.38402,39.47219,0
+          -0.38399,39.47248,0
+          -0.38397,39.47278,0
+          -0.38395,39.47302,0
+          -0.38395,39.47305,0
+          -0.38393,39.47377,0
+          -0.38394,39.47381,0
+          -0.38398,39.47401,0
+          -0.38405,39.47469,0
+          -0.38405,39.47473,0
+          -0.38406,39.47477,0
+          -0.3841,39.47526,0
+          -0.38411,39.47534,0
+          -0.384,39.4754,0
+          -0.38393,39.47545,0
+          -0.38388,39.47547,0
+          -0.38385,39.4755,0
+          -0.38381,39.4755,0
+          -0.3839,39.47552,0
+          -0.38397,39.47555,0
+          -0.384,39.47557,0
+          -0.38402,39.47559,0
+          -0.38405,39.47563,0
+          -0.38406,39.47574,0
+          -0.38406,39.47578,0
+        </coordinates>
+      </LineString>
+    </Placemark>
+    <Placemark>
+      <name><![CDATA[C/ d'Espinosa, 24, 1º, 1ª, Extramurs, 46008 Valencia, España]]></name>
+      <styleUrl>#icon-1899-DB4436-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          -0.3859508,39.4720238,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>C/ de Guillem de Castro, 137, Extramurs, 46001 València, Valencia, España</name>
+      <styleUrl>#icon-1899-DB4436-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          -0.3840591,39.4757803,0
+        </coordinates>
+      </Point>
+    </Placemark>
+  </Document>
+</kml>

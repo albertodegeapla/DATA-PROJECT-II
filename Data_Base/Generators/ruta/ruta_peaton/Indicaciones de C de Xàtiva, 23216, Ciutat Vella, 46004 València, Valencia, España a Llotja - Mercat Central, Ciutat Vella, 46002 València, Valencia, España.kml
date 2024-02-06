@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <name>Indicaciones de C/ de Xàtiva, 23216, Ciutat Vella, 46004 València, Valencia, España a Llotja - Mercat Central, Ciutat Vella, 46002 València, Valencia, España</name>
+    <Style id="icon-1899-DB4436-nodesc-normal">
+      <IconStyle>
+        <color>ff3644db</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+        <hotSpot x="32" xunits="pixels" y="64" yunits="insetPixels"/>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0</scale>
+      </LabelStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <Style id="icon-1899-DB4436-nodesc-highlight">
+      <IconStyle>
+        <color>ff3644db</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+        <hotSpot x="32" xunits="pixels" y="64" yunits="insetPixels"/>
+      </IconStyle>
+      <LabelStyle>
+        <scale>1</scale>
+      </LabelStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <StyleMap id="icon-1899-DB4436-nodesc">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#icon-1899-DB4436-nodesc-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#icon-1899-DB4436-nodesc-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="line-1267FF-5000-nodesc-normal">
+      <LineStyle>
+        <color>ffff6712</color>
+        <width>5</width>
+      </LineStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <Style id="line-1267FF-5000-nodesc-highlight">
+      <LineStyle>
+        <color>ffff6712</color>
+        <width>7.5</width>
+      </LineStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <StyleMap id="line-1267FF-5000-nodesc">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#line-1267FF-5000-nodesc-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#line-1267FF-5000-nodesc-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Placemark>
+      <name>Indicaciones de C/ de Xàtiva, 23216, Ciutat Vella, 46004 València, Valencia, España a Llotja - Mercat Central, Ciutat Vella, 46002 València, Valencia, España</name>
+      <styleUrl>#line-1267FF-5000-nodesc</styleUrl>
+      <LineString>
+        <tessellate>1</tessellate>
+        <coordinates>
+          -0.37519,39.46711,0
+          -0.3752,39.46711,0
+          -0.37524,39.46711,0
+          -0.3753,39.46711,0
+          -0.37595,39.46729,0
+          -0.37612,39.46733,0
+          -0.37649,39.46744,0
+          -0.37681,39.46752,0
+          -0.37697,39.46756,0
+          -0.37709,39.46759,0
+          -0.37733,39.46764,0
+          -0.37741,39.46766,0
+          -0.37748,39.46768,0
+          -0.3776,39.46771,0
+          -0.37786,39.46776,0
+          -0.37817,39.46783,0
+          -0.37886,39.46798,0
+          -0.37935,39.4681,0
+          -0.37951,39.46827,0
+          -0.37953,39.46831,0
+          -0.37954,39.46836,0
+          -0.37955,39.46843,0
+          -0.37956,39.46854,0
+          -0.37953,39.46862,0
+          -0.37942,39.4688,0
+          -0.37933,39.4689,0
+          -0.37927,39.46896,0
+          -0.3792,39.46905,0
+          -0.37913,39.46915,0
+          -0.37896,39.46938,0
+          -0.37889,39.46947,0
+          -0.37882,39.46956,0
+          -0.37864,39.46981,0
+          -0.37831,39.47022,0
+          -0.37829,39.47025,0
+          -0.378,39.47063,0
+          -0.37792,39.47075,0
+          -0.37781,39.4709,0
+          -0.37774,39.47099,0
+          -0.37758,39.47123,0
+          -0.37753,39.4713,0
+          -0.37742,39.47144,0
+          -0.37741,39.47145,0
+          -0.37716,39.47175,0
+          -0.37715,39.47176,0
+          -0.37702,39.4719,0
+          -0.37698,39.47196,0
+          -0.37695,39.47201,0
+          -0.37693,39.47205,0
+          -0.37692,39.47207,0
+          -0.37692,39.47209,0
+        </coordinates>
+      </LineString>
+    </Placemark>
+    <Placemark>
+      <name>C/ de Xàtiva, 23216, Ciutat Vella, 46004 València, Valencia, España</name>
+      <styleUrl>#icon-1899-DB4436-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          -0.3751919,39.4671059,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>Llotja - Mercat Central, Ciutat Vella, 46002 València, Valencia, España</name>
+      <styleUrl>#icon-1899-DB4436-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          -0.3769194,39.4720871,0
+        </coordinates>
+      </Point>
+    </Placemark>
+  </Document>
+</kml>
