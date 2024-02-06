@@ -7,6 +7,7 @@ import argparse
 import json
 import logging
 from google.cloud import bigquery
+from google.cloud import storage
 
 # Este script escucha de dos topics a la vez, coches y pasajeros, y dependiendo de ciertas reglas
 # ...como son la distancia entre coordenadas, entre destinos, rango de alcance y precio, decidimos
@@ -178,7 +179,7 @@ def add_key(element):
     key = element['coordenadas'][0]
     return key, element
 
-def run_local():
+'''def run_local():
     # Este es el Set up para correrlo en local, abajo esta el set up para la nube
     # que primero funcione aqui y depsues lo lanzamos a la nube 
     pipeline_options = PipelineOptions(streaming=True) 
@@ -189,14 +190,48 @@ def run_local():
     topic_person = args.person_topic_sub
     table_person = args.person_table
     topic_car = args.car_topic_sub
-    table_car = args.car_table
+    table_car = args.car_table'''
 
-    # Leemos de las pipelines de coche y pasajero 
-    # ya esta la config
+def crear_bucket (bucket_name):
 
-    with beam.Pipeline(options=pipeline_options) as p:
+    # Instancias de usuario:
+    storage_client = storage.Client()
+
+    # Le ponemos nombre al bucket:
+    bucket = storage_client.crear_bucket(bucket_name)
+
+    print(f"El bucket {bucket.name} ha sido creado")
+
+def run_GCP(options):
+    
+    project_id = options.project
+    dataset_id = options.dataset_id
+
+    topic_person = options.person_topic_sub
+    table_person = options.person_table
+    topic_car = options.car_topic_sub
+    table_car = options.car_table
+    # Hay que incluir el bucket en las options (equivalente a los argumentos)
+    bucket_name = options.bucket_name
+
+    # Hardcodear el bucket_name en caso de no funcionar options
+    # bucket_name = "nombre del bucket" 
+
+    crear_bucket(bucket_name)
+
+    with beam.Pipeline(options=PipelineOptions(
+        streaming=True,
+        # save_main_session=True
+        project=project_id,
+        runner="DataflowRunner",
+        temp_location=f"gs://{bucket_name}/tmp",
+        staging_location=f"gs://{bucket_name}/staging",
+        region="europe-west1"
+    )) as p:
         datos_coche = (p | "Read Car Data" >> beam.io.ReadFromPubSub(subscription=f'projects/{project_id}/subscriptions/{topic_car}') 
+                     | "Print Pub/Sub Message" >> beam.Map(lambda x: (print(x) or x))
                      | "decode car message" >> beam.Map(lambda x: json.loads(x)) 
+                     | "Print Decoded Message" >> beam.Map(lambda x: (print(x) or x))
                      | "addKeyCar" >> beam.Map(add_key)
                      | "WindowIntoCar" >> beam.WindowInto(beam.window.FixedWindows(2)) 
         )
@@ -210,82 +245,39 @@ def run_local():
             | "groupByKey" >> beam.GroupByKey()
             | "processData" >> beam.ParDo(ProcessData())
         )
-        
-        
 
-        #   Part 02: Get the aggregated data of the vehicle within the section.
+    # Leemos de las pipelines de coche y pasajero 
+    # ya esta la config
 
-        '''datos_coche_procesados = (
-
-            data 
-                | "Process car Data" >> beam.ParDo(ProcessData())
-                #| "Encode cars to Bytes" >> beam.Map(lambda x: json.dumps(x).encode("utf-8"))
-                
-                )'''
-        '''| "Write to BigQuery Car" >> beam.io.WriteToBigQuery(
-                        write_disposition=beam.io.BigQueryDisposition.WRITE_APPEND,
-                        create_disposition=beam.io.BigQueryDisposition.CREATE_NEVER,
-                        table=f"{project_id}:{dataset_id}.{table_car}",
-                        schema="id_coche:INTEGER,coordenadas:RECORD,punto_destino:RECORD,plazas:INTEGER,precio:FLOAT,cartera:FLOAT",
-                        rows=lambda x: x['coche']
-                    )'''
-
-        '''datos_pasajero_procesados = (
-
-            datos_pasajero 
-                | "Process passenger Data" >> beam.ParDo(ProcessData())
-                #| "Encode pasajeros to Bytes" >> beam.Map(lambda x: json.dumps(x).encode("utf-8"))
-                
+    '''with beam.Pipeline(options=pipeline_options) as p:
+        datos_coche = (p | "Read Car Data" >> beam.io.ReadFromPubSub(subscription=f'projects/{project_id}/subscriptions/{topic_car}') 
+                     | "Print Pub/Sub Message" >> beam.Map(lambda x: (print(x) or x))
+                     | "decode car message" >> beam.Map(lambda x: json.loads(x)) 
+                     | "Print Decoded Message" >> beam.Map(lambda x: (print(x) or x))
+                     | "addKeyCar" >> beam.Map(add_key)
+                     | "WindowIntoCar" >> beam.WindowInto(beam.window.FixedWindows(2)) 
+        )
+        datos_pasajero = (p | "Read Passenger Data" >> beam.io.ReadFromPubSub(subscription=f'projects/{project_id}/subscriptions/{topic_person}') 
+                        | "decode person message" >> beam.Map(lambda x: json.loads(x)) 
+                        | "addKeyPassenger" >> beam.Map(add_key)
+                        | "WindowIntoPeaton" >> beam.WindowInto(beam.window.FixedWindows(2)) 
+        )
+        data = ((datos_coche, datos_pasajero)
+            | "Flatten" >> beam.Flatten()
+            | "groupByKey" >> beam.GroupByKey()
+            | "processData" >> beam.ParDo(ProcessData())
         )'''
-        '''| "Write to BigQuery Passenger" >> beam.io.WriteToBigQuery(
-                        write_disposition=beam.io.BigQueryDisposition.WRITE_APPEND,
-                        create_disposition=beam.io.BigQueryDisposition.CREATE_NEVER,
-                        table=f"{project_id}:{dataset_id}.{table_person}",
-                        schema="id_persona:INTEGER,coordenadas:RECORD,punto_destino:RECORD,cartera:FLOAT,mood:STRING",
-                        rows=lambda x: x['pasajero']
-                    )'''
-
-
-
-
-
-        # Join datos de coche y pasajero por key comun, en este caso tiempo
-        '''joined_data = ({'coche': datos_coche, 'pasajero': datos_pasajero}
-                       | "Join Data" >> beam.CoGroupByKey()
-                       | "pabl0" >> beam.Map(lambda x: x[1])
-                       | "Process Data" >> beam.ParDo(ProcessData())
-                       | "Write to BigQuery" >> beam.io.WriteToBigQuery(
-                           table=f"{project_id}:{dataset_id}.{table_car}",
-                           write_disposition=beam.io.BigQueryDisposition.WRITE_APPEND,
-                           create_disposition=beam.io.BigQueryDisposition.CREATE_IF_NEEDED
-                       ))'''
         
-        '''for data in joined_data:
-            # Aqui no se que quieres hacer, te hago la conexion a la tabla coches, la conexion a la tabla peatones es la misma
-            data | "Write car to BigQuery" >> beam.io.WriteToBigQuery(
-                table=f"{project_id}:{dataset_id}.{table_car}",
-                write_disposition=beam.io.BigQueryDisposition.WRITE_APPEND,
-                create_disposition=beam.io.BigQueryDisposition.CREATE_NEVER
-            )'''
 
 if __name__ == "__main__":
 
     logging.getLogger().setLevel(logging.INFO)
     logging.info("The process started")
 
-    run_local()
+    #run_local()
+    run_GCP()
 
 
 
 
 
-'''def run_GCP():
-    with beam.Pipeline(options=PipelineOptions(
-        streaming=True,
-        # save_main_session=True
-        project=project_id,
-        runner="DataflowRunner",
-        temp_location=f"gs://{bucket_name}/tmp",
-        staging_location=f"gs://{bucket_name}/staging",
-        region="europe-west1"
-    )) '''
