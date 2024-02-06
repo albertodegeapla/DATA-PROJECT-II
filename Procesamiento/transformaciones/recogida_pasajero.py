@@ -60,17 +60,17 @@ args, opts = parser.parse_known_args()
 
 pasajeros_en_coche = []
 
-def car_select_cartera(coche):
+def car_select(coche):
     client = bigquery.Client()
 
-    query = f"SELECT Cartera FROM `{args.project_id}.{args.dataset_id}.{args.car_table}` WHERE ID_coche = {coche['id_coche']}"
+    query = f"SELECT Cartera, N_viajes, N_pasajeros FROM `{args.project_id}.{args.dataset_id}.{args.car_table}` WHERE ID_coche = {coche['id_coche']}"
     result = client.query(query).result()
     
     # Assuming there is only one row in the result
     for row in result:
-        return row.Cartera if hasattr(row, 'Cartera') else 0
+        return row.Cartera, row.N_viajes, row.N_pasajeros if hasattr(row, 'Cartera') else (0, 0, 0)
 
-    return 0 
+    return 0, 0, 0
 
 def car_update_bigquery(coche):
     client = bigquery.Client()
@@ -78,36 +78,54 @@ def car_update_bigquery(coche):
     coche['plazas'] = int(coche['plazas']) - 1
     coche['id_coche'] = int(coche['id_coche'])
 
-    cartera_value = car_select_cartera(coche)
+    cartera_value, n_viajes, n_pasajeros = car_select(coche)
     ganancia_pasajero = cartera_value + coche['precio'] / 1.25
+    n_pasajeros = n_pasajeros + 1
    
-    query = f"UPDATE `{args.project_id}.{args.dataset_id}.{args.car_table}` SET Plazas = {coche['plazas']}, Cartera = {ganancia_pasajero} WHERE ID_coche = {coche['id_coche']}"
+    query = f"UPDATE `{args.project_id}.{args.dataset_id}.{args.car_table}` SET Plazas = {coche['plazas']}, Cartera = {ganancia_pasajero}, N_pasajeros = {n_pasajeros} WHERE ID_coche = {coche['id_coche']}"
     client.query(query).result()
 
-def person_select_cartera(persona):
+def person_select(persona):
     client = bigquery.Client()
 
-    query = f"SELECT Cartera FROM `{args.project_id}.{args.dataset_id}.{args.person_table}` WHERE ID_persona = {persona['id_persona']}"
+    query = f"SELECT Cartera, N_viajes FROM `{args.project_id}.{args.dataset_id}.{args.person_table}` WHERE ID_persona = {persona['id_persona']}"
     result = client.query(query).result()
 
     for row in result:
-        cartera_value = row['Cartera']
-        return cartera_value
-    return 0
+        cartera_value = row.Cartera if hasattr(row, 'Cartera') else 0
+        n_viajes_value = row.N_viajes if hasattr(row, 'N_viajes') else 0
+        return cartera_value, n_viajes_value
+
+    return 0, 0
 
 def person_update_bigquery(persona, coche):
     client = bigquery.Client()
 
-    persona['cartera'] = person_select_cartera(persona) - int(coche['precio'])
+    cartera_value, n_viajes_value = person_select(persona)
+
+    persona['cartera'] = cartera_value - int(coche['precio'])
+    n_viajes = n_viajes_value + 1
     persona['id_persona'] = int(persona['id_persona'])
 
-    query = f"UPDATE `{args.project_id}.{args.dataset_id}.{args.person_table}` SET Cartera = {persona['cartera']} WHERE ID_persona = {persona['id_persona']}"
+    query = f"UPDATE `{args.project_id}.{args.dataset_id}.{args.person_table}` SET Cartera = {persona['cartera']}, N_viajes = {n_viajes}, En_ruta = {True} WHERE ID_persona = {persona['id_persona']}"
     client.query(query).result()
-    #print(type(row['id_coche']))
+
+
+def person_update_en_ruta(id):
+    client = bigquery.Client()
+    query = f"UPDATE `{args.project_id}.{args.dataset_id}.{args.person_table}` SET En_ruta = {False} WHERE ID_persona = {id}"
+    client.query(query).result()
+
+def car_update_n_viajes(coche):
+    client = bigquery.Client()
+    cartera_value, n_viajes, n_pasajeros = car_select(coche)
+    viajes = n_viajes + 1
+    query = f"UPDATE `{args.project_id}.{args.dataset_id}.{args.car_table}` SET N_viajes = {viajes} WHERE ID_coche = {coche['id_coche']}"
+    client.query(query).result()
 
 class ProcessData(beam.DoFn):
     def process(self, element):
-        #logging.info(element)
+        logging.info(element)
         hora, datos = element
         coches = [dato for dato in datos if 'id_coche' in dato]
         personas = [dato for dato in datos if 'id_persona' in dato]
@@ -115,37 +133,44 @@ class ProcessData(beam.DoFn):
         # si no hay coches o personas, no hacemos nada
         if len(coches) == 0 or len(personas) == 0:
             return None
-        else:
-            for persona in personas:
-                if persona['coordenadas'][1] == persona['punto_destino']:
-                    for ids in pasajeros_en_coche:
-                        if persona['id_persona'] == ids:
-                            print(f'pasajeros en el coche {pasajeros_en_coche}')
-                            pasajeros_en_coche.remove(ids)
-                            print(f'pasajero eliminado {pasajeros_en_coche}')
+        
+        for coche in coches:
+            if coche['coordenadas'][1] == coche['punto_destino']:
+                logging.info(f'El coche {coche["id_coche"]} ha llegado a su destino')
+                car_update_bigquery(coche)
+                pasajeros_en_coche_copy = list(pasajeros_en_coche)
+                for viaje in pasajeros_en_coche_copy:
+                    if coche['id_coche'] == viaje[0]:
+                        logging.info(f'La persona {viaje[1]} se ha bajado del coche {coche["id_coche"]}')
+                        person_update_en_ruta(viaje[1])
+                        pasajeros_en_coche.remove(viaje)
 
         try:
             for coche in coches:
+                id_coche = coche['id_coche']
                 for pasajero in personas:
                     id_pasajero = pasajero['id_persona']
 
                     #Comprueba que el pasajero no este en un coche
-                    if id_pasajero in pasajeros_en_coche:
-                        print("Pasajero ya en un coche")
-                        return None
+                    try:
+                        if any(id_pasajero == viaje[1] for viaje in pasajeros_en_coche):
+                            print(f'El pasajero {id_pasajero} ya se encuentra en un coche.')
+                            return None
+                    except Exception as e:
+                        logging.error(f"Error CR7: {e}")
 
                     # Calcula la distancia entre los puntos
                     distancia_recogida = haversine((coche['coordenadas'][1][0], coche['coordenadas'][1][1]),
                                     (pasajero['coordenadas'][1][0], pasajero['coordenadas'][1][1]),
                                     unit=Unit.METERS)
-                    
+                    #print(distancia_recogida)
                     # selecciona la distancia a la que el pasajero está dispuesto a desplazarse segun su mood
                     distancia_maxima = 0
-                    if pasajero['mood'] == 'antipatico':
+                    if pasajero['mood'] == 'Antipatico':
                         distancia_maxima = 25000
-                    elif pasajero['mood'] == 'normal':
+                    elif pasajero['mood'] == 'Normal':
                         distancia_maxima = 60000
-                    elif pasajero['mood'] == 'majo':
+                    elif pasajero['mood'] == 'Majo':
                         distancia_maxima = 10000
                     # si la posicion actual esta a x distancia entraga a recoger
                     if distancia_recogida <= distancia_maxima:
@@ -156,7 +181,7 @@ class ProcessData(beam.DoFn):
                         # si la distancia del putno de destino a x distancia entraga a recoger
                         if destinos_distancia <= distancia_maxima:
                             # si no hay plazas en el coche no hacemos nada
-                            if coche['plazas'] == 0:
+                            if coche['plazas'] <= 0:
                                 logging.info(f'El coche {coche["id_coche"]} ya no tiene plazas!!')
                                 return None
                             # Check dinero en la wallet
@@ -167,10 +192,11 @@ class ProcessData(beam.DoFn):
                             logging.info(f'¡MATCH! El coche {coche["id_coche"]} ha recogido al pasajero {pasajero["id_persona"]}')
 
                             ####### MIRAR CHECKEO DE PASAJEROS EN COCHE ################
-
-                            pasajeros_en_coche.append(id_pasajero)
+                            #print(pasajeros_en_coche)
                             car_update_bigquery(coche)
                             person_update_bigquery(pasajero, coche)
+                            pasajeros_en_coche.append((id_coche, id_pasajero))
+                            
                             
 
         except Exception as e:

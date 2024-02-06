@@ -115,6 +115,7 @@ def generar_persona(id):
         'N_viajes':0,
         'Cartera':cartera,
         'Cartera_inicial': cartera,
+        'En_ruta': False,
         'Coordenadas_persona': None
     }
 
@@ -137,7 +138,7 @@ def write_peaton_to_bigquery(project_id, dataset_id, table_peaton, n_peatones):
  
         peaton_pcollection | "WriteToBigQuery" >> beam.io.WriteToBigQuery(
                 table=f'{project_id}:{dataset_id}.{table_peaton}',
-                schema = '{"ID_persona":"INTEGER", "Nombre":"STRING", "Primer_apellido":"STRING", "Segundo_apellido":"STRING","Edad":"INTEGER","N_viajes":"INTEGER", "Cartera":"FLOAT", "Cartera_inicial":"FLOAT", "Mood":"STRING", "Coordenadas_persona":"STRING"}',
+                schema = '{"ID_persona":"INTEGER", "Nombre":"STRING", "Primer_apellido":"STRING", "Segundo_apellido":"STRING","Edad":"INTEGER","N_viajes":"INTEGER", "Cartera":"FLOAT", "Cartera_inicial":"FLOAT", "Mood":"STRING", "En_ruta":"BOOLEAN", "Coordenadas_persona":"STRING"}',
                 create_disposition=beam.io.BigQueryDisposition.CREATE_NEVER,
                 write_disposition=beam.io.BigQueryDisposition.WRITE_APPEND
             )
@@ -188,6 +189,10 @@ def publicar_movimiento(coordenadas, project_id, topic_peaton, id_persona, carte
     punto_destino = coordenadas[longitud_ruta-1]
 
     for i in range(len(coordenadas)-1):
+
+        peaton = read_peaton_from_bigquery(project_id, dataset_id, table_id, peaton_elegido)
+        if peaton.get('En_ruta') == True:
+            return None
 
         coord_actual = coordenadas[i]
         coord_siguiente = coordenadas[i + 1]
@@ -283,6 +288,7 @@ if __name__ == "__main__":
         peaton = read_peaton_from_bigquery(project_id, dataset_id, table_id, peaton_elegido)
         cartera = peaton.get('Cartera')
         mood = peaton.get('Mood')
-
+        
+        if peaton.get('En_ruta') == False:
         #leemos de big query el peatones con sus datos
-        publicar_movimiento(coordenadas_ruta, project_id, topic_peaton, peaton_elegido, cartera, mood)
+            publicar_movimiento(coordenadas_ruta, project_id, topic_peaton, peaton_elegido, cartera, mood)
