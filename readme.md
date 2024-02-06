@@ -39,17 +39,31 @@ Streamlit para visualización de la interfaz
 Tableau para el análisis y visualización de los datos del negocio
 
 
-Diseño de Arquitectura
+DISEÑO DE LA ARQUITECTURA
 
 --> AÑADIR IMAGÉN QUE TENGO QUE CREAR DE LA ARQUITECTURA
 
 Generador de datos (PUB/SUB)
 
+Se generan datos tanto para peatones como para coches cada uno con sus repectivas rutas. 
 
+Se utiliza Google Cloud para publicar mensajes sobre las rutas planificadas. 
+
+Ambos generadores funcionan igual:  con una función se genera un ejemplo de ruta en forma de diccionario Python, incluyendo detalles diferentes dependiendo de si estamos en el generador de datos para los coches (la marca, la matrícula, el número de plazas, el precio, la hora de salida y una lista de coordenadas de la ruta)o en el generador de datos para personas (ID de la persona, el nombre, la cantidad de dinero en su cartera, la hora de salida y una lista de coordenadas de la ruta)
+
+con la función run se crea una instancia de la clase PubSubCarMessage, se genera un mensaje de ruta utilizando la función gen_ruta_coche, y publica este mensaje utilizando el método publishCarMessage. 
+
+Se crea un cliente de publicador de Pub/Sub y se almacenan el ID del proyecto y el nombre del tema. 
+
+El método publishCarMessage toma un mensaje como entrada, lo convierte a formato JSON, y lo publica en el tema especificado. También registra información sobre el mensaje publicado.
+
+En resumen, este código proporciona una forma de generar y publicar mensajes sobre rutas de coche y de peaton en un tema de Google Cloud Pub/Sub, utilizando argumentos de línea de comandos para especificar el proyecto y el nombre del tema.
+
+"""REVISAR """
 
 Para ejecutar el codigo del generador correctamente hay que realizar los siguientes pasos:
 
-Construir la imagen Docker de solar_gen. Para ello hay un script en la carpeta solar_panel que se llama init.sh
+Construir la imagen Docker de ----- Para ello hay un script en la carpeta ..... que se llama 
 
 Una vez construida la imagen, se puede ejecutar el siguiente código Python para enviar la info a Pub/Sub
 
@@ -61,36 +75,178 @@ python3 main.py --topcontainers <num_paneles> \
 
 DATAFLOW
 
-Dentro de la carpeta de dataflow, se encuentra el código Python escrito utilizando la librería Apache BEAM para consumir los datos generador por los paneles solares mediante una subscripción al tópico de Pub/Sub. En Dataflow se realizan los siguientes pasos:
+Dentro de la carpeta de dataflow, se encuentra el código Python escrito utilizando la librería Apache BEAM para consumir los datos generados mediante una subscripción al tópico de Pub/Sub. En Dataflow se realizan los siguientes pasos:
 
-Primero se leen los mensajes escritos en formato JSON que se encuentran en el tópico, creando una PColletion con el contenido de los mensajes
+Primero se leen los mensajes escritos en formato JSON que se encuentran en el topic, creando una PColletion con el contenido de los mensajes
 
 Los datos recibidos se guardan en una tabla de BigQuery que tiene el siguiente schema:
 
-{
-    "fields": [
-    {
-      "mode": "NULLABLE",
-      "name": "Panel_id",
-      "type": "STRING"
-    },
-    {
-      "mode": "NULLABLE",
-      "name": "power_panel",
-      "type": "FLOAT64"
-    },
-    {
-      "mode": "NULLABLE",
-      "name": "current_status",
-      "type": "INT64"
-    },
-    {
-      "mode": "NULLABLE",
-      "name": "current_time",
-      "type": "TIMESTAMP"
-    }
-    ]
-}
+ [{
+  "ID_persona": "1",
+  "Nombre": "Rebeca",
+  "Primer_apellido": "Durán",
+  "Segundo_apellido": "Ibáñez",
+  "Edad": "20",
+  "Cartera": "88.45",
+  "Cartera_inicial": "88.45",
+  "Mood": "antipático"
+}, {
+  "ID_persona": "2",
+  "Nombre": "Isaac",
+  "Primer_apellido": "Esteban",
+  "Segundo_apellido": "Durán",
+  "Edad": "67",
+  "Cartera": "60.18",
+  "Cartera_inicial": "60.18",
+  "Mood": "majo"
+}, {
+  "ID_persona": "3",
+  "Nombre": "Leonardo",
+  "Primer_apellido": "Gallardo",
+  "Segundo_apellido": "Ramírez",
+  "Edad": "24",
+  "Cartera": "59.15",
+  "Cartera_inicial": "59.15",
+  "Mood": "antipático"
+}, {
+  "ID_persona": "4",
+  "Nombre": "Borja",
+  "Primer_apellido": "Lorenzo",
+  "Segundo_apellido": "Velasco",
+  "Edad": "39",
+  "Cartera": "91.46",
+  "Cartera_inicial": "91.46",
+  "Mood": "majo"
+}, {
+  "ID_persona": "5",
+  "Nombre": "Virgilio",
+  "Primer_apellido": "Suárez",
+  "Segundo_apellido": "Arias",
+  "Edad": "26",
+  "Cartera": "54.45",
+  "Cartera_inicial": "54.45",
+  "Mood": "majo"
+}, {
+  "ID_persona": "6",
+  "Nombre": "Norberto",
+  "Primer_apellido": "Delgado",
+  "Segundo_apellido": "Giménez",
+  "Edad": "56",
+  "Cartera": "79.13",
+  "Cartera_inicial": "79.13",
+  "Mood": "antipático"
+}, {
+  "ID_persona": "7",
+  "Nombre": "Bonifacio",
+  "Primer_apellido": "Domínguez",
+  "Segundo_apellido": "Román",
+  "Edad": "56",
+  "Cartera": "51.38",
+  "Cartera_inicial": "51.38",
+  "Mood": "antipático"
+}, {
+  "ID_persona": "8",
+  "Nombre": "Urbano",
+  "Primer_apellido": "Fuentes",
+  "Segundo_apellido": "García",
+  "Edad": "63",
+  "Cartera": "75.47",
+  "Cartera_inicial": "75.47",
+  "Mood": "majo"
+}, {
+  "ID_persona": "9",
+  "Nombre": "Leonardo",
+  "Primer_apellido": "Marín",
+  "Segundo_apellido": "Hernández",
+  "Edad": "43",
+  "Cartera": "26.87",
+  "Cartera_inicial": "26.87",
+  "Mood": "majo"
+}, {
+  "ID_persona": "10",
+  "Nombre": "Norberto",
+  "Primer_apellido": "Vega",
+  "Segundo_apellido": "López",
+  "Edad": "68",
+  "Cartera": "54.03",
+  "Cartera_inicial": "54.03",
+  "Mood": "majo"
+}]
+[20:57, 5/2/2024] Alberto Edem: [{
+  "ID_coche": "1",
+  "Marca": "Citroen",
+  "Matricula": "4378LIW",
+  "Plazas": "4",
+  "Precio_punto": "0.01",
+  "Cartera": "0.0"
+}, {
+  "ID_coche": "2",
+  "Marca": "Ford",
+  "Matricula": "8644AKU",
+  "Plazas": "4",
+  "Precio_punto": "0.02",
+  "Cartera": "0.0"
+}, {
+  "ID_coche": "3",
+  "Marca": "BMW",
+  "Matricula": "4802EAI",
+  "Plazas": "4",
+  "Precio_punto": "0.02",
+  "Cartera": "0.0"
+}, {
+  "ID_coche": "4",
+  "Marca": "Honda",
+  "Matricula": "9628MIH",
+  "Plazas": "4",
+  "Precio_punto": "0.01",
+  "Cartera": "0.0"
+}, {
+  "ID_coche": "5",
+  "Marca": "Honda",
+  "Matricula": "4537KWQ",
+  "Plazas": "4",
+  "Precio_punto": "0.02",
+  "Cartera": "0.0"
+}, {
+  "ID_coche": "6",
+  "Marca": "Infiniti",
+  "Matricula": "4699LSF",
+  "Plazas": "4",
+  "Precio_punto": "0.01",
+  "Cartera": "0.0"
+}, {
+  "ID_coche": "7",
+  "Marca": "Ford",
+  "Matricula": "5450MUR",
+  "Plazas": "4",
+  "Precio_punto": "0.01",
+  "Cartera": "0.0"
+}, {
+  "ID_coche": "8",
+  "Marca": "Opel",
+  "Matricula": "5962CYP",
+  "Plazas": "4",
+  "Precio_punto": "0.01",
+  "Cartera": "0.0"
+}, {
+  "ID_coche": "9",
+  "Marca": "Daihatsu",
+  "Matricula": "3795DPO",
+  "Plazas": "4",
+  "Precio_punto": "0.01",
+  "Cartera": "0.0"
+}, {
+  "ID_coche": "10",
+  "Marca": "Ford",
+  "Matricula": "1921IVB",
+  "Plazas": "4",
+  "Precio_punto": "0.02",
+  "Cartera": "0.0"
+}]
+
+DESCRIBIR LO QUE SUCEDE EN EL DATAFLOW --> 
+EJEMPLO QUE HAY QUE CAMBIAR Y ADAPTAR A NUESTRO PROYECTO --> 
+
 Mediante el uso de una ventana, se obtiene la potencia total instantánea generada por los paneles, y se escribe en un tópico de Pub/Sub para utilizar luego en las Cloud Functions como disparador de una aviso.
 
 Se calcula otra ventana para sacar en franjas de 30 segundos la potencia media generada por los paneles, y se escribe el resultado de la PCollection en otra tabla de BigQuery
@@ -108,17 +264,11 @@ python3 dataflow.py \
     --region <GCP region> \
     --temp_location gs://<bucket(project_id)>/tmp \
     --staging_location gs://<bucket(project_id)/stg
-A partir de GitHub actions usando el archivo de Terraform main.tf que se encuentra también en esta carpeta.
 
-Para este segundo caso, primero se tiene que construir la Flex-Template, que será almacenada en el Bucket storage de Google Cloud. Esto se consigue ejecutando los siguientes comandos:
 
-gcloud builds submit --tag 'gcr.io/<Bucket ID>/dataflow/data-project2:latest' .
 
-gcloud dataflow flex-template \
-         build "gs://<Bucket ID>/data-project2-flowtemplate.json" \
-        --image 'gcr.io/<Bucket ID>/dataflow/data-project2:latest' \
-        --sdk-language "PYTHON"
-Una vez que se ha construido la Flex Template dentro del proyecto de Google Cloud, se tiene que subir el repositorio a GitHub. Dentro de la carpeta .github/workflows existen dos archivos yaml, que sirven para ejecutar las GitHub actions de despliegue y parada de Dataflow. La siguiente imagen muestra una captura de pantalla de como se realiza el despliegue:
+
+
 
 STREAMLIT
 
@@ -128,33 +278,6 @@ TABLEAU
 En la parte de visualización, se ha creado un dashboard para análizar los resultados que se muestra ...... 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-## DESCRIPCIÓN DEL PROYECTO
-
-## EJECUCIÓN DEL PROYECTO
-
-1. Clona el repositorio: 
-   
-   ```bash
-   git clone 
-   
-2. Ejecuta los siguientes comandos para levantar todos los contenedores, asignar volúmenes y puertos:
-   
-   ```bash
-   docker-compose up -d
 
 Si deseas ver cómo funciona el código puedes consultar el siguiente vídeo:
 
