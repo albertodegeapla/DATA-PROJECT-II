@@ -18,7 +18,7 @@ from google.cloud import storage
 # añadirimaos el porject ID, los subscribers y el bucket
 
 
-# ejemplo de correrlo python .\recogida_pasajero.py --project_id genuine-essence-411713 --person_topic_sub ruta_persona-sub --car_topic_sub ruta_coche-sub --dataset_id blablacar2 --car_table coches --person_table perosnas
+# MODIFICAR ESTE --> python .\recogida_pasajero.py --project_id skilled-seeker-411714 --person_topic_sub data_projectII_person-sub --car_topic_sub data_projectII_car-sub --dataset_id edem_tabla --car_table coche --person_table persona --bucket_name dataproject_bucket
 
 parser = argparse.ArgumentParser(description=("Procesamiento de los topics de GCloud SUBSCRIBER"))
 parser.add_argument(
@@ -192,32 +192,32 @@ def add_key(element):
     topic_car = args.car_topic_sub
     table_car = args.car_table'''
 
-def crear_bucket (bucket_name):
+def create_bucket (bucket_name):
 
     # Instancias de usuario:
     storage_client = storage.Client()
 
     # Le ponemos nombre al bucket:
-    bucket = storage_client.crear_bucket(bucket_name)
+    bucket = storage_client.create_bucket(bucket_name)
 
     print(f"El bucket {bucket.name} ha sido creado")
 
-def run_GCP(options):
+def run_GCP():
     
-    project_id = options.project
-    dataset_id = options.dataset_id
+    project_id = args.project_id
+    dataset_id = args.dataset_id
 
-    topic_person = options.person_topic_sub
-    table_person = options.person_table
-    topic_car = options.car_topic_sub
-    table_car = options.car_table
+    topic_person = args.person_topic_sub
+    table_person = args.person_table
+    topic_car = args.car_topic_sub
+    table_car = args.car_table
     # Hay que incluir el bucket en las options (equivalente a los argumentos)
-    bucket_name = options.bucket_name
+    bucket_name = args.bucket_name
 
     # Hardcodear el bucket_name en caso de no funcionar options
     # bucket_name = "nombre del bucket" 
 
-    crear_bucket(bucket_name)
+    create_bucket(bucket_name)
 
     with beam.Pipeline(options=PipelineOptions(
         streaming=True,
