@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <name><![CDATA[Indicaciones de Carrer d'En Llopis, 2, Ciutat Vella, 46003 València, Valencia, España a C. del Pintor Sorolla, 20, Ciutat Vella, 46002 València, Valencia, España]]></name>
+    <Style id="icon-1899-DB4436-nodesc-normal">
+      <IconStyle>
+        <color>ff3644db</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+        <hotSpot x="32" xunits="pixels" y="64" yunits="insetPixels"/>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0</scale>
+      </LabelStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <Style id="icon-1899-DB4436-nodesc-highlight">
+      <IconStyle>
+        <color>ff3644db</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+        <hotSpot x="32" xunits="pixels" y="64" yunits="insetPixels"/>
+      </IconStyle>
+      <LabelStyle>
+        <scale>1</scale>
+      </LabelStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <StyleMap id="icon-1899-DB4436-nodesc">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#icon-1899-DB4436-nodesc-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#icon-1899-DB4436-nodesc-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="line-1267FF-5000-nodesc-normal">
+      <LineStyle>
+        <color>ffff6712</color>
+        <width>5</width>
+      </LineStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <Style id="line-1267FF-5000-nodesc-highlight">
+      <LineStyle>
+        <color>ffff6712</color>
+        <width>7.5</width>
+      </LineStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <StyleMap id="line-1267FF-5000-nodesc">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#line-1267FF-5000-nodesc-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#line-1267FF-5000-nodesc-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Placemark>
+      <name><![CDATA[Indicaciones de Carrer d'En Llopis, 2, Ciutat Vella, 46003 València, Valencia, España a C. del Pintor Sorolla, 20, Ciutat Vella, 46002 València, Valencia, España]]></name>
+      <styleUrl>#line-1267FF-5000-nodesc</styleUrl>
+      <LineString>
+        <tessellate>1</tessellate>
+        <coordinates>
+          -0.37284,39.47807,0
+          -0.37197,39.47754,0
+          -0.37124,39.4771,0
+          -0.371,39.47689,0
+          -0.37092,39.47681,0
+          -0.37063,39.47652,0
+          -0.37058,39.47647,0
+          -0.37019,39.47612,0
+          -0.37008,39.47601,0
+          -0.37001,39.47594,0
+          -0.36989,39.47584,0
+          -0.36978,39.47575,0
+          -0.36963,39.47567,0
+          -0.3697,39.47556,0
+          -0.36972,39.4755,0
+          -0.36973,39.47547,0
+          -0.36974,39.47543,0
+          -0.36974,39.4752,0
+          -0.36975,39.47499,0
+          -0.36976,39.47483,0
+          -0.36983,39.47481,0
+          -0.36988,39.47478,0
+          -0.36989,39.47475,0
+          -0.36991,39.47473,0
+          -0.36993,39.47469,0
+          -0.36996,39.47465,0
+          -0.36998,39.47461,0
+          -0.37001,39.47455,0
+          -0.37008,39.47441,0
+          -0.37017,39.47424,0
+          -0.37021,39.47418,0
+          -0.37028,39.47404,0
+          -0.3703,39.474,0
+          -0.37038,39.47385,0
+          -0.3706,39.47391,0
+          -0.37083,39.47396,0
+          -0.37096,39.47374,0
+          -0.37117,39.47332,0
+          -0.37124,39.47314,0
+          -0.37131,39.47297,0
+          -0.37133,39.47292,0
+          -0.37137,39.47293,0
+          -0.3714,39.47287,0
+          -0.37151,39.47271,0
+          -0.37175,39.47277,0
+          -0.37197,39.47282,0
+          -0.3722,39.47287,0
+          -0.3724,39.47292,0
+          -0.37244,39.47249,0
+          -0.37247,39.4722,0
+          -0.3725,39.47179,0
+          -0.37252,39.4715,0
+          -0.37224,39.47148,0
+        </coordinates>
+      </LineString>
+    </Placemark>
+    <Placemark>
+      <name><![CDATA[Carrer d'En Llopis, 2, Ciutat Vella, 46003 València, Valencia, España]]></name>
+      <styleUrl>#icon-1899-DB4436-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          -0.3728426,39.4780658,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>C. del Pintor Sorolla, 20, Ciutat Vella, 46002 València, Valencia, España</name>
+      <styleUrl>#icon-1899-DB4436-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          -0.3722413,39.4714815,0
+        </coordinates>
+      </Point>
+    </Placemark>
+  </Document>
+</kml>
