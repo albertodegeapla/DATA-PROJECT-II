@@ -60,17 +60,17 @@ args, opts = parser.parse_known_args()
 
 pasajeros_en_coche = []
 
-def car_select_cartera(coche):
+def car_select(coche):
     client = bigquery.Client()
 
-    query = f"SELECT Cartera FROM `{args.project_id}.{args.dataset_id}.{args.car_table}` WHERE ID_coche = {coche['id_coche']}"
+    query = f"SELECT Cartera, N_viajes, N_pasajeros FROM `{args.project_id}.{args.dataset_id}.{args.car_table}` WHERE ID_coche = {coche['id_coche']}"
     result = client.query(query).result()
     
     # Assuming there is only one row in the result
     for row in result:
-        return row.Cartera if hasattr(row, 'Cartera') else 0
+        return row.Cartera, row.N_viajes, row.N_pasajeros if hasattr(row, 'Cartera') else (0, 0, 0)
 
-    return 0 
+    return 0, 0, 0
 
 def car_update_bigquery(coche):
     client = bigquery.Client()
@@ -78,32 +78,37 @@ def car_update_bigquery(coche):
     coche['plazas'] = int(coche['plazas']) - 1
     coche['id_coche'] = int(coche['id_coche'])
 
-    cartera_value = car_select_cartera(coche)
+    cartera_value, n_viajes, n_pasajeros = car_select(coche)
     ganancia_pasajero = cartera_value + coche['precio'] / 1.25
+    n_pasajeros = n_pasajeros + 1
    
-    query = f"UPDATE `{args.project_id}.{args.dataset_id}.{args.car_table}` SET Plazas = {coche['plazas']}, Cartera = {ganancia_pasajero} WHERE ID_coche = {coche['id_coche']}"
+    query = f"UPDATE `{args.project_id}.{args.dataset_id}.{args.car_table}` SET Plazas = {coche['plazas']}, Cartera = {ganancia_pasajero}, N_pasajeros = {n_pasajeros} WHERE ID_coche = {coche['id_coche']}"
     client.query(query).result()
 
-def person_select_cartera(persona):
+def person_select(persona):
     client = bigquery.Client()
 
-    query = f"SELECT Cartera FROM `{args.project_id}.{args.dataset_id}.{args.person_table}` WHERE ID_persona = {persona['id_persona']}"
+    query = f"SELECT Cartera, N_viajes FROM `{args.project_id}.{args.dataset_id}.{args.person_table}` WHERE ID_persona = {persona['id_persona']}"
     result = client.query(query).result()
 
     for row in result:
-        cartera_value = row['Cartera']
-        return cartera_value
-    return 0
+        cartera_value = row.Cartera if hasattr(row, 'Cartera') else 0
+        n_viajes_value = row.N_viajes if hasattr(row, 'N_viajes') else 0
+        return cartera_value, n_viajes_value
+
+    return 0, 0
 
 def person_update_bigquery(persona, coche):
     client = bigquery.Client()
 
-    persona['cartera'] = person_select_cartera(persona) - int(coche['precio'])
+    cartera_value, n_viajes_value = person_select(persona)
+
+    persona['cartera'] = cartera_value - int(coche['precio'])
+    n_viajes = n_viajes_value + 1
     persona['id_persona'] = int(persona['id_persona'])
 
-    query = f"UPDATE `{args.project_id}.{args.dataset_id}.{args.person_table}` SET Cartera = {persona['cartera']} WHERE ID_persona = {persona['id_persona']}"
+    query = f"UPDATE `{args.project_id}.{args.dataset_id}.{args.person_table}` SET Cartera = {persona['cartera']}, N_viajes = {n_viajes}, En_ruta = {True} WHERE ID_persona = {persona['id_persona']}"
     client.query(query).result()
-    #print(type(row['id_coche']))
 
 class ProcessData(beam.DoFn):
     def process(self, element):
@@ -115,14 +120,15 @@ class ProcessData(beam.DoFn):
         # si no hay coches o personas, no hacemos nada
         if len(coches) == 0 or len(personas) == 0:
             return None
-        else:
-            for persona in personas:
-                if persona['coordenadas'][1] == persona['punto_destino']:
-                    for ids in pasajeros_en_coche:
-                        if persona['id_persona'] == ids:
-                            print(f'pasajeros en el coche {pasajeros_en_coche}')
-                            pasajeros_en_coche.remove(ids)
-                            print(f'pasajero eliminado {pasajeros_en_coche}')
+        
+        '''for coche in coches:
+            if coche['coordenadas'][1] == coche['punto_destino']:
+                ## AQUI: los peatones en ruta = False y coche n_viajes + 1
+                for ids in pasajeros_en_coche:
+                    if persona['id_persona'] == ids:
+                        print(f'pasajeros en el coche {pasajeros_en_coche}')
+                        pasajeros_en_coche.remove(ids)
+                        print(f'pasajero eliminado {pasajeros_en_coche}')'''
 
         try:
             for coche in coches:
@@ -131,7 +137,6 @@ class ProcessData(beam.DoFn):
 
                     #Comprueba que el pasajero no este en un coche
                     if id_pasajero in pasajeros_en_coche:
-                        print("Pasajero ya en un coche")
                         return None
 
                     # Calcula la distancia entre los puntos
