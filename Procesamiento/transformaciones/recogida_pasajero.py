@@ -51,11 +51,11 @@ parser.add_argument(
     required=True,
     help="Tabla de pasajeros en GCloud"
 )
-'''parser.add_argument(
+parser.add_argument(
     "--bucket_name",
     required=True,
     help="Bucket de GCloud"
-)'''
+)
 
 args, opts = parser.parse_known_args()
 
