@@ -15,9 +15,9 @@ Así que prepárate, Valencia, porque el futuro del transporte en la ciudad est�
 
 Equipo
 
-Pablo Pérez Álvarez: Licenciado en International bussines. Parte del equipo de Data Engineering del proyecto. Desarrollo de código Python. 
-
 José Aguilar Van Der Hofstadt:Licenciado en administración y dirección de empresas Encargado de la parte de Data Engineering relativa a la cola de mensajes en Pub/Sub, diseño de arquitectura y desarrollo de código para el Dataflow.
+
+Pablo Pérez Álvarez: Licenciado en Negocios Internacionales y Marketing. Parte del equipo de Data Engineering del proyecto. Desarrollo de la lógica para la recogida de pasajeros. 
 
 Lucía Esteve Domínguez: Licenciada en administración y dirección de empresas. Desarrollo de código para la generación de los datos del proyecto. Diseño de la arquitectura, y Bussines Inteligence.
 
@@ -131,6 +131,21 @@ Los datos recibidos se guardan en una tabla de BigQuery que tiene el siguiente s
 
 DESCRIBIR LO QUE SUCEDE EN EL DATAFLOW --> 
 
+LÓGICA DEL DATAFLOW. LA RECOGIDA DEL PASAJERO.
+
+Una vez nuestro código ha leido los mensajes de dos topics diferentes a la vez - por una parte, "coche" y por otra "persona" -, los juntamos para poder procesarlos con un DoFn donde desarrollamos la lógica de nuestro proyecto.
+
+Cómo se puede comprobar en el formato de los mensajes que anteriormente hemos puesto de ejemplo, la información que llega en esos mensajes contiene, entre otras cosas, las ubicaciones de cada coche y/o persona, en un determinado momento - tiempo real, streaming - y el punto geográfico hasta el cual se dirige.
+
+La función empieza calculando la distancia entre el coche y el pasajero, usando la librería "Haversine", que nos ayuda a calcular las distancias entre dos puntos por GPS - en formato Latitud, Longitud - en metros. Se ha elegido esta librería porque, inicialmente, utilizamos la librería "math" donde utilizábamos una fórmula muy interesante con cosenos, senos, tangentes y radianes, ya que las coordenadas en GPS están en radianes y esta fórmula, que tiene en cuenta el radio del planeta Tierra, nos convertía esas distancias en el formato que necesitábamos. Por tal de simplificar y optar por un formato más minimalista, hemos reducido líneas de código con esta librería.
+
+Una vez ya tenemos la distancia, en tiempo real, entre el coche y el pasajero, nos basamos en el "mood" para definir un rango de acción. En nuestra lógica, si alguien es "majo", "normal" o "antipático" debería de definir cuán lejos se va a desplazar para hacer match. Si la distancia es menor que el rango del mood, entonces esta condición se cumple.
+
+La siguiente y no menos importante condición, es si ambos, coche y persona, se dirigen al mismo punto. Para ello, hemos cogido las coordenadas del final de la ruta de cada uno, y hemos vuelto a calcular la distancia, para ver si entra dentro de un determinado rango, para que tenga sentido ir en el mismo coche y a un punto relativamente cercano. Si la distancia entre los destinos es menor al rango definido, entonces esta condición se cumple.
+
+A continuación, tenemos una situación en la cuál el coche y la persona no solo están lo suficientemente cerca como para recoger a la persona, sino que además van a un sitio relativamente cercano el uno del otro, pero tenemos que comprobar si quedan plazas disponibles en el coche. Si quedan plazas disponibles, entonces realizamos la comprobación del pago y vemos si la persona tiene suficiente dinero para pagar el viaje, y si es así, entonces se realiza el match, se realiza el pago y se resta la plaza disponible en dicho coche.
+
+Una vez estas condiciones se cumplen y obtenemos un match, entonces realizamos el update en la base de datos, para poder almacenarlo y visualizarlo posteriormente.
 
 
 
