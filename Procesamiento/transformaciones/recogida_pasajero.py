@@ -110,9 +110,22 @@ def person_update_bigquery(persona, coche):
     query = f"UPDATE `{args.project_id}.{args.dataset_id}.{args.person_table}` SET Cartera = {persona['cartera']}, N_viajes = {n_viajes}, En_ruta = {True} WHERE ID_persona = {persona['id_persona']}"
     client.query(query).result()
 
+
+def person_update_en_ruta(id):
+    client = bigquery.Client()
+    query = f"UPDATE `{args.project_id}.{args.dataset_id}.{args.person_table}` SET En_ruta = {False} WHERE ID_persona = {id}"
+    client.query(query).result()
+
+def car_update_n_viajes(coche):
+    client = bigquery.Client()
+    cartera_value, n_viajes, n_pasajeros = car_select(coche)
+    viajes = n_viajes + 1
+    query = f"UPDATE `{args.project_id}.{args.dataset_id}.{args.car_table}` SET N_viajes = {viajes} WHERE ID_coche = {coche['id_coche']}"
+    client.query(query).result()
+
 class ProcessData(beam.DoFn):
     def process(self, element):
-        #logging.info(element)
+        logging.info(element)
         hora, datos = element
         coches = [dato for dato in datos if 'id_coche' in dato]
         personas = [dato for dato in datos if 'id_persona' in dato]
@@ -121,36 +134,43 @@ class ProcessData(beam.DoFn):
         if len(coches) == 0 or len(personas) == 0:
             return None
         
-        '''for coche in coches:
+        for coche in coches:
             if coche['coordenadas'][1] == coche['punto_destino']:
-                ## AQUI: los peatones en ruta = False y coche n_viajes + 1
-                for ids in pasajeros_en_coche:
-                    if persona['id_persona'] == ids:
-                        print(f'pasajeros en el coche {pasajeros_en_coche}')
-                        pasajeros_en_coche.remove(ids)
-                        print(f'pasajero eliminado {pasajeros_en_coche}')'''
+                logging.info(f'El coche {coche["id_coche"]} ha llegado a su destino')
+                car_update_bigquery(coche)
+                pasajeros_en_coche_copy = list(pasajeros_en_coche)
+                for viaje in pasajeros_en_coche_copy:
+                    if coche['id_coche'] == viaje[0]:
+                        logging.info(f'La persona {viaje[1]} se ha bajado del coche {coche["id_coche"]}')
+                        person_update_en_ruta(viaje[1])
+                        pasajeros_en_coche.remove(viaje)
 
         try:
             for coche in coches:
+                id_coche = coche['id_coche']
                 for pasajero in personas:
                     id_pasajero = pasajero['id_persona']
 
                     #Comprueba que el pasajero no este en un coche
-                    if id_pasajero in pasajeros_en_coche:
-                        return None
+                    try:
+                        if any(id_pasajero == viaje[1] for viaje in pasajeros_en_coche):
+                            print(f'El pasajero {id_pasajero} ya se encuentra en un coche.')
+                            return None
+                    except Exception as e:
+                        logging.error(f"Error CR7: {e}")
 
                     # Calcula la distancia entre los puntos
                     distancia_recogida = haversine((coche['coordenadas'][1][0], coche['coordenadas'][1][1]),
                                     (pasajero['coordenadas'][1][0], pasajero['coordenadas'][1][1]),
                                     unit=Unit.METERS)
-                    
+                    #print(distancia_recogida)
                     # selecciona la distancia a la que el pasajero está dispuesto a desplazarse segun su mood
                     distancia_maxima = 0
-                    if pasajero['mood'] == 'antipatico':
+                    if pasajero['mood'] == 'Antipatico':
                         distancia_maxima = 25000
-                    elif pasajero['mood'] == 'normal':
+                    elif pasajero['mood'] == 'Normal':
                         distancia_maxima = 60000
-                    elif pasajero['mood'] == 'majo':
+                    elif pasajero['mood'] == 'Majo':
                         distancia_maxima = 10000
                     # si la posicion actual esta a x distancia entraga a recoger
                     if distancia_recogida <= distancia_maxima:
@@ -172,10 +192,11 @@ class ProcessData(beam.DoFn):
                             logging.info(f'¡MATCH! El coche {coche["id_coche"]} ha recogido al pasajero {pasajero["id_persona"]}')
 
                             ####### MIRAR CHECKEO DE PASAJEROS EN COCHE ################
-
-                            pasajeros_en_coche.append(id_pasajero)
+                            #print(pasajeros_en_coche)
                             car_update_bigquery(coche)
                             person_update_bigquery(pasajero, coche)
+                            pasajeros_en_coche.append((id_coche, id_pasajero))
+                            
                             
 
         except Exception as e:
