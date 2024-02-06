@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <name><![CDATA[Indicaciones de C/ d'Àngel Guimerà, 9, Extramurs, 46008 València, Valencia, España a Pl. de l'Ajuntament, 30, Ciutat Vella, 46002 València, Valencia, España]]></name>
+    <Style id="icon-1899-DB4436-nodesc-normal">
+      <IconStyle>
+        <color>ff3644db</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+        <hotSpot x="32" xunits="pixels" y="64" yunits="insetPixels"/>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0</scale>
+      </LabelStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <Style id="icon-1899-DB4436-nodesc-highlight">
+      <IconStyle>
+        <color>ff3644db</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+        <hotSpot x="32" xunits="pixels" y="64" yunits="insetPixels"/>
+      </IconStyle>
+      <LabelStyle>
+        <scale>1</scale>
+      </LabelStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <StyleMap id="icon-1899-DB4436-nodesc">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#icon-1899-DB4436-nodesc-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#icon-1899-DB4436-nodesc-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="line-1267FF-5000-nodesc-normal">
+      <LineStyle>
+        <color>ffff6712</color>
+        <width>5</width>
+      </LineStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <Style id="line-1267FF-5000-nodesc-highlight">
+      <LineStyle>
+        <color>ffff6712</color>
+        <width>7.5</width>
+      </LineStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <StyleMap id="line-1267FF-5000-nodesc">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#line-1267FF-5000-nodesc-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#line-1267FF-5000-nodesc-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Placemark>
+      <name><![CDATA[Indicaciones de C/ d'Àngel Guimerà, 9, Extramurs, 46008 València, Valencia, España a Pl. de l'Ajuntament, 30, Ciutat Vella, 46002 València, Valencia, España]]></name>
+      <styleUrl>#line-1267FF-5000-nodesc</styleUrl>
+      <LineString>
+        <tessellate>1</tessellate>
+        <coordinates>
+          -0.3851,39.47012,0
+          -0.38475,39.46964,0
+          -0.38433,39.46904,0
+          -0.38417,39.46881,0
+          -0.38388,39.4684,0
+          -0.38384,39.46834,0
+          -0.38354,39.46793,0
+          -0.3835,39.46789,0
+          -0.38337,39.4677,0
+          -0.38279,39.46693,0
+          -0.38277,39.4669,0
+          -0.38275,39.46687,0
+          -0.38267,39.46676,0
+          -0.38188,39.46569,0
+          -0.38166,39.46585,0
+          -0.38145,39.46607,0
+          -0.38138,39.46614,0
+          -0.38114,39.46646,0
+          -0.38087,39.46681,0
+          -0.38047,39.4673,0
+          -0.38036,39.46744,0
+          -0.38029,39.46753,0
+          -0.38024,39.46758,0
+          -0.38011,39.46773,0
+          -0.37991,39.46796,0
+          -0.37985,39.46803,0
+          -0.37981,39.46808,0
+          -0.37978,39.46813,0
+          -0.37976,39.46815,0
+          -0.37974,39.46819,0
+          -0.37967,39.46832,0
+          -0.37961,39.46845,0
+          -0.37956,39.46854,0
+          -0.37953,39.46862,0
+          -0.37942,39.4688,0
+          -0.37933,39.4689,0
+          -0.37927,39.46896,0
+          -0.3792,39.46905,0
+          -0.37913,39.46915,0
+          -0.37896,39.46938,0
+          -0.37889,39.46947,0
+          -0.37882,39.46956,0
+          -0.37864,39.46981,0
+          -0.37831,39.47022,0
+          -0.37805,39.47009,0
+          -0.37786,39.46999,0
+          -0.37805,39.46962,0
+          -0.37769,39.46951,0
+          -0.37684,39.46925,0
+          -0.3767,39.46923,0
+          -0.37632,39.46923,0
+        </coordinates>
+      </LineString>
+    </Placemark>
+    <Placemark>
+      <name><![CDATA[C/ d'Àngel Guimerà, 9, Extramurs, 46008 València, Valencia, España]]></name>
+      <styleUrl>#icon-1899-DB4436-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          -0.3851009,39.4701182,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name><![CDATA[Pl. de l'Ajuntament, 30, Ciutat Vella, 46002 València, Valencia, España]]></name>
+      <styleUrl>#icon-1899-DB4436-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          -0.3763233,39.4692269,0
+        </coordinates>
+      </Point>
+    </Placemark>
+  </Document>
+</kml>

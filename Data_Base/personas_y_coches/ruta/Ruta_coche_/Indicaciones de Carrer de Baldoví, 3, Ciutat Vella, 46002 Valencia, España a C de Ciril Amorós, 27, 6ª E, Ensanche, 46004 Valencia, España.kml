@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <name>Indicaciones de Carrer de Baldoví, 3, Ciutat Vella, 46002 Valencia, España a C/ de Ciril Amorós, 27, 6ª E, Ensanche, 46004 Valencia, España</name>
+    <Style id="icon-1899-DB4436-nodesc-normal">
+      <IconStyle>
+        <color>ff3644db</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+        <hotSpot x="32" xunits="pixels" y="64" yunits="insetPixels"/>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0</scale>
+      </LabelStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <Style id="icon-1899-DB4436-nodesc-highlight">
+      <IconStyle>
+        <color>ff3644db</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+        <hotSpot x="32" xunits="pixels" y="64" yunits="insetPixels"/>
+      </IconStyle>
+      <LabelStyle>
+        <scale>1</scale>
+      </LabelStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <StyleMap id="icon-1899-DB4436-nodesc">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#icon-1899-DB4436-nodesc-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#icon-1899-DB4436-nodesc-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="line-1267FF-5000-nodesc-normal">
+      <LineStyle>
+        <color>ffff6712</color>
+        <width>5</width>
+      </LineStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <Style id="line-1267FF-5000-nodesc-highlight">
+      <LineStyle>
+        <color>ffff6712</color>
+        <width>7.5</width>
+      </LineStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <StyleMap id="line-1267FF-5000-nodesc">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#line-1267FF-5000-nodesc-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#line-1267FF-5000-nodesc-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Placemark>
+      <name>Indicaciones de Carrer de Baldoví, 3, Ciutat Vella, 46002 Valencia, España a C/ de Ciril Amorós, 27, 6ª E, Ensanche, 46004 Valencia, España</name>
+      <styleUrl>#line-1267FF-5000-nodesc</styleUrl>
+      <LineString>
+        <tessellate>1</tessellate>
+        <coordinates>
+          -0.37852,39.46864,0
+          -0.37777,39.46849,0
+          -0.3773,39.4684,0
+          -0.37709,39.46836,0
+          -0.37695,39.46836,0
+          -0.37684,39.46925,0
+          -0.3767,39.46923,0
+          -0.37609,39.46923,0
+          -0.37589,39.46917,0
+          -0.37579,39.46916,0
+          -0.3757,39.46915,0
+          -0.37554,39.46914,0
+          -0.37551,39.46915,0
+          -0.37549,39.46915,0
+          -0.37483,39.46914,0
+          -0.37432,39.46915,0
+          -0.37408,39.46916,0
+          -0.3739,39.46916,0
+          -0.37234,39.46917,0
+          -0.37229,39.46917,0
+          -0.37224,39.46916,0
+          -0.37221,39.46916,0
+          -0.37218,39.46916,0
+          -0.37216,39.46915,0
+          -0.37211,39.46914,0
+          -0.37202,39.46909,0
+          -0.37198,39.46906,0
+          -0.37197,39.46905,0
+          -0.37196,39.46903,0
+          -0.37091,39.46757,0
+          -0.37043,39.46689,0
+          -0.37029,39.46668,0
+          -0.37023,39.46658,0
+          -0.37039,39.46652,0
+          -0.3705,39.46647,0
+          -0.37096,39.46626,0
+          -0.37109,39.4662,0
+          -0.37122,39.46615,0
+          -0.37194,39.46712,0
+          -0.37241,39.46693,0
+        </coordinates>
+      </LineString>
+    </Placemark>
+    <Placemark>
+      <name>Carrer de Baldoví, 3, Ciutat Vella, 46002 Valencia, España</name>
+      <styleUrl>#icon-1899-DB4436-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          -0.3785163,39.4686392,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>C/ de Ciril Amorós, 27, 6ª E, Ensanche, 46004 Valencia, España</name>
+      <styleUrl>#icon-1899-DB4436-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          -0.3724116,39.4669259,0
+        </coordinates>
+      </Point>
+    </Placemark>
+  </Document>
+</kml>
