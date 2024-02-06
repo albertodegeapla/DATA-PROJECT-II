@@ -181,7 +181,7 @@ class ProcessData(beam.DoFn):
                         # si la distancia del putno de destino a x distancia entraga a recoger
                         if destinos_distancia <= distancia_maxima:
                             # si no hay plazas en el coche no hacemos nada
-                            if coche['plazas'] == 0:
+                            if coche['plazas'] <= 0:
                                 logging.info(f'El coche {coche["id_coche"]} ya no tiene plazas!!')
                                 return None
                             # Check dinero en la wallet

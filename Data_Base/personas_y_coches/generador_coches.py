@@ -195,7 +195,7 @@ def publicar_movimiento(coordenadas, project_id, topic_car, dataset_id, table_id
     for i in range(len(coordenadas)-1):
         
         coche = read_car_from_bigquery(project_id, dataset_id, table_id, id_coche)
-        plazas = coche.get('Plazas')
+        plazas = 4
         precio_x_coord = coche.get('Precio_punto')
         coord_restantes = longitud_ruta - i - 1
         precio_bruto = round(precio_x_coord * coord_restantes,2)
@@ -291,12 +291,6 @@ if __name__ == "__main__":
         # print de lo que publicamos en el topic
         logging.getLogger().setLevel(logging.INFO)
 
-        #leemos de big query el coche con sus datos
-        # ESTO NO SERIA NECESARIO 
-        
-        '''coche = read_car_from_bigquery(project_id, dataset_id, table_id, coche_elegido)
-        #print(coche)
-        plazas = coche.get('Plazas')'''
         project_id = args.project_id
         topic_car = args.car_topic_name
 
