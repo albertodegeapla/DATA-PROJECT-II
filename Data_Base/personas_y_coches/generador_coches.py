@@ -131,6 +131,10 @@ def generar_coche(id):
         'Matricula':matricula,
         'Plazas':plazas,
         'Precio_punto':precio_x_punto,
+<<<<<<< Updated upstream
+=======
+        'N_viajes':0,
+>>>>>>> Stashed changes
         'Cartera': 0.0
     }
     
@@ -153,7 +157,11 @@ def write_car_to_bigquery(project_id, dataset_id, table_id, n_coches):
  
         coches_pcollection | "WriteToBigQuery" >> beam.io.WriteToBigQuery(
                 table=f'{project_id}:{dataset_id}.{table_id}',
+<<<<<<< Updated upstream
                 schema = '{"ID_coche":"INTEGER", "Marca":"STRING", "Matricula":"STRING", "Plazas":"INTEGER","Precio_punto":"FLOAT", "Cartera":"FLOAT"}',
+=======
+                schema = '{"ID_coche":"INTEGER", "Marca":"STRING", "Matricula":"STRING", "Plazas":"INTEGER","Precio_punto":"FLOAT", "N_viajes":"INTEGER", "Cartera":"FLOAT"}',
+>>>>>>> Stashed changes
                 create_disposition=beam.io.BigQueryDisposition.CREATE_NEVER,
                 write_disposition=beam.io.BigQueryDisposition.WRITE_APPEND
             )
