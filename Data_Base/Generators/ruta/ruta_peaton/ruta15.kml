@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <name><![CDATA[Indicaciones de Pça. de Tetuan, 15, Ciutat Vella, 46003 València, Valencia, España a Plaça de la Porta de la Mar, 5, L'Eixample, 46004 València, Valencia, España]]></name>
+    <Style id="icon-1899-DB4436-nodesc-normal">
+      <IconStyle>
+        <color>ff3644db</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+        <hotSpot x="32" xunits="pixels" y="64" yunits="insetPixels"/>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0</scale>
+      </LabelStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <Style id="icon-1899-DB4436-nodesc-highlight">
+      <IconStyle>
+        <color>ff3644db</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+        <hotSpot x="32" xunits="pixels" y="64" yunits="insetPixels"/>
+      </IconStyle>
+      <LabelStyle>
+        <scale>1</scale>
+      </LabelStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <StyleMap id="icon-1899-DB4436-nodesc">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#icon-1899-DB4436-nodesc-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#icon-1899-DB4436-nodesc-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="line-1267FF-5000-nodesc-normal">
+      <LineStyle>
+        <color>ffff6712</color>
+        <width>5</width>
+      </LineStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <Style id="line-1267FF-5000-nodesc-highlight">
+      <LineStyle>
+        <color>ffff6712</color>
+        <width>7.5</width>
+      </LineStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <StyleMap id="line-1267FF-5000-nodesc">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#line-1267FF-5000-nodesc-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#line-1267FF-5000-nodesc-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Placemark>
+      <name><![CDATA[Indicaciones de Pça. de Tetuan, 15, Ciutat Vella, 46003 València, Valencia, España a Plaça de la Porta de la Mar, 5, L'Eixample, 46004 València, Valencia, España]]></name>
+      <styleUrl>#line-1267FF-5000-nodesc</styleUrl>
+      <LineString>
+        <tessellate>1</tessellate>
+        <coordinates>
+          -0.36954,39.47576,0
+          -0.36963,39.47567,0
+          -0.3697,39.47556,0
+          -0.36972,39.4755,0
+          -0.36973,39.47547,0
+          -0.36974,39.47543,0
+          -0.36974,39.4752,0
+          -0.36975,39.47499,0
+          -0.36976,39.47483,0
+          -0.36976,39.47472,0
+          -0.36976,39.47451,0
+          -0.36976,39.47444,0
+          -0.36976,39.4744,0
+          -0.36976,39.47436,0
+          -0.36976,39.47432,0
+          -0.36979,39.47416,0
+          -0.36978,39.47412,0
+          -0.36974,39.47399,0
+          -0.36971,39.47392,0
+          -0.36967,39.47383,0
+          -0.36962,39.47375,0
+          -0.36956,39.47365,0
+          -0.36952,39.47358,0
+          -0.36945,39.4735,0
+          -0.36942,39.47347,0
+          -0.36894,39.47283,0
+          -0.36888,39.47274,0
+          -0.36866,39.47244,0
+          -0.3686,39.47235,0
+          -0.36866,39.47233,0
+          -0.36871,39.4723,0
+          -0.36874,39.47228,0
+          -0.36877,39.47225,0
+          -0.36879,39.47222,0
+          -0.36881,39.47219,0
+          -0.36882,39.47216,0
+          -0.36883,39.47213,0
+          -0.36883,39.4721,0
+          -0.36883,39.47207,0
+          -0.36883,39.47203,0
+          -0.36881,39.47198,0
+          -0.36879,39.47196,0
+          -0.36878,39.47194,0
+          -0.36876,39.47193,0
+          -0.36875,39.47192,0
+          -0.36872,39.4719,0
+          -0.3687,39.47189,0
+          -0.36874,39.47184,0
+        </coordinates>
+      </LineString>
+    </Placemark>
+    <Placemark>
+      <name>Pça. de Tetuan, 15, Ciutat Vella, 46003 València, Valencia, España</name>
+      <styleUrl>#icon-1899-DB4436-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          -0.369539,39.4757621,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name><![CDATA[Plaça de la Porta de la Mar, 5, L'Eixample, 46004 València, Valencia, España]]></name>
+      <styleUrl>#icon-1899-DB4436-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          -0.3687406,39.4718401,0
+        </coordinates>
+      </Point>
+    </Placemark>
+  </Document>
+</kml>
