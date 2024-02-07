@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <name>Indicaciones de Carrer de la Llibertat, 8, Ciutat Vella, 46003 València, Valencia, España a Pça. de Tetuan, 19, Ciutat Vella, 46003 València, Valencia, España</name>
+    <Style id="icon-1899-DB4436-nodesc-normal">
+      <IconStyle>
+        <color>ff3644db</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+        <hotSpot x="32" xunits="pixels" y="64" yunits="insetPixels"/>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0</scale>
+      </LabelStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <Style id="icon-1899-DB4436-nodesc-highlight">
+      <IconStyle>
+        <color>ff3644db</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+        <hotSpot x="32" xunits="pixels" y="64" yunits="insetPixels"/>
+      </IconStyle>
+      <LabelStyle>
+        <scale>1</scale>
+      </LabelStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <StyleMap id="icon-1899-DB4436-nodesc">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#icon-1899-DB4436-nodesc-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#icon-1899-DB4436-nodesc-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="line-1267FF-5000-nodesc-normal">
+      <LineStyle>
+        <color>ffff6712</color>
+        <width>5</width>
+      </LineStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <Style id="line-1267FF-5000-nodesc-highlight">
+      <LineStyle>
+        <color>ffff6712</color>
+        <width>7.5</width>
+      </LineStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <StyleMap id="line-1267FF-5000-nodesc">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#line-1267FF-5000-nodesc-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#line-1267FF-5000-nodesc-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Placemark>
+      <name>Indicaciones de Carrer de la Llibertat, 8, Ciutat Vella, 46003 València, Valencia, España a Pça. de Tetuan, 19, Ciutat Vella, 46003 València, Valencia, España</name>
+      <styleUrl>#line-1267FF-5000-nodesc</styleUrl>
+      <LineString>
+        <tessellate>1</tessellate>
+        <coordinates>
+          -0.37383,39.47858,0
+          -0.37335,39.47836,0
+          -0.37327,39.47832,0
+          -0.37321,39.47828,0
+          -0.37294,39.47813,0
+          -0.37197,39.47754,0
+          -0.37124,39.4771,0
+          -0.371,39.47689,0
+          -0.37092,39.47681,0
+          -0.37063,39.47652,0
+          -0.37058,39.47647,0
+          -0.37019,39.47612,0
+          -0.37008,39.47601,0
+          -0.37009,39.47596,0
+          -0.37007,39.47591,0
+          -0.37005,39.47588,0
+          -0.36999,39.47579,0
+          -0.36994,39.4757,0
+          -0.36991,39.47564,0
+          -0.36988,39.47555,0
+          -0.36985,39.47545,0
+          -0.36982,39.47534,0
+          -0.36979,39.47526,0
+          -0.36977,39.47522,0
+          -0.36974,39.4752,0
+          -0.36975,39.47499,0
+          -0.36976,39.47483,0
+          -0.36976,39.47472,0
+        </coordinates>
+      </LineString>
+    </Placemark>
+    <Placemark>
+      <name>Carrer de la Llibertat, 8, Ciutat Vella, 46003 València, Valencia, España</name>
+      <styleUrl>#icon-1899-DB4436-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          -0.3738262,39.4785805,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>Pça. de Tetuan, 19, Ciutat Vella, 46003 València, Valencia, España</name>
+      <styleUrl>#icon-1899-DB4436-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          -0.3697593,39.4747158,0
+        </coordinates>
+      </Point>
+    </Placemark>
+  </Document>
+</kml>
