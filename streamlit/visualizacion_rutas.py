@@ -85,7 +85,7 @@ if st.button('Actualizar'):
         # Crear un DataFrame con las coordenadas
         df = pd.DataFrame({'LAT': [latitud], 'LON': [longitud]})
 
-        # Mostrar el mapa con las coordenadas
+        # Mostrar el mapa con las coordenadass
         st.map(data=df, zoom=15)
     else:
         st.write(f"No hay datos disponibles en este momento para el ID_coche = {selected_car_id} en la tabla Coches Streamlit.")
