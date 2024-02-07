@@ -7,6 +7,7 @@ import argparse
 import json
 import logging
 from google.cloud import bigquery
+from google.cloud import storage
 
 # Este script escucha de dos topics a la vez, coches y pasajeros, y dependiendo de ciertas reglas
 # ...como son la distancia entre coordenadas, entre destinos, rango de alcance y precio, decidimos
@@ -17,7 +18,8 @@ from google.cloud import bigquery
 # añadirimaos el porject ID, los subscribers y el bucket
 
 
-# ejemplo de correrlo python .\recogida_pasajero.py --project_id genuine-essence-411713 --person_topic_sub ruta_persona-sub --car_topic_sub ruta_coche-sub --dataset_id blablacar2 --car_table coches --person_table perosnas
+# EJEMPLO DE CORRERLO EN LOCAL --> python .\recogida_pasajero.py --project_id genuine-essence-411713 --person_topic_sub ruta_persona-sub --car_topic_sub ruta_coche-sub --dataset_id blablacar2 --car_table coches --person_table perosnas
+# EJEMPLO DE CORRERLO EN GCP --> python .\recogida_pasajero.py --project_id genuine-essence-411713 --person_topic_sub ruta_persona-sub --car_topic_sub ruta_coche-sub --dataset_id blablacar2 --car_table coches --person_table personas --bucket_name dataproject_bucket
 
 parser = argparse.ArgumentParser(description=("Procesamiento de los topics de GCloud SUBSCRIBER"))
 parser.add_argument(
@@ -50,15 +52,23 @@ parser.add_argument(
     required=True,
     help="Tabla de pasajeros en GCloud"
 )
-'''parser.add_argument(
+parser.add_argument(
     "--bucket_name",
     required=True,
     help="Bucket de GCloud"
-)'''
+)
 
 args, opts = parser.parse_known_args()
 
 pasajeros_en_coche = []
+
+# Creamos un bucket desde aqui.
+def create_bucket(name):
+    storage_client = storage.Client()
+
+    bucket = storage_client.create_bucket(name)
+    logging.info("Bucket {} created".format(bucket.name))
+
 
 def car_select(coche):
     client = bigquery.Client()
@@ -157,21 +167,22 @@ class ProcessData(beam.DoFn):
                             print(f'El pasajero {id_pasajero} ya se encuentra en un coche.')
                             return None
                     except Exception as e:
-                        logging.error(f"Error CR7: {e}")
+                        logging.error(f"Error while checking if person is in a car: {e}")
 
                     # Calcula la distancia entre los puntos
                     distancia_recogida = haversine((coche['coordenadas'][1][0], coche['coordenadas'][1][1]),
                                     (pasajero['coordenadas'][1][0], pasajero['coordenadas'][1][1]),
                                     unit=Unit.METERS)
-                    #print(distancia_recogida)
+                    
                     # selecciona la distancia a la que el pasajero está dispuesto a desplazarse segun su mood
                     distancia_maxima = 0
                     if pasajero['mood'] == 'Antipatico':
-                        distancia_maxima = 5000
+                        distancia_maxima = 1500
                     elif pasajero['mood'] == 'Normal':
-                        distancia_maxima = 10000
+                        distancia_maxima = 3000
                     elif pasajero['mood'] == 'Majo':
-                        distancia_maxima = 15000
+                        distancia_maxima = 5000
+
                     # si la posicion actual esta a x distancia entraga a recoger
                     if distancia_recogida <= distancia_maxima:
                         # calcula la distancia entre los destinos
@@ -191,16 +202,12 @@ class ProcessData(beam.DoFn):
                             # Si hay plazas y dinero hay match!!
                             logging.info(f'¡MATCH! El coche {coche["id_coche"]} ha recogido al pasajero {pasajero["id_persona"]}')
 
-                            ####### MIRAR CHECKEO DE PASAJEROS EN COCHE ################
-                            #print(pasajeros_en_coche)
                             car_update_bigquery(coche)
                             person_update_bigquery(pasajero, coche)
                             pasajeros_en_coche.append((id_coche, id_pasajero))
-                            
-                            
 
         except Exception as e:
-            logging.error(f"Error procesando datos: {e}")
+            logging.error(f"Error while function Process_data: {e}")
 
                         
 def add_key(element):
@@ -240,18 +247,18 @@ def run_local():
             | "processData" >> beam.ParDo(ProcessData())
         )
         
-if __name__ == "__main__":
+def run_GCP():
 
-    logging.getLogger().setLevel(logging.INFO)
-    logging.info("The process started")
+    project_id = args.project_id
+    bucket_name = args.bucket_name
+    dataset_id = args.dataset_id
+    topic_person = args.person_topic_sub
+    table_person = args.person_table
+    topic_car = args.car_topic_sub
+    table_car = args.car_table
 
-    run_local()
+    #create_bucket(bucket_name)
 
-
-
-
-
-'''def run_GCP():
     with beam.Pipeline(options=PipelineOptions(
         streaming=True,
         # save_main_session=True
@@ -259,5 +266,28 @@ if __name__ == "__main__":
         runner="DataflowRunner",
         temp_location=f"gs://{bucket_name}/tmp",
         staging_location=f"gs://{bucket_name}/staging",
-        region="europe-west1"
-    )) '''
+        region="europe-southwest1"
+    )) as p:
+        datos_coche = (p | "Read Car Data" >> beam.io.ReadFromPubSub(subscription=f'projects/{project_id}/subscriptions/{topic_car}') 
+                     | "decode car message" >> beam.Map(lambda x: json.loads(x)) 
+                     | "addKeyCar" >> beam.Map(add_key)
+                     | "WindowIntoCar" >> beam.WindowInto(beam.window.FixedWindows(2)) 
+        )
+        datos_pasajero = (p | "Read Passenger Data" >> beam.io.ReadFromPubSub(subscription=f'projects/{project_id}/subscriptions/{topic_person}') 
+                        | "decode person message" >> beam.Map(lambda x: json.loads(x)) 
+                        | "addKeyPassenger" >> beam.Map(add_key)
+                        | "WindowIntoPeaton" >> beam.WindowInto(beam.window.FixedWindows(2)) 
+        )
+        data = ((datos_coche, datos_pasajero)
+            | "Flatten" >> beam.Flatten()
+            | "groupByKey" >> beam.GroupByKey()
+            | "processData" >> beam.ParDo(ProcessData())
+        )
+        
+if __name__ == "__main__":
+
+    logging.getLogger().setLevel(logging.INFO)
+    logging.info("The process started")
+
+    #run_local()
+    run_GCP()
