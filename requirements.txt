@@ -12,3 +12,4 @@ pandas
 haversine
 streamlit
 folium
+google-cloud-storage==2.14.0
