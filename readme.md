@@ -88,13 +88,13 @@ Aclaracion IMPORTANTE. los datos estáticos solo se deben ejecurar una vez. Por 
 
 DATAFLOW
 
-Dentro de la carpeta de dataflow, se encuentra el código Python escrito utilizando la librería Apache BEAM para consumir los datos generados tanto de pasajeros como de vehiculos  mediante dos subscripciones de cada topic de Pub/Sub. En Dataflow se realizan los siguientes pasos:
+Dentro de la carpeta de dataflow, se encuentra el código Python escrito utilizando la librería Apache BEAM para consumir los datos generados tanto de pasajeros como de vehiculos mediante dos subscripciones de cada topic de Pub/Sub. En Dataflow se realizan los siguientes pasos:
 
-Primero se leen los mensajes escritos en formato JSON que se encuentran en el topic, creando una PColletion con el contenido de los mensajes
+Primero se leen los mensajes escritos del topic y se decodifican para acceder al formato JSON, creando una PColletion con el contenido de los mensajes. a cada mensaje se le agrega una key que será la hora a la que se envia el mensaje. Importante alclarar que para que funcione correctamente los datos de tiempo están modificados para que los segunod sean siempre par y sea más facil la agrupacion posterior
 
-Los datos recibidos se guardan en una tabla de BigQuery que tiene el siguiente schema:
+Para delimitar el número de mensajes que llegan y poder trabajar correctamente se ha ajustado una ventana de 2 segundos para las dos pcollections que recojen los datos (los datos se generan aproximadamente cada 1-2 segunods)
 
-DESCRIBIR LO QUE SUCEDE EN EL DATAFLOW --> 
+Una vez leidos se juntan en la misma p colection agrupandose por key (la hora) y se envian al proceso de match con una funcion ParDo.
 
 LÓGICA DEL DATAFLOW. LA RECOGIDA DEL PASAJERO.
 
@@ -102,7 +102,7 @@ Una vez nuestro código ha leido los mensajes de dos topics diferentes a la vez 
 
 Cómo se puede comprobar en el formato de los mensajes que anteriormente hemos puesto de ejemplo, la información que llega en esos mensajes contiene, entre otras cosas, las ubicaciones de cada coche y/o persona, en un determinado momento - tiempo real, streaming - y el punto geográfico hasta el cual se dirige.
 
-La función empieza calculando la distancia entre el coche y el pasajero, usando la librería "Haversine", que nos ayuda a calcular las distancias entre dos puntos por GPS - en formato Latitud, Longitud - en metros. Se ha elegido esta librería porque, inicialmente, utilizamos la librería "math" donde utilizábamos una fórmula muy interesante con cosenos, senos, tangentes y radianes, ya que las coordenadas en GPS están en radianes y esta fórmula, que tiene en cuenta el radio del planeta Tierra, nos convertía esas distancias en el formato que necesitábamos. Por tal de simplificar y optar por un formato más minimalista, hemos reducido líneas de código con esta librería.
+La función empieza calculando la distancia entre el coche y el pasajero, usando la librería "Haversine", que nos ayuda a calcular las distancias entre dos puntos por GPS - en formato Latitud, Longitud - en metros. 
 
 Una vez ya tenemos la distancia, en tiempo real, entre el coche y el pasajero, nos basamos en el "mood" para definir un rango de acción. En nuestra lógica, si alguien es "majo", "normal" o "antipático" debería de definir cuán lejos se va a desplazar para hacer match. Si la distancia es menor que el rango del mood, entonces esta condición se cumple.
 
@@ -110,7 +110,7 @@ La siguiente y no menos importante condición, es si ambos, coche y persona, se 
 
 A continuación, tenemos una situación en la cuál el coche y la persona no solo están lo suficientemente cerca como para recoger a la persona, sino que además van a un sitio relativamente cercano el uno del otro, pero tenemos que comprobar si quedan plazas disponibles en el coche. Si quedan plazas disponibles, entonces realizamos la comprobación del pago y vemos si la persona tiene suficiente dinero para pagar el viaje, y si es así, entonces se realiza el match, se realiza el pago y se resta la plaza disponible en dicho coche.
 
-Una vez estas condiciones se cumplen y obtenemos un match, entonces realizamos el update en la base de datos, para poder almacenarlo y visualizarlo posteriormente.
+Una vez estas condiciones se cumplen y obtenemos un match, entonces realizamos el update en la base de datos de Big Query, para poder almacenarlo y visualizarlo posteriormente.
 
 
 
