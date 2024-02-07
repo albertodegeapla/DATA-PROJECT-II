@@ -6,3 +6,6 @@ pepe/pyvenv.cfg
 Data_Base/Generators/.DS_Store
 Data_Base/Generators/.DS_Store
 Data_Base/Generators/ruta/.DS_Store
+branch_structure.json
+temp_auto_push.bat
+temp_interactive_push.bat
