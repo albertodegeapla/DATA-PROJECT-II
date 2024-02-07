@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <name>Indicaciones de C/ de Guillem de Castro, 47, Extramurs, 46007 València, Valencia, España a C. de na Jordana, 44, Ciutat Vella, 46003 València, Valencia, España</name>
+    <Style id="icon-1899-DB4436-nodesc-normal">
+      <IconStyle>
+        <color>ff3644db</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+        <hotSpot x="32" xunits="pixels" y="64" yunits="insetPixels"/>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0</scale>
+      </LabelStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <Style id="icon-1899-DB4436-nodesc-highlight">
+      <IconStyle>
+        <color>ff3644db</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+        <hotSpot x="32" xunits="pixels" y="64" yunits="insetPixels"/>
+      </IconStyle>
+      <LabelStyle>
+        <scale>1</scale>
+      </LabelStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <StyleMap id="icon-1899-DB4436-nodesc">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#icon-1899-DB4436-nodesc-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#icon-1899-DB4436-nodesc-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="line-1267FF-5000-nodesc-normal">
+      <LineStyle>
+        <color>ffff6712</color>
+        <width>5</width>
+      </LineStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <Style id="line-1267FF-5000-nodesc-highlight">
+      <LineStyle>
+        <color>ffff6712</color>
+        <width>7.5</width>
+      </LineStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <StyleMap id="line-1267FF-5000-nodesc">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#line-1267FF-5000-nodesc-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#line-1267FF-5000-nodesc-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Placemark>
+      <name>Indicaciones de C/ de Guillem de Castro, 47, Extramurs, 46007 València, Valencia, España a C. de na Jordana, 44, Ciutat Vella, 46003 València, Valencia, España</name>
+      <styleUrl>#line-1267FF-5000-nodesc</styleUrl>
+      <LineString>
+        <tessellate>1</tessellate>
+        <coordinates>
+          -0.38247,39.46962,0
+          -0.38261,39.46973,0
+          -0.383,39.47003,0
+          -0.38339,39.47033,0
+          -0.38341,39.47034,0
+          -0.38343,39.47036,0
+          -0.38343,39.47037,0
+          -0.38347,39.47043,0
+          -0.38358,39.4706,0
+          -0.3836,39.47065,0
+          -0.38383,39.47126,0
+          -0.38395,39.47156,0
+          -0.38402,39.47185,0
+          -0.38402,39.47187,0
+          -0.38402,39.47188,0
+          -0.38402,39.47219,0
+          -0.38399,39.47248,0
+          -0.38397,39.47278,0
+          -0.38395,39.47302,0
+          -0.38395,39.47305,0
+          -0.38393,39.47377,0
+          -0.38394,39.47381,0
+          -0.38398,39.47401,0
+          -0.38405,39.47469,0
+          -0.38405,39.47473,0
+          -0.38406,39.47477,0
+          -0.3841,39.47526,0
+          -0.38411,39.47534,0
+          -0.38417,39.47573,0
+          -0.38413,39.47593,0
+          -0.38406,39.47636,0
+          -0.384,39.47673,0
+          -0.38399,39.47679,0
+          -0.38395,39.47696,0
+          -0.38384,39.47758,0
+          -0.38384,39.47761,0
+          -0.38373,39.47828,0
+          -0.38344,39.47903,0
+          -0.3833,39.47942,0
+          -0.38329,39.47942,0
+          -0.38306,39.48008,0
+          -0.38298,39.48027,0
+          -0.38298,39.48028,0
+          -0.38293,39.48039,0
+          -0.38285,39.48049,0
+        </coordinates>
+      </LineString>
+    </Placemark>
+    <Placemark>
+      <name>C/ de Guillem de Castro, 47, Extramurs, 46007 València, Valencia, España</name>
+      <styleUrl>#icon-1899-DB4436-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          -0.3824731,39.4696171,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>C. de na Jordana, 44, Ciutat Vella, 46003 València, Valencia, España</name>
+      <styleUrl>#icon-1899-DB4436-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          -0.3828468,39.4804854,0
+        </coordinates>
+      </Point>
+    </Placemark>
+  </Document>
+</kml>
