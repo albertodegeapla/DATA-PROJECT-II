@@ -34,14 +34,8 @@ Dataflow para transformación de los mensajes y procesamiento de la información
 
 BigQuery como almacenamiento
 
-Streamlit para visualización de la interfaz 
-
 Tableau para el análisis y visualización de los datos del negocio
 
-
-DISEÑO DE LA ARQUITECTURA
-
---> AÑADIR IMAGÉN QUE TENGO QUE CREAR DE LA ARQUITECTURA
 
 Generador de datos.
 
@@ -112,46 +106,8 @@ A continuación, tenemos una situación en la cuál el coche y la persona no sol
 
 Una vez estas condiciones se cumplen y obtenemos un match, entonces realizamos el update en la base de datos de Big Query, para poder almacenarlo y visualizarlo posteriormente.
 
-
-
-EJEMPLO QUE HAY QUE CAMBIAR Y ADAPTAR A NUESTRO PROYECTO --> 
-
-Mediante el uso de una ventana, se obtiene la potencia total instantánea generada por los paneles, y se escribe en un tópico de Pub/Sub para utilizar luego en las Cloud Functions como disparador de una aviso.
-
-Se calcula otra ventana para sacar en franjas de 30 segundos la potencia media generada por los paneles, y se escribe el resultado de la PCollection en otra tabla de BigQuery
-
-Para ejecutar este código se puede hacer de 2 formas:
-
-Ejecutando el siguiente comando desde la terminal:
-
-python3 dataflow.py \
-    --project_id <project_id> \
-    --input_subscription <topic_name>-sub \
-    --output_bigquery <dataset_bigquery>.Panel_Data \
-    --runner DataflowRunner \
-    --job_name dataflow-solar \
-    --region <GCP region> \
-    --temp_location gs://<bucket(project_id)>/tmp \
-    --staging_location gs://<bucket(project_id)/stg
-
-
-STREAMLIT
-
-
 TABLEAU
 
 En la parte de visualización, se ha creado un dashboard para análizar los resultados sobre el conjunto de viajes de los coches, con la finalidad de ver a cuantos pasajeros han transportado y como ha aumentado su cartera.
 
 Por otra parte, también se ha empleado esta herramienta para visualizar como ha variado la cartera de las personas durante el transcurso del proyecto.
-
-
-
-Si deseas ver cómo funciona el código puedes consultar el siguiente vídeo:
-
----
-
-
-
-
-
-
