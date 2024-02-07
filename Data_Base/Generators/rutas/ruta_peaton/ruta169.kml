@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <name>Indicaciones de C/ de Guillem de Castro, 169, Extramurs, 46008 València, Valencia, España a Plaça de Pere Borrego i Galindo, 9, Ciutat Vella, 46003 València, Valencia, España</name>
+    <Style id="icon-1899-DB4436-nodesc-normal">
+      <IconStyle>
+        <color>ff3644db</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+        <hotSpot x="32" xunits="pixels" y="64" yunits="insetPixels"/>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0</scale>
+      </LabelStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <Style id="icon-1899-DB4436-nodesc-highlight">
+      <IconStyle>
+        <color>ff3644db</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+        <hotSpot x="32" xunits="pixels" y="64" yunits="insetPixels"/>
+      </IconStyle>
+      <LabelStyle>
+        <scale>1</scale>
+      </LabelStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <StyleMap id="icon-1899-DB4436-nodesc">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#icon-1899-DB4436-nodesc-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#icon-1899-DB4436-nodesc-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="line-1267FF-5000-nodesc-normal">
+      <LineStyle>
+        <color>ffff6712</color>
+        <width>5</width>
+      </LineStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <Style id="line-1267FF-5000-nodesc-highlight">
+      <LineStyle>
+        <color>ffff6712</color>
+        <width>7.5</width>
+      </LineStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <StyleMap id="line-1267FF-5000-nodesc">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#line-1267FF-5000-nodesc-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#line-1267FF-5000-nodesc-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Placemark>
+      <name>Indicaciones de C/ de Guillem de Castro, 169, Extramurs, 46008 València, Valencia, España a Plaça de Pere Borrego i Galindo, 9, Ciutat Vella, 46003 València, Valencia, España</name>
+      <styleUrl>#line-1267FF-5000-nodesc</styleUrl>
+      <LineString>
+        <tessellate>1</tessellate>
+        <coordinates>
+          -0.38369,39.47838,0
+          -0.38344,39.47903,0
+          -0.38329,39.47942,0
+          -0.38306,39.48008,0
+          -0.38298,39.48027,0
+          -0.38298,39.48028,0
+          -0.38293,39.48039,0
+          -0.3828,39.48053,0
+          -0.38257,39.48064,0
+          -0.38237,39.48071,0
+          -0.38218,39.48078,0
+          -0.38196,39.48085,0
+          -0.38178,39.48091,0
+          -0.38111,39.48114,0
+          -0.38098,39.48118,0
+          -0.38091,39.48121,0
+          -0.38085,39.48122,0
+          -0.38078,39.48123,0
+          -0.38069,39.48124,0
+          -0.38059,39.48124,0
+          -0.38054,39.48124,0
+          -0.38048,39.48124,0
+          -0.38039,39.48123,0
+          -0.38033,39.48122,0
+          -0.38023,39.48121,0
+          -0.38013,39.48119,0
+          -0.38012,39.48083,0
+          -0.38003,39.48049,0
+          -0.37997,39.48023,0
+          -0.37986,39.47978,0
+          -0.37983,39.47959,0
+          -0.37976,39.47953,0
+          -0.37972,39.47949,0
+        </coordinates>
+      </LineString>
+    </Placemark>
+    <Placemark>
+      <name>C/ de Guillem de Castro, 169, Extramurs, 46008 València, Valencia, España</name>
+      <styleUrl>#icon-1899-DB4436-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          -0.3836899,39.4783784,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>Plaça de Pere Borrego i Galindo, 9, Ciutat Vella, 46003 València, Valencia, España</name>
+      <styleUrl>#icon-1899-DB4436-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          -0.3797177,39.4794914,0
+        </coordinates>
+      </Point>
+    </Placemark>
+  </Document>
+</kml>

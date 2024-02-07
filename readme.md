@@ -28,9 +28,9 @@ Lucía Esteve Domínguez: Licenciada en administración y dirección de empresas
 
 En este repositorio, se encuentra la solución en Google Cloud que hemos diseñado. Consta de las siguientes partes:
 
-Generador de datos con envío a Pub/Sub
+Generador de datos, tanto estáticos como dinámicos, los dinámicos se envian como mensaje a traves de Pub/Sub de GCP
 
-Dataflow para transformación de los mensajes
+Dataflow para transformación de los mensajes y procesamiento de la información (gestión del match)
 
 BigQuery como almacenamiento
 
@@ -43,93 +43,58 @@ DISEÑO DE LA ARQUITECTURA
 
 --> AÑADIR IMAGÉN QUE TENGO QUE CREAR DE LA ARQUITECTURA
 
-Generador de datos (PUB/SUB)
+Generador de datos.
 
-Se generan datos tanto para peatones como para coches cada uno con sus respectivas rutas. 
+[Estáticos]
 
-Se utiliza Pub/sup para publicar mensajes en directo sobre las rutas que esta utilizando el usuario. 
+Se generan datos tanto para peatones como para coches y se almacenan en Big Query.
 
-Ambos generadores funcionan igual:  con una función se genera un ejemplo de ruta en forma de diccionario Python, incluyendo detalles diferentes dependiendo de si estamos en el generador de datos para los coches (la marca, la matrícula, el número de plazas, el precio, la hora de salida y una lista de coordenadas de la ruta)o en el generador de datos para personas (ID de la persona, el nombre, la cantidad de dinero en su cartera, la hora de salida y una lista de coordenadas de la ruta)
+Estos datos son los datos son las propiedades de cada uno.
 
-AÑADIR REDACCIÓN! 
+En el caso de los coches: ID, Marca, Matricula, nº plazas disponibles, Precio por coordenada(€), Cartera, nº viajes realizados y nº pasajeros recogidos.
 
+En el caso de las personas: ID, Nomrbe, Apellidos, Edad, Cartera, Cartera inicial, Mood*, nº viajes, en_ruta**.
 
-Se crea un cliente de publicador de Pub/Sub y se almacenan el ID del proyecto y el nombre del tema. 
+*Esta variable en un entorno productivo real no exisitiría, pero en esta simulación queriamos simular el comportamiento de diferentes tipos de personas.
+**Esta variable hace referencia a si en este preciso momento el peaton se encuentra dentro de un coche o no, ayuda en el procesamiento.
 
-El método publishCarMessage toma un mensaje como entrada, lo convierte a formato JSON, y lo publica en el tema especificado. También registra información sobre el mensaje publicado.
+[Dinámicos] Pub/Sub
 
-En resumen, este código proporciona una forma de generar y publicar mensajes sobre rutas de coche y de peaton en un tema de Google Cloud Pub/Sub, utilizando argumentos de línea de comandos para especificar el proyecto y el nombre del tema.
+Se selecciona a un peaton/coche y se le asigna una ruta al azar esta, se desglosa por coordenadas y se envia un mensaje con el estado del coche/peaton.
 
-"""REVISAR """
+Se utiliza Pub/sup para publicar mensajes en directo del estado del ususario en cada coordenada. 
+
+El contenido de los mensajes es el siguiente:
+
+- Coches: ID, (hora actual, (coordeanda1, coordenada 2), coordenadas del destino, nº plazas disponibles, precio del viaje
+
+El precio del viaje se calcula segun el número de coordenadas que faltan para llegar al destino, de esta forma un viaje al principio del trayecto será más caro que un viajes a mitad de trayecto.
+
+Para actualizar las plazas se lee de Big Query (esta disminuye cuando hay un match en el procesamiento)
+
+- Peatones: ID, (hora actual, (coordeanda1, coordenada 2), coordenadas del destino, Cartera, mood
+
+Cada mensaje se envia a un topic, todos los mensajes del coche a un topic, ej. ruta_coche y todos los mensajes del peaton se envian a otro topic, ej. ruta_peaton
+
+Los mensajes enviados estan en formato JSON por lo que se codifican antes de ser enviados y se deberan decodificar una vez llegan.
+ 
+En resumen, este código proporciona una forma de generar y publicar mensajes sobre rutas de coche y de peaton en un topic de Google Cloud Pub/Sub, utilizando argumentos de línea de comandos para especificar el proyecto y el nombre del tema.
 
 Para ejecutar el codigo del generador correctamente hay que realizar los siguientes pasos:
 
-FALTA RELLENAR 
+python <GENERADOR_X.py> --project_id <TU_PROYECTO> --peaton_topic_name <NOMBRE_TOPIC_X> --dataset_id <NOMBRE_DATASET> --table_peaton <NOMBRE_TABLA_X> --n_peatones <INT. nº de datos estáticos que quieres generar>   
+
+Aclaracion IMPORTANTE. los datos estáticos solo se deben ejecurar una vez. Por lo que cada vez que lances el generador te hará escribir una palabra para que no la lies, si no la escribes pasará directamente al envio de mensajes. 
 
 DATAFLOW
 
-Dentro de la carpeta de dataflow, se encuentra el código Python escrito utilizando la librería Apache BEAM para consumir los datos generados tanto de pasajeros como de vehiculos  mediante dos subscripciones de cada topic de Pub/Sub. En Dataflow se realizan los siguientes pasos:
+Dentro de la carpeta de dataflow, se encuentra el código Python escrito utilizando la librería Apache BEAM para consumir los datos generados tanto de pasajeros como de vehiculos mediante dos subscripciones de cada topic de Pub/Sub. En Dataflow se realizan los siguientes pasos:
 
-Primero se leen los mensajes escritos en formato JSON que se encuentran en el topic, creando una PColletion con el contenido de los mensajes
+Primero se leen los mensajes escritos del topic y se decodifican para acceder al formato JSON, creando una PColletion con el contenido de los mensajes. a cada mensaje se le agrega una key que será la hora a la que se envia el mensaje. Importante alclarar que para que funcione correctamente los datos de tiempo están modificados para que los segunod sean siempre par y sea más facil la agrupacion posterior
 
-Los datos recibidos se guardan en una tabla de BigQuery que tiene el siguiente schema:
+Para delimitar el número de mensajes que llegan y poder trabajar correctamente se ha ajustado una ventana de 2 segundos para las dos pcollections que recojen los datos (los datos se generan aproximadamente cada 1-2 segunods)
 
- [{
-  "ID_persona": "1",
-  "Nombre": "Rebeca",
-  "Primer_apellido": "Durán",
-  "Segundo_apellido": "Ibáñez",
-  "Edad": "20",
-  "Cartera": "88.45",
-  "Cartera_inicial": "88.45",
-  "Mood": "antipático"
-}, {
-  "ID_persona": "2",
-  "Nombre": "Isaac",
-  "Primer_apellido": "Esteban",
-  "Segundo_apellido": "Durán",
-  "Edad": "67",
-  "Cartera": "60.18",
-  "Cartera_inicial": "60.18",
-  "Mood": "majo"
-}, {
-
- 
-  "ID_persona": "5",
-  "Nombre": "Virgilio",
-  "Primer_apellido": "Suárez",
-  "Segundo_apellido": "Arias",
-  "Edad": "26",
-  "Cartera": "54.45",
-  "Cartera_inicial": "54.45",
-  "Mood": "majo"
-}, {
-  "ID_persona": "6",
-  "Nombre": "Norberto",
-  "Primer_apellido": "Delgado",
-  "Segundo_apellido": "Giménez",
-  "Edad": "56",
-  "Cartera": "79.13",
-  "Cartera_inicial": "79.13",
-  "Mood": "antipático"  
-}]
-[{
-  "ID_coche": "1",
-  "Marca": "Citroen",
-  "Matricula": "4378LIW",
-  "Plazas": "4",
-  "Precio_punto": "0.01",
-  "Cartera": "0.0"
-}, {
-  "ID_coche": "2",
-  "Marca": "Ford",
-  "Matricula": "8644AKU",
-  "Plazas": "4",
-  "Precio_punto": "0.02",
-  "Cartera": "0.0"
-}]
-
-DESCRIBIR LO QUE SUCEDE EN EL DATAFLOW --> 
+Una vez leidos se juntan en la misma p colection agrupandose por key (la hora) y se envian al proceso de match con una funcion ParDo.
 
 LÓGICA DEL DATAFLOW. LA RECOGIDA DEL PASAJERO.
 
@@ -137,7 +102,7 @@ Una vez nuestro código ha leido los mensajes de dos topics diferentes a la vez 
 
 Cómo se puede comprobar en el formato de los mensajes que anteriormente hemos puesto de ejemplo, la información que llega en esos mensajes contiene, entre otras cosas, las ubicaciones de cada coche y/o persona, en un determinado momento - tiempo real, streaming - y el punto geográfico hasta el cual se dirige.
 
-La función empieza calculando la distancia entre el coche y el pasajero, usando la librería "Haversine", que nos ayuda a calcular las distancias entre dos puntos por GPS - en formato Latitud, Longitud - en metros. Se ha elegido esta librería porque, inicialmente, utilizamos la librería "math" donde utilizábamos una fórmula muy interesante con cosenos, senos, tangentes y radianes, ya que las coordenadas en GPS están en radianes y esta fórmula, que tiene en cuenta el radio del planeta Tierra, nos convertía esas distancias en el formato que necesitábamos. Por tal de simplificar y optar por un formato más minimalista, hemos reducido líneas de código con esta librería.
+La función empieza calculando la distancia entre el coche y el pasajero, usando la librería "Haversine", que nos ayuda a calcular las distancias entre dos puntos por GPS - en formato Latitud, Longitud - en metros. 
 
 Una vez ya tenemos la distancia, en tiempo real, entre el coche y el pasajero, nos basamos en el "mood" para definir un rango de acción. En nuestra lógica, si alguien es "majo", "normal" o "antipático" debería de definir cuán lejos se va a desplazar para hacer match. Si la distancia es menor que el rango del mood, entonces esta condición se cumple.
 
@@ -145,7 +110,7 @@ La siguiente y no menos importante condición, es si ambos, coche y persona, se 
 
 A continuación, tenemos una situación en la cuál el coche y la persona no solo están lo suficientemente cerca como para recoger a la persona, sino que además van a un sitio relativamente cercano el uno del otro, pero tenemos que comprobar si quedan plazas disponibles en el coche. Si quedan plazas disponibles, entonces realizamos la comprobación del pago y vemos si la persona tiene suficiente dinero para pagar el viaje, y si es así, entonces se realiza el match, se realiza el pago y se resta la plaza disponible en dicho coche.
 
-Una vez estas condiciones se cumplen y obtenemos un match, entonces realizamos el update en la base de datos, para poder almacenarlo y visualizarlo posteriormente.
+Una vez estas condiciones se cumplen y obtenemos un match, entonces realizamos el update en la base de datos de Big Query, para poder almacenarlo y visualizarlo posteriormente.
 
 
 
