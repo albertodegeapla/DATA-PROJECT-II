@@ -117,8 +117,7 @@ def generar_coche(id):
         'Precio_punto':precio_x_punto,
         'N_viajes':0,
         'N_pasajeros':0,
-        'Cartera': 0.0,
-        'Coordenadas_coche': None
+        'Cartera': 0.0
     }
     
     return coche
@@ -140,7 +139,7 @@ def write_car_to_bigquery(project_id, dataset_id, table_id, n_coches):
  
         coches_pcollection | "WriteToBigQuery" >> beam.io.WriteToBigQuery(
                 table=f'{project_id}:{dataset_id}.{table_id}',
-                schema = '{"ID_coche":"INTEGER", "Marca":"STRING", "Matricula":"STRING", "Plazas":"INTEGER", "Precio_punto":"FLOAT", "N_viajes":"INTEGER", "N_pasajeros":"INTEGER", "Cartera":"FLOAT", "Coordenadas_coche":"STRING"}',
+                schema = '{"ID_coche":"INTEGER", "Marca":"STRING", "Matricula":"STRING", "Plazas":"INTEGER", "Precio_punto":"FLOAT", "N_viajes":"INTEGER", "N_pasajeros":"INTEGER", "Cartera":"FLOAT"}',
    create_disposition=beam.io.BigQueryDisposition.CREATE_NEVER,
                 write_disposition=beam.io.BigQueryDisposition.WRITE_APPEND
             )
@@ -195,7 +194,7 @@ def publicar_movimiento(coordenadas, project_id, topic_car, dataset_id, table_id
     for i in range(len(coordenadas)-1):
         
         coche = read_car_from_bigquery(project_id, dataset_id, table_id, id_coche)
-        plazas = coche.get('Plazas')
+        plazas = 4
         precio_x_coord = coche.get('Precio_punto')
         coord_restantes = longitud_ruta - i - 1
         precio_bruto = round(precio_x_coord * coord_restantes,2)
@@ -296,4 +295,3 @@ if __name__ == "__main__":
 
         publicar_movimiento(coordenadas_ruta, project_id, topic_car, dataset_id, table_id, coche_elegido)
         # run(args.project_id, args.car_topic_name)
-
