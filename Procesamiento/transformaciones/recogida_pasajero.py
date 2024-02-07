@@ -129,10 +129,6 @@ class ProcessData(beam.DoFn):
         hora, datos = element
         coches = [dato for dato in datos if 'id_coche' in dato]
         personas = [dato for dato in datos if 'id_persona' in dato]
-
-        # si no hay coches o personas, no hacemos nada
-        if len(coches) == 0 or len(personas) == 0:
-            return None
         
         for coche in coches:
             if coche['coordenadas'][1] == coche['punto_destino']:
@@ -144,6 +140,10 @@ class ProcessData(beam.DoFn):
                         logging.info(f'La persona {viaje[1]} se ha bajado del coche {coche["id_coche"]}')
                         person_update_en_ruta(viaje[1])
                         pasajeros_en_coche.remove(viaje)
+        
+        # si no hay coches o personas, no hacemos nada
+        if len(coches) == 0 or len(personas) == 0:
+            return None
 
         try:
             for coche in coches:
