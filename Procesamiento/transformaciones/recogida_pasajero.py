@@ -120,7 +120,7 @@ def car_update_n_viajes(coche):
     client = bigquery.Client()
     cartera_value, n_viajes, n_pasajeros = car_select(coche)
     viajes = n_viajes + 1
-    query = f"UPDATE `{args.project_id}.{args.dataset_id}.{args.car_table}` SET N_viajes = {viajes} WHERE ID_coche = {coche['id_coche']}"
+    query = f"UPDATE `{args.project_id}.{args.dataset_id}.{args.car_table}` SET N_viajes = {viajes}, Plazas = 4 WHERE ID_coche = {coche['id_coche']}"
     client.query(query).result()
 
 class ProcessData(beam.DoFn):

@@ -195,7 +195,7 @@ def publicar_movimiento(coordenadas, project_id, topic_car, dataset_id, table_id
     for i in range(len(coordenadas)-1):
         
         coche = read_car_from_bigquery(project_id, dataset_id, table_id, id_coche)
-        plazas = 4
+        plazas = coche.get('Plazas')
         precio_x_coord = coche.get('Precio_punto')
         coord_restantes = longitud_ruta - i - 1
         precio_bruto = round(precio_x_coord * coord_restantes,2)
@@ -278,7 +278,7 @@ if __name__ == "__main__":
         coche_elegido = random.choice(id_coches)        
 
 
-        ruta_rutas = "./ruta/ruta_coche"
+        ruta_rutas = "./rutas/ruta_coche"
         archivos_rutas = os.listdir(ruta_rutas)
         archivos_rutas = [archivo for archivo in archivos_rutas if archivo.endswith(".kml")]
 

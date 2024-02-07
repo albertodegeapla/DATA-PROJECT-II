@@ -273,7 +273,7 @@ if __name__ == "__main__":
         # HAY QUE VALIDAR QUE EL peaton NO ESTA EN RUTA (LUEGO)
         peaton_elegido = random.choice(id_peaton)
 
-        ruta_rutas = "./ruta/ruta_peaton"
+        ruta_rutas = "./rutas/ruta_peaton"
         archivos_rutas = os.listdir(ruta_rutas)
         archivos_rutas = [archivo for archivo in archivos_rutas if archivo.endswith(".kml")]
 
