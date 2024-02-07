@@ -125,7 +125,7 @@ def car_update_n_viajes(coche):
 
 class ProcessData(beam.DoFn):
     def process(self, element):
-        logging.info(element)
+        #logging.info(element)
         hora, datos = element
         coches = [dato for dato in datos if 'id_coche' in dato]
         personas = [dato for dato in datos if 'id_persona' in dato]
@@ -137,7 +137,7 @@ class ProcessData(beam.DoFn):
         for coche in coches:
             if coche['coordenadas'][1] == coche['punto_destino']:
                 logging.info(f'El coche {coche["id_coche"]} ha llegado a su destino')
-                car_update_bigquery(coche)
+                car_update_n_viajes(coche)
                 pasajeros_en_coche_copy = list(pasajeros_en_coche)
                 for viaje in pasajeros_en_coche_copy:
                     if coche['id_coche'] == viaje[0]:
@@ -167,11 +167,11 @@ class ProcessData(beam.DoFn):
                     # selecciona la distancia a la que el pasajero está dispuesto a desplazarse segun su mood
                     distancia_maxima = 0
                     if pasajero['mood'] == 'Antipatico':
-                        distancia_maxima = 25000
+                        distancia_maxima = 5000
                     elif pasajero['mood'] == 'Normal':
-                        distancia_maxima = 60000
-                    elif pasajero['mood'] == 'Majo':
                         distancia_maxima = 10000
+                    elif pasajero['mood'] == 'Majo':
+                        distancia_maxima = 15000
                     # si la posicion actual esta a x distancia entraga a recoger
                     if distancia_recogida <= distancia_maxima:
                         # calcula la distancia entre los destinos
