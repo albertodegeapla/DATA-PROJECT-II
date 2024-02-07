@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <name>Indicaciones de C/ de Dalt, 32, Ciutat Vella, 46003 València, Valencia, España a C/ de Guillem de Castro, 137, Extramurs, 46001 València, Valencia, España</name>
+    <Style id="icon-1899-DB4436-nodesc-normal">
+      <IconStyle>
+        <color>ff3644db</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+        <hotSpot x="32" xunits="pixels" y="64" yunits="insetPixels"/>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0</scale>
+      </LabelStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <Style id="icon-1899-DB4436-nodesc-highlight">
+      <IconStyle>
+        <color>ff3644db</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+        <hotSpot x="32" xunits="pixels" y="64" yunits="insetPixels"/>
+      </IconStyle>
+      <LabelStyle>
+        <scale>1</scale>
+      </LabelStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <StyleMap id="icon-1899-DB4436-nodesc">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#icon-1899-DB4436-nodesc-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#icon-1899-DB4436-nodesc-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="line-1267FF-5000-nodesc-normal">
+      <LineStyle>
+        <color>ffff6712</color>
+        <width>5</width>
+      </LineStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <Style id="line-1267FF-5000-nodesc-highlight">
+      <LineStyle>
+        <color>ffff6712</color>
+        <width>7.5</width>
+      </LineStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <StyleMap id="line-1267FF-5000-nodesc">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#line-1267FF-5000-nodesc-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#line-1267FF-5000-nodesc-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Placemark>
+      <name>Indicaciones de C/ de Dalt, 32, Ciutat Vella, 46003 València, Valencia, España a C/ de Guillem de Castro, 137, Extramurs, 46001 València, Valencia, España</name>
+      <styleUrl>#line-1267FF-5000-nodesc</styleUrl>
+      <LineString>
+        <tessellate>1</tessellate>
+        <coordinates>
+          -0.37999,39.47798,0
+          -0.37997,39.47767,0
+          -0.37993,39.4772,0
+          -0.37986,39.47675,0
+          -0.3799,39.47666,0
+          -0.37996,39.47657,0
+          -0.38005,39.4764,0
+          -0.38016,39.47636,0
+          -0.38035,39.47633,0
+          -0.38035,39.47624,0
+          -0.38034,39.47614,0
+          -0.38034,39.47608,0
+          -0.38034,39.47602,0
+          -0.38081,39.47537,0
+          -0.38096,39.47516,0
+          -0.381,39.4751,0
+          -0.38209,39.47526,0
+          -0.38239,39.47529,0
+          -0.38256,39.47531,0
+          -0.38302,39.47537,0
+          -0.38348,39.47545,0
+          -0.38361,39.47548,0
+          -0.38377,39.4755,0
+          -0.38381,39.4755,0
+          -0.3839,39.47552,0
+          -0.38397,39.47555,0
+          -0.384,39.47557,0
+          -0.38402,39.47559,0
+          -0.38405,39.47563,0
+          -0.38406,39.47574,0
+          -0.38417,39.47573,0
+          -0.3842,39.47572,0
+        </coordinates>
+      </LineString>
+    </Placemark>
+    <Placemark>
+      <name>C/ de Dalt, 32, Ciutat Vella, 46003 València, Valencia, España</name>
+      <styleUrl>#icon-1899-DB4436-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          -0.3799889,39.4779831,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>C/ de Guillem de Castro, 137, Extramurs, 46001 València, Valencia, España</name>
+      <styleUrl>#icon-1899-DB4436-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          -0.384203,39.4757242,0
+        </coordinates>
+      </Point>
+    </Placemark>
+  </Document>
+</kml>
