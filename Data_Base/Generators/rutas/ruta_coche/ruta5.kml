@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <kml xmlns="http://www.opengis.net/kml/2.2">
   <Document>
-    <name>Indicaciones de Comte de Trénor, Ciutat Vella, 46003 Valencia, España a Pça. de Tetuan, 15, Ciutat Vella, 46003 València, Valencia, España</name>
+    <name><![CDATA[Indicaciones de Plaça de la Porta de la Mar, 5, L'Eixample, 46004 València, Valencia, España a C/ de Xàtiva, 23216, Ciutat Vella, 46004 València, Valencia, España]]></name>
     <Style id="icon-1899-DB4436-nodesc-normal">
       <IconStyle>
         <color>ff3644db</color>
@@ -73,49 +73,59 @@
       </Pair>
     </StyleMap>
     <Placemark>
-      <name>Indicaciones de Comte de Trénor, Ciutat Vella, 46003 Valencia, España a Pça. de Tetuan, 15, Ciutat Vella, 46003 València, Valencia, España</name>
+      <name><![CDATA[Indicaciones de Plaça de la Porta de la Mar, 5, L'Eixample, 46004 València, Valencia, España a C/ de Xàtiva, 23216, Ciutat Vella, 46004 València, Valencia, España]]></name>
       <styleUrl>#line-1267FF-5000-nodesc</styleUrl>
       <LineString>
         <tessellate>1</tessellate>
         <coordinates>
-          -0.37399,39.47865,0
-          -0.37383,39.47858,0
-          -0.37335,39.47836,0
-          -0.37327,39.47832,0
-          -0.37321,39.47828,0
-          -0.37294,39.47813,0
-          -0.37197,39.47754,0
-          -0.37124,39.4771,0
-          -0.371,39.47689,0
-          -0.37092,39.47681,0
-          -0.37063,39.47652,0
-          -0.37058,39.47647,0
-          -0.37019,39.47612,0
-          -0.37008,39.47601,0
-          -0.37001,39.47594,0
-          -0.36989,39.47584,0
-          -0.36978,39.47575,0
-          -0.36963,39.47567,0
-          -0.36954,39.47562,0
-          -0.36934,39.47578,0
+          -0.36867,39.47187,0
+          -0.36865,39.47186,0
+          -0.3686,39.47185,0
+          -0.36855,39.47184,0
+          -0.3685,39.47183,0
+          -0.36845,39.47183,0
+          -0.3684,39.47184,0
+          -0.36835,39.47184,0
+          -0.36831,39.47186,0
+          -0.36819,39.47184,0
+          -0.36813,39.47172,0
+          -0.36808,39.47165,0
+          -0.36705,39.47024,0
+          -0.36819,39.47025,0
+          -0.36855,39.47026,0
+          -0.37002,39.47026,0
+          -0.37037,39.47033,0
+          -0.37105,39.46979,0
+          -0.37112,39.46973,0
+          -0.37142,39.46951,0
+          -0.37178,39.46925,0
+          -0.37202,39.46909,0
+          -0.37288,39.46849,0
+          -0.37291,39.46848,0
+          -0.37319,39.46828,0
+          -0.37376,39.46789,0
+          -0.37457,39.46732,0
+          -0.37472,39.46722,0
+          -0.37478,39.46719,0
+          -0.37493,39.46715,0
         </coordinates>
       </LineString>
     </Placemark>
     <Placemark>
-      <name>Comte de Trénor, Ciutat Vella, 46003 Valencia, España</name>
+      <name><![CDATA[Plaça de la Porta de la Mar, 5, L'Eixample, 46004 València, Valencia, España]]></name>
       <styleUrl>#icon-1899-DB4436-nodesc</styleUrl>
       <Point>
         <coordinates>
-          -0.3739866,39.4786474,0
+          -0.3686738,39.4718741,0
         </coordinates>
       </Point>
     </Placemark>
     <Placemark>
-      <name>Pça. de Tetuan, 15, Ciutat Vella, 46003 València, Valencia, España</name>
+      <name>C/ de Xàtiva, 23216, Ciutat Vella, 46004 València, Valencia, España</name>
       <styleUrl>#icon-1899-DB4436-nodesc</styleUrl>
       <Point>
         <coordinates>
-          -0.3693353,39.4757753,0
+          -0.3749253,39.4671547,0
         </coordinates>
       </Point>
     </Placemark>
