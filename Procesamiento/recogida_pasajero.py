@@ -57,6 +57,11 @@ parser.add_argument(
     required=True,
     help="Bucket de GCloud"
 )
+parser.add_argument(
+    "--requirements",
+    required=True,
+    help="ruta de los Requerimientos de GCloud"
+)
 
 args, opts = parser.parse_known_args()
 
@@ -256,6 +261,7 @@ def run_GCP():
     table_person = args.person_table
     topic_car = args.car_topic_sub
     table_car = args.car_table
+    requirements = args.requirements
 
     #create_bucket(bucket_name)
 
@@ -266,7 +272,9 @@ def run_GCP():
         runner="DataflowRunner",
         temp_location=f"gs://{bucket_name}/tmp",
         staging_location=f"gs://{bucket_name}/staging",
-        region="europe-southwest1"
+        region="us-south1",
+        requirements_file=requirements,
+        max_num_workers=5
     )) as p:
         datos_coche = (p | "Read Car Data" >> beam.io.ReadFromPubSub(subscription=f'projects/{project_id}/subscriptions/{topic_car}') 
                      | "decode car message" >> beam.Map(lambda x: json.loads(x)) 
