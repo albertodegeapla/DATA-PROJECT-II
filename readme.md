@@ -53,14 +53,14 @@ Estos datos son los datos son las propiedades de cada uno.
 
 En el caso de los coches: ID, Marca, Matricula, nº plazas disponibles, Precio por coordenada(€), Cartera, nº viajes realizados y nº pasajeros recogidos.
 
-En el caso de las personas: ID, Nomrbe, Apellidos, Edad, Cartera, Cartera inicial, Mood*, nº viajes, en_ruta**.
+En el caso de las personas: ID, Nombre, Apellidos, Edad, Cartera, Cartera inicial, Mood*, nº viajes, en_ruta**.
 
 *Esta variable en un entorno productivo real no exisitiría, pero en esta simulación queriamos simular el comportamiento de diferentes tipos de personas.
 **Esta variable hace referencia a si en este preciso momento el peaton se encuentra dentro de un coche o no, ayuda en el procesamiento.
 
 [Dinámicos] Pub/Sub
 
-Se selecciona a un peaton/coche y se le asigna una ruta al azar esta, se desglosa por coordenadas y se envia un mensaje con el estado del coche/peaton.
+Se selecciona a un peaton/coche y se le asigna una ruta al azar. Esta, se desglosa por coordenadas y se envia un mensaje con el estado del coche/peaton.
 
 Se utiliza Pub/sup para publicar mensajes en directo del estado del ususario en cada coordenada. 
 
@@ -74,7 +74,7 @@ Para actualizar las plazas se lee de Big Query (esta disminuye cuando hay un mat
 
 - Peatones: ID, (hora actual, (coordeanda1, coordenada 2), coordenadas del destino, Cartera, mood
 
-Cada mensaje se envia a un topic, todos los mensajes del coche a un topic, ej. ruta_coche y todos los mensajes del peaton se envian a otro topic, ej. ruta_peaton
+Cada mensaje se envia a un topic, todos los mensajes del coche a un topic. Ej: ruta_coche y todos los mensajes del peaton se envian a otro topic, ej. ruta_peaton.
 
 Los mensajes enviados estan en formato JSON por lo que se codifican antes de ser enviados y se deberan decodificar una vez llegan.
  
@@ -84,7 +84,7 @@ Para ejecutar el codigo del generador correctamente hay que realizar los siguien
 
 python <GENERADOR_X.py> --project_id <TU_PROYECTO> --peaton_topic_name <NOMBRE_TOPIC_X> --dataset_id <NOMBRE_DATASET> --table_peaton <NOMBRE_TABLA_X> --n_peatones <INT. nº de datos estáticos que quieres generar>   
 
-Aclaracion IMPORTANTE. los datos estáticos solo se deben ejecurar una vez. Por lo que cada vez que lances el generador te hará escribir una palabra para que no la lies, si no la escribes pasará directamente al envio de mensajes. 
+Aclaracion IMPORTANTE. los datos estáticos solo se deben ejecutar una vez. Por lo que cada vez que lances el generador te hará escribir una palabra 'n' para que no generes nuevos peatones. Si fuese la primera vez que quieres generar peatones, deberás escribir 'peatones' o 'coches'
 
 DATAFLOW
 
@@ -140,13 +140,16 @@ STREAMLIT
 
 TABLEAU
 
-En la parte de visualización, se ha creado un dashboard para análizar los resultados que se muestra ...... 
+En la parte de visualización, se ha creado un dashboard para análizar los resultados sobre el conjunto de viajes de los coches, con la finalidad de ver a cuantos pasajeros han transportado y como ha aumentado su cartera.
+
+Por otra parte, también se ha empleado esta herramienta para visualizar como ha variado la cartera de las personas durante el transcurso del proyecto.
 
 
 
 Si deseas ver cómo funciona el código puedes consultar el siguiente vídeo:
 
 ---
+
 
 
 
