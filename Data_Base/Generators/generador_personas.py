@@ -115,8 +115,7 @@ def generar_persona(id):
         'N_viajes':0,
         'Cartera':cartera,
         'Cartera_inicial': cartera,
-        'En_ruta': False,
-        'Coordenadas_persona': None
+        'En_ruta': False
     }
 
     return peaton
@@ -138,7 +137,7 @@ def write_peaton_to_bigquery(project_id, dataset_id, table_peaton, n_peatones):
  
         peaton_pcollection | "WriteToBigQuery" >> beam.io.WriteToBigQuery(
                 table=f'{project_id}:{dataset_id}.{table_peaton}',
-                schema = '{"ID_persona":"INTEGER", "Nombre":"STRING", "Primer_apellido":"STRING", "Segundo_apellido":"STRING","Edad":"INTEGER","N_viajes":"INTEGER", "Cartera":"FLOAT", "Cartera_inicial":"FLOAT", "Mood":"STRING", "En_ruta":"BOOLEAN", "Coordenadas_persona":"STRING"}',
+                schema = '{"ID_persona":"INTEGER", "Nombre":"STRING", "Primer_apellido":"STRING", "Segundo_apellido":"STRING","Edad":"INTEGER","N_viajes":"INTEGER", "Cartera":"FLOAT", "Cartera_inicial":"FLOAT", "Mood":"STRING", "En_ruta":"BOOLEAN"}',
                 create_disposition=beam.io.BigQueryDisposition.CREATE_NEVER,
                 write_disposition=beam.io.BigQueryDisposition.WRITE_APPEND
             )
@@ -273,7 +272,7 @@ if __name__ == "__main__":
         # HAY QUE VALIDAR QUE EL peaton NO ESTA EN RUTA (LUEGO)
         peaton_elegido = random.choice(id_peaton)
 
-        ruta_rutas = "./ruta/ruta_peaton"
+        ruta_rutas = "./rutas/ruta_peaton"
         archivos_rutas = os.listdir(ruta_rutas)
         archivos_rutas = [archivo for archivo in archivos_rutas if archivo.endswith(".kml")]
 

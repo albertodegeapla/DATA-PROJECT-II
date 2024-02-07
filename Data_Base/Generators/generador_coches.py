@@ -117,8 +117,7 @@ def generar_coche(id):
         'Precio_punto':precio_x_punto,
         'N_viajes':0,
         'N_pasajeros':0,
-        'Cartera': 0.0,
-        'Coordenadas_coche': None
+        'Cartera': 0.0
     }
     
     return coche
@@ -140,7 +139,7 @@ def write_car_to_bigquery(project_id, dataset_id, table_id, n_coches):
  
         coches_pcollection | "WriteToBigQuery" >> beam.io.WriteToBigQuery(
                 table=f'{project_id}:{dataset_id}.{table_id}',
-                schema = '{"ID_coche":"INTEGER", "Marca":"STRING", "Matricula":"STRING", "Plazas":"INTEGER", "Precio_punto":"FLOAT", "N_viajes":"INTEGER", "N_pasajeros":"INTEGER", "Cartera":"FLOAT", "Coordenadas_coche":"STRING"}',
+                schema = '{"ID_coche":"INTEGER", "Marca":"STRING", "Matricula":"STRING", "Plazas":"INTEGER", "Precio_punto":"FLOAT", "N_viajes":"INTEGER", "N_pasajeros":"INTEGER", "Cartera":"FLOAT"}',
    create_disposition=beam.io.BigQueryDisposition.CREATE_NEVER,
                 write_disposition=beam.io.BigQueryDisposition.WRITE_APPEND
             )
@@ -278,7 +277,7 @@ if __name__ == "__main__":
         coche_elegido = random.choice(id_coches)        
 
 
-        ruta_rutas = "./ruta/ruta_coche"
+        ruta_rutas = "./rutas/ruta_coche"
         archivos_rutas = os.listdir(ruta_rutas)
         archivos_rutas = [archivo for archivo in archivos_rutas if archivo.endswith(".kml")]
 
